@@ -27,8 +27,29 @@ def rysuj_stos_odrzucony2():
 def rysuj_stos_wzor(stos, x):
     if len(stos) > 0:
         stos[-1].rysuj(ekran, x, 50)
-    
 
+
+def czy_mozna_przeniesc_na_stos_wzor(karta, stos_wzor):
+    if len(stos_wzor) == 0:
+        return karta.wartosc == 'A'
+
+    ostatnia_karta = stos_wzor[-1]
+    return (
+        karta.wzor == ostatnia_karta.wzor and
+        WARTOSCI.index(karta.wartosc) == WARTOSCI.index(ostatnia_karta.wartosc) + 1
+    )
+
+
+def czy_mozna_przeniesc_na_stos_tabeli(karta, stos_docelowy):
+    if len(stos_docelowy) == 0:
+        return karta.wartosc == 'K'
+
+    ostatnia_karta = stos_docelowy[-1]
+    czy_rozny_kolor = (
+        (karta.wzor in ['H', 'D'] and ostatnia_karta.wzor in ['C', 'P']) or
+        (karta.wzor in ['C', 'P'] and ostatnia_karta.wzor in ['H', 'D'])
+    )
+    return czy_rozny_kolor and WARTOSCI.index(karta.wartosc) == WARTOSCI.index(ostatnia_karta.wartosc) - 1
 
 
 class Karta():
@@ -49,7 +70,11 @@ class Karta():
     def rysuj(self, ekran, x, y):
         self.prostokat.topleft = (x, y)
         ekran.blit(self.tyl if self.czyzakryta else self.obrazek, (x, y))
+        if len(wybrane_karty) > 0:
+            if wybrane_karty[0] == self:
+                ekran.blit(WYBRANA, (x, y))
 
+WYBRANA = pygame.transform.smoothscale(pygame.image.load(f'karty/WYBRANA.png'), (40, 60))
 KARTY = []
 CZARNY = (0, 0, 0)
 SZEROKOSC = 800
@@ -61,22 +86,9 @@ stos_kiery = []
 stos_karo = []
 stos_trefle = []
 stos_piki = []
-stos_kiery2 = []
-stos_karo2 = []
-stos_trefle2 = []
-stos_piki2 = []
 for wzor in WZORY:
     for wartosc in WARTOSCI:
         KARTY.append(Karta(wzor, wartosc))
-for karta in KARTY:
-    if karta.wzor == "H":
-        stos_kiery2.append(karta)
-    elif karta.wzor == "D":
-        stos_karo2.append(karta)
-    elif karta.wzor == "C":
-        stos_trefle2.append(karta)
-    if karta.wzor == "P":
-        stos_piki2.append(karta)
 random.shuffle(KARTY)
 stos1 = []
 stos1.append(KARTY[0])
@@ -138,99 +150,76 @@ while True:
             pygame.quit()
             sys.exit()
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            wybrane_karty = []
+            wybrany_stos = []
             for stos in [stos1, stos2, stos3, stos4, stos5, stos6, stos7, stos_odrzucony]:
                 if len(stos) > 0:
                     karta = stos[-1]
                     if karta.prostokat.collidepoint(pygame.mouse.get_pos()):
-                        if len(stos_piki2) > 0:
-                            if karta.wartosc == stos_piki2[0].wartosc and karta.wzor == "P":
-                                stos_piki.append(karta)
-                                stos_piki2.remove(karta)
+                        for stos_wzor, wzor in [(stos_piki, 'P'), (stos_trefle, 'C'), (stos_karo, 'D'), (stos_kiery, 'H')]:
+                            if karta.wzor == wzor and czy_mozna_przeniesc_na_stos_wzor(karta, stos_wzor):
+                                stos_wzor.append(karta)
                                 stos.remove(karta)
-                        if len(stos_trefle2) > 0:
-                            if karta.wartosc == stos_trefle2[0].wartosc and karta.wzor == "C":
-                                stos_trefle.append(karta)
-                                stos_trefle2.remove(karta)
-                                stos.remove(karta)
-                        if len(stos_karo) > 0:
-                            if karta.wartosc == stos_karo2[0].wartosc and karta.wzor == "D":
-                                stos_karo.append(karta)
-                                stos_karo2.remove(karta)
-                                stos.remove(karta)
-                        if len(stos_kiery) > 0:
-                            if karta.wartosc == stos_kiery2[0].wartosc and karta.wzor == "H":
-                                stos_kiery.append(karta)
-                                stos_kiery2.remove(karta)
-                                stos.remove(karta)
+                                break
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-            for stos in [stos1, stos2, stos3, stos4, stos5, stos6, stos7, stos_odrzucony, stos_karo, stos_kiery, stos_piki, stos_trefle]:
-                for karta in stos:
-                    if not karta.czyzakryta:
-                        if len(stos) > 0:
-                            if karta.prostokat.collidepoint(pygame.mouse.get_pos()):
-                                if wybrane_karty == []:
-                                    for i in range (0, len(stos) - stos.index(karta)):
-                                        wybrane_karty.append(stos[stos.index(karta)-len(stos)+i])
-                                    wybrany_stos = stos
-                                    if wybrane_karty[0].wartosc == 'K':
-                                        if stos1 == []:
-                                            stos1.extend(wybrane_karty)
-                                            for x in wybrane_karty:
-                                                wybrany_stos.remove(x)
-                                            wybrane_karty = []
-                                        elif stos2 == []:
-                                            stos2.extend(wybrane_karty)
-                                            for x in wybrane_karty:
-                                                wybrany_stos.remove(x)
-                                            wybrane_karty = []
-                                        elif stos3 == []:
-                                            stos3.extend(wybrane_karty)
-                                            for x in wybrane_karty:
-                                                wybrany_stos.remove(x)
-                                            wybrane_karty = []
-                                        elif stos4 == []:
-                                            stos4.extend(wybrane_karty)
-                                            for x in wybrane_karty:
-                                                wybrany_stos.remove(x)
-                                            wybrane_karty = []
-                                        elif stos5 == []:
-                                            stos5.extend(wybrane_karty)
-                                            for x in wybrane_karty:
-                                                wybrany_stos.remove(x)
-                                            wybrane_karty = []
-                                        elif stos6 == []:
-                                            stos6.extend(wybrane_karty)
-                                            for x in wybrane_karty:
-                                                wybrany_stos.remove(x)
-                                            wybrane_karty = []
-                                        elif stos7 == []:
-                                            stos7.extend(wybrane_karty)
-                                            for x in wybrane_karty:
-                                                wybrany_stos.remove(x)
-                                            wybrane_karty = []
+            pozycja_myszy = pygame.mouse.get_pos()
+            stosy_tabeli = [stos1, stos2, stos3, stos4, stos5, stos6, stos7]
 
+            if not wybrane_karty:
+                stosy_zrodlowe = stosy_tabeli + [
+                    stos_odrzucony, stos_karo, stos_kiery, stos_piki, stos_trefle
+                ]
+                for stos in stosy_zrodlowe:
+                    if not stos:
+                        continue
 
+                    indeksy = range(len(stos) - 1, -1, -1)
+                    for indeks in indeksy:
+                        karta = stos[indeks]
+                        if karta.czyzakryta or not karta.prostokat.collidepoint(pozycja_myszy):
+                            continue
 
+                        if any(stos is stos_specjalny for stos_specjalny in (
+                            stos_odrzucony, stos_karo, stos_kiery, stos_piki, stos_trefle
+                        )):
+                            if karta != stos[-1]:
+                                continue
+                            wybrane_karty = [karta]
+                        else:
+                            wybrane_karty = stos[indeks:]
+                        wybrany_stos = stos
+                        break
 
+                    if wybrane_karty:
+                        break
+            else:
+                stos_docelowy = None
+                x_myszy, y_myszy = pozycja_myszy
+                for numer, stos in enumerate(stosy_tabeli, start=1):
+                    if stos is wybrany_stos:
+                        continue
+                    if stos:
+                        if stos[-1].prostokat.collidepoint(pozycja_myszy):
+                            stos_docelowy = stos
+                            break
+                    else:
+                        x_stosu = -10 + numer * 50
+                        if x_stosu <= x_myszy <= x_stosu + 40 and 30 <= y_myszy <= 90:
+                            stos_docelowy = stos
+                            break
 
+                if stos_docelowy is not None and czy_mozna_przeniesc_na_stos_tabeli(wybrane_karty[0], stos_docelowy):
+                    stos_docelowy.extend(wybrane_karty)
+                    for karta in wybrane_karty:
+                        wybrany_stos.remove(karta)
 
+                    if any(wybrany_stos is stos for stos in stosy_tabeli) and wybrany_stos and wybrany_stos[-1].czyzakryta:
+                        wybrany_stos[-1].obrocenie()
+                    elif wybrany_stos is stos_odrzucony and wybrany_stos:
+                        wybrany_stos[-1].obrocenie()
 
-                                elif karta == stos[-1]:
-                                    if ((wybrane_karty[0].wzor == "P" or wybrane_karty[0].wzor == "C") and (karta.wzor == "H" or karta.wzor == "D")) or ((wybrane_karty[0].wzor == "H" or wybrane_karty[0].wzor == "D") and (karta.wzor == "P" or karta.wzor == "C")):
-                                        if WARTOSCI.index(wybrane_karty[0].wartosc) == WARTOSCI.index(karta.wartosc) - 1 and wybrane_karty[0].wartosc != 'K':
-                                            if stos != stos_odrzucony and stos != stos_piki and stos != stos_trefle and stos != stos_karo and stos != stos_kiery:
-                                                stos.extend(wybrane_karty)
-                                                for x in wybrane_karty:
-                                                    wybrany_stos.remove(x)
-                                                if wybrany_stos == stos_kiery or wybrany_stos == stos_karo or wybrany_stos == stos_trefle or wybrany_stos == stos_piki:
-                                                    eval(f'{wybrany_stos}2')
-                                                wybrane_karty = []
-                                            else:
-                                                wybrane_karty = []
-                                        else:
-                                            wybrane_karty = []
-                                    else:
-                                        wybrane_karty = []
+                wybrane_karty = []
+                wybrany_stos = []
 
 
 
@@ -253,7 +242,3 @@ while True:
     rysuj_stos_wzor(stos_piki, 620)
 
     pygame.display.update()
-    
-
-
-
