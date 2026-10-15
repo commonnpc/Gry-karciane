@@ -2,6 +2,29 @@ import random
 import pygwidgets
 import pygame
 import sys
+import time
+
+class Karta():
+    def __init__(self, wzor, wartosc, czyzakryta=True):
+        self.wzor = wzor
+        self.wartosc = wartosc
+        self.czyzakryta = czyzakryta
+        self.obrazek = pygame.transform.smoothscale(pygame.image.load(f'karty/{wartosc}-{wzor}.png'), (40, 60))
+        self.tyl = pygame.transform.smoothscale(pygame.image.load(f'karty/BACK.png'), (40, 60))
+        self.prostokat = self.obrazek.get_rect()
+
+    def obrocenie(self):
+        self.czyzakryta = False
+
+    def zakrycie(self):
+        self.czyzakryta = True
+
+    def rysuj(self, ekran, x, y):
+        self.prostokat.topleft = (x, y)
+        ekran.blit(self.tyl if self.czyzakryta else self.obrazek, (x, y))
+        if len(wybrane_karty) > 0:
+            if wybrane_karty[0] == self:
+                ekran.blit(WYBRANA, (x, y))
 
 stan = "menu"
 TLO = (178, 227, 146)
@@ -17,7 +40,17 @@ kartydzwiek = pygame.mixer.Sound("card_draw_3.wav")
 kartydzwiek.set_volume(0.5)
 wygranadzwiek = pygame.mixer.Sound("match_xylophone_6.wav")
 wygranadzwiek.set_volume(0.7)
-
+WYBRANA = pygame.transform.smoothscale(pygame.image.load(f'WYBRANA.png'), (40, 60))
+KARTY = []
+WZORY = ['H', 'D', 'C', 'P']
+WARTOSCI = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+for wzor in WZORY:
+    for wartosc in WARTOSCI:
+        KARTY.append(Karta(wzor, wartosc))
+KARTY_9_I_WYZEJ = []
+for karta in KARTY:
+    if karta.wartosc in ["9", "10", "J", "Q", "K", "A"]:
+        KARTY_9_I_WYZEJ.append(karta)
 Przycisk_Wroc_Pasjans = pygwidgets.TextButton(ekran, (500, 450), "Wróc do menu gier",
                                         fontSize = 30, width = 200, height = 100, 
                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
@@ -31,6 +64,10 @@ Przycisk_Wroc_Z_Menu_Gier = pygwidgets.TextButton(ekran, (275 ,450), "Wróć do 
                                           upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
 Przycisk_Pasjans = pygwidgets.TextButton(ekran, (100,100), "Pasjans",
+                                          fontSize = 30, width = 250, height = 100, 
+                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+
+Przycisk_Oczko = pygwidgets.TextButton(ekran, (450,100), "Oczko",
                                           fontSize = 30, width = 250, height = 100, 
                                           upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
@@ -91,6 +128,7 @@ Przycisk_Wroc_Z_Autorow = pygwidgets.TextButton(ekran, (200, 450), "Wróć",
 Przycisk_Zasady_Wroc = pygwidgets.TextButton(ekran, (200, 300), "Wróć",
                                         fontSize = 30, width = 400, height = 100, 
                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+
 przyciski_autorzy = []
 przyciski_pasjans_ponownie = []
 przyciski_gry = []
@@ -103,6 +141,7 @@ przyciski_pasjans_ponownie.append(Przycisk_Zagraj_Ponownie_Pasjans)
 przyciski_pasjans_ponownie.append(Przycisk_Wroc_Do_Menu_Z_Grami)
 przyciski_gry.append(Przycisk_Wroc_Z_Menu_Gier)
 przyciski_gry.append(Przycisk_Pasjans)
+przyciski_gry.append(Przycisk_Oczko)
 przyciski_menu.append(Przycisk_Graj)
 przyciski_menu.append(Przycisk_Opcje)
 przyciski_menu.append(Przycisk_Wyjscie)
@@ -111,6 +150,82 @@ przyciski_opcje.append(Przycisk_Wroc)
 przyciski_opcje.append(Przycisk_Autorzy)
 przyciski_zasady.append(Przycisk_Zasady_Wroc)
 przyciski_autorzy.append(Przycisk_Wroc_Z_Autorow)
+
+def oczko():
+    koniec = False
+    koniecB = False
+    random.shuffle(KARTY_9_I_WYZEJ)
+    pula_kart = KARTY_9_I_WYZEJ
+    pula_twoich_kart = []
+    pula_kart_bota = []
+    pula_punktow = 0
+    pula_punktow_bota = 0
+    pygame.init()
+    pygame.display.set_caption("OCZKO") 
+    programO = True
+    while programO:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not koniec:
+                pula_twoich_kart.append(pula_kart[0])
+                if pula_kart[0].wartosc == "A":
+                    pula_punktow += 11
+                elif pula_kart[0].wartosc == "K":
+                    pula_punktow += 4
+                elif pula_kart[0].wartosc == "Q":
+                    pula_punktow += 3
+                elif pula_kart[0].wartosc == "J":
+                    pula_punktow += 2
+                elif pula_kart[0].wartosc == "10":
+                    pula_punktow += 10
+                elif pula_kart[0].wartosc == "9":
+                    pula_punktow += 9
+                pula_kart.remove(pula_kart[0])
+                if pula_punktow > 21:
+                    koniec = True
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3 and not koniec:
+                koniec = True
+        if koniec and not koniecB:
+            lb = 0
+            for i in [2, 3, 4, 9, 10, 11]:
+                if i + pula_punktow_bota < 22:
+                    lb += 1
+            if random.randrange(0, 6) < lb:
+                pula_kart_bota.append(pula_kart[0])
+                if pula_kart[0].wartosc == "A":
+                    pula_punktow_bota += 11
+                elif pula_kart[0].wartosc == "K":
+                    pula_punktow_bota += 4
+                elif pula_kart[0].wartosc == "Q":
+                    pula_punktow_bota += 3
+                elif pula_kart[0].wartosc == "J":
+                    pula_punktow_bota += 2
+                elif pula_kart[0].wartosc == "10":
+                    pula_punktow_bota += 10
+                elif pula_kart[0].wartosc == "9":
+                    pula_punktow_bota += 9
+                pula_kart.remove(pula_kart[0])
+                time.sleep(1)
+            else:
+                koniecB = True
+        if koniec and koniecB:
+            if pula_punktow_bota == pula_punktow or (pula_punktow_bota > 21 and pula_punktow > 21):
+                print("Remis")
+            elif (pula_punktow < 22 and pula_punktow > pula_punktow_bota) or pula_punktow_bota > 21:
+                print("Wygrana")
+            else:
+                print("Przegrana")
+        ekran.fill(TLO)
+        clock.tick(KLATKI_NA_SEKUNDE)
+        for karta in pula_twoich_kart:
+            ekran.blit(karta.obrazek, (60, 40 + pula_twoich_kart.index(karta)*60))
+        for karta in pula_kart_bota:
+            ekran.blit(karta.obrazek, (700, 40 + pula_kart_bota.index(karta)*60))
+        pygame.display.update()
+
+            
 
 def rysuj_stos(numerstosu):
     stos = eval(f'stos{numerstosu}')
@@ -158,27 +273,6 @@ def czy_mozna_przeniesc_na_stos_tabeli(karta, stos_docelowy):
     )
     return czy_rozny_kolor and WARTOSCI.index(karta.wartosc) == WARTOSCI.index(ostatnia_karta.wartosc) - 1
 
-class Karta():
-    def __init__(self, wzor, wartosc, czyzakryta=True):
-        self.wzor = wzor
-        self.wartosc = wartosc
-        self.czyzakryta = czyzakryta
-        self.obrazek = pygame.transform.smoothscale(pygame.image.load(f'karty/{wartosc}-{wzor}.png'), (40, 60))
-        self.tyl = pygame.transform.smoothscale(pygame.image.load(f'karty/BACK.png'), (40, 60))
-        self.prostokat = self.obrazek.get_rect()
-
-    def obrocenie(self):
-        self.czyzakryta = False
-
-    def zakrycie(self):
-        self.czyzakryta = True
-
-    def rysuj(self, ekran, x, y):
-        self.prostokat.topleft = (x, y)
-        ekran.blit(self.tyl if self.czyzakryta else self.obrazek, (x, y))
-        if len(wybrane_karty) > 0:
-            if wybrane_karty[0] == self:
-                ekran.blit(WYBRANA, (x, y))
 
 def pasjans_ponownie():
     global program
@@ -187,18 +281,11 @@ def pasjans_ponownie():
 
 def pasjans():
     global stan, TLO
-    global WYBRANA, KARTY, WZORY, WARTOSCI, stos_kiery, stos_karo, stos_trefle, stos_piki, ekran, stos_odrzucony, stos_odrzucony2, wybrane_karty, stos1, stos2, stos3, stos4, stos5, stos6, stos7
-    WYBRANA = pygame.transform.smoothscale(pygame.image.load(f'WYBRANA.png'), (40, 60))
-    KARTY = []
-    WZORY = ['H', 'D', 'C', 'P']
-    WARTOSCI = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+    global stos_kiery, stos_karo, stos_trefle, stos_piki, ekran, stos_odrzucony, stos_odrzucony2, wybrane_karty, stos1, stos2, stos3, stos4, stos5, stos6, stos7
     stos_kiery = []
     stos_karo = []
     stos_trefle = []
     stos_piki = []
-    for wzor in WZORY:
-        for wartosc in WARTOSCI:
-            KARTY.append(Karta(wzor, wartosc))
     random.shuffle(KARTY)
     stos1 = []
     stos1.append(KARTY[0])
@@ -245,7 +332,7 @@ def pasjans():
     program = True
 
     pygame.init()
-    pygame.display.set_caption("Gry karciane")
+    pygame.display.set_caption("PASJANS")
     while program:
         for event in pygame.event.get():
             for przycisk in przyciski:
@@ -385,6 +472,8 @@ def widzet():
                             stan = "menu"
                         elif przycisk == przyciski_gry[1]:
                             pasjans()
+                        elif przycisk == przyciski_gry[2]:
+                            oczko()
             elif stan == "opcje":
                 for przycisk in przyciski_opcje:
                     if przycisk.handleEvent(event):
