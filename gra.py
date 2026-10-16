@@ -111,10 +111,14 @@ Przycisk_Zagraj_Ponownie = pygwidgets.TextButton(ekran, (450, 450), "Zagraj pono
 Tekst_Pasjans_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Gratulacje wygranej!", 
                                      fontSize = 30, width = 400, height = 100)
                                                         
-Tekst_Zasady1 = pygwidgets.DisplayText(ekran, (50, 80), "Aby przenieść kartę na drugi stos naciśnij ją prawym przyciskiem myszy, po czym", fontSize = 25, width = 700, height = 400)
-Tekst_Zasady2 = pygwidgets.DisplayText(ekran, (50, 110), "tym samym przyciskiem naciśnij stos na który chcesz go przełożyć. Jezeli chcesz tą ", fontSize = 25, width = 700, height = 400)
-Tekst_Zasady3 = pygwidgets.DisplayText(ekran, (50, 140), "kartę przełożyć na stosy znaków naciśnij ją lewym przyciskiem myszy. Aby przełozyć ", fontSize = 25, width = 700, height = 400)
-Tekst_Zasady4 = pygwidgets.DisplayText(ekran, (50, 170), "kartę ze stosu kart niewykorzystanych, naciśnij klawisz spacja.", fontSize = 25, width = 700, height = 400)
+Tekst_ZasadyPasjans1 = pygwidgets.DisplayText(ekran, (50, 80), "Aby przenieść kartę na drugi stos naciśnij ją prawym przyciskiem myszy, po czym", fontSize = 25, width = 700, height = 400)
+Tekst_ZasadyPasjans2 = pygwidgets.DisplayText(ekran, (50, 110), "tym samym przyciskiem naciśnij stos na który chcesz go przełożyć. Jezeli chcesz tą ", fontSize = 25, width = 700, height = 400)
+Tekst_ZasadyPasjans3 = pygwidgets.DisplayText(ekran, (50, 140), "kartę przełożyć na stosy znaków naciśnij ją lewym przyciskiem myszy. Aby przełozyć ", fontSize = 25, width = 700, height = 400)
+Tekst_ZasadyPasjans4 = pygwidgets.DisplayText(ekran, (50, 170), "kartę ze stosu kart niewykorzystanych, naciśnij klawisz spacja.", fontSize = 25, width = 700, height = 400)
+
+Tekst_ZasadyOczko1 = pygwidgets.DisplayText(ekran, (50, 80), "Aby pobrać kartę, naciśnij lewy przycisk myszy, a żeby zakończyć turę naciśnij prawy", fontSize = 25, width = 700, height = 400)
+Tekst_ZasadyOczko2 = pygwidgets.DisplayText(ekran, (50, 110), "przycisk myszy. Twoja tura kończy się automatycznie jezeli przebijesz 21 punktów.", fontSize = 25, width = 700, height = 400)
+Tekst_ZasadyOczko3 = pygwidgets.DisplayText(ekran, (50, 140), "Dla sprawiedliwości bot nie zna twoich kart i nie wpływają one na jego decyzje.", fontSize = 25, width = 700, height = 400)
 
 Tekst_Autorzy1 = pygwidgets.DisplayText(ekran, (50, 80), "Gra - Bartosz Kujawa", fontSize = 25, width = 700, height = 400)
 Tekst_Autorzy2 = pygwidgets.DisplayText(ekran, (50, 110), "Efekty Muzyczne - pakiet 400 Sounds Pack", fontSize = 25, width = 700, height = 400)
@@ -125,9 +129,17 @@ Przycisk_Wroc_Z_Autorow = pygwidgets.TextButton(ekran, (200, 450), "Wróć",
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
-Przycisk_Zasady_Wroc = pygwidgets.TextButton(ekran, (200, 300), "Wróć",
+Przycisk_Zasady_Wroc = pygwidgets.TextButton(ekran, (200, 450), "Wróć",
                                         fontSize = 30, width = 400, height = 100, 
                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+
+Przycisk_Zasady_Pasjans = pygwidgets.TextButton(ekran, (150, 100), "Zasady pasjansa", fontSize = 30, 
+                                        width = 200, height = 100, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+
+Przycisk_Zasady_Oczko = pygwidgets.TextButton(ekran, (450, 100), "Zasady oczka", fontSize = 30, 
+                                              width = 200, height = 100, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
 Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 30, width = 400, height = 100)
 
@@ -151,6 +163,8 @@ przyciski_opcje.append(Przycisk_Zasady)
 przyciski_opcje.append(Przycisk_Wroc)
 przyciski_opcje.append(Przycisk_Autorzy)
 przyciski_zasady.append(Przycisk_Zasady_Wroc)
+przyciski_zasady.append(Przycisk_Zasady_Pasjans)
+przyciski_zasady.append(Przycisk_Zasady_Oczko)
 przyciski_autorzy.append(Przycisk_Wroc_Z_Autorow)
 przyciski = []
 przyciski.append(Przycisk_Od_Nowa_Gra)
@@ -396,9 +410,9 @@ def pasjans():
                     karta.zakrycie()
                 else:
                     kartydzwiek.play()
-                    for i in range (stos_odrzucony2):
+                    for i in range(len(stos_odrzucony2)):
                         stos_odrzucony2.append(stos_odrzucony[0])
-                        stos_odrzucony.pop[0]
+                        stos_odrzucony.pop(0)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -493,6 +507,7 @@ def pasjans():
             stan = "zagrajznowuwpasjans"
             widzet()
             wygranadzwiek.play()
+
 def widzet():
     global stan, TLO, Tekst_Oczko_Ponownie
     while True:
@@ -545,6 +560,13 @@ def widzet():
                     if przycisk.handleEvent(event):
                         if przycisk == przyciski_zasady[0]:
                             stan = "menu"
+                        elif przycisk == przyciski_zasady[1]:
+                            stan = "zasadypasjans"
+                        elif przycisk == przyciski_zasady[2]:
+                            stan = "zasadyoczko"
+            elif stan == "zasadypasjans" or stan == "zasadyoczko":
+                if Przycisk_Zasady_Wroc.handleEvent(event):
+                    stan = "zasady"
             elif stan == "autorzy":
                 for przycisk in przyciski_autorzy:
                     if przycisk.handleEvent(event):
@@ -608,7 +630,7 @@ def widzet():
             elif stan == "przegranaoczko":
                 Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Przegrałeś! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
             else:
-                Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zremisowałeś! czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+                Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zremisowałeś! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
             Tekst_Oczko_Ponownie.show()
             Tekst_Oczko_Ponownie.draw()
         else:
@@ -620,22 +642,43 @@ def widzet():
             for przycisk in przyciski_zasady:
                 przycisk.show()
                 przycisk.draw()
-            Tekst_Zasady1.show()
-            Tekst_Zasady1.draw()
-            Tekst_Zasady2.show()
-            Tekst_Zasady2.draw()
-            Tekst_Zasady3.show()
-            Tekst_Zasady3.draw()
-            Tekst_Zasady4.show()
-            Tekst_Zasady4.draw()
         else:
             for przycisk in przyciski_zasady:
-                przycisk.hide()
-            Tekst_Zasady1.hide()
-            Tekst_Zasady2.hide()
-            Tekst_Zasady3.hide()
-            Tekst_Zasady4.hide()
+                if przycisk != przyciski_zasady[0]:
+                    przycisk.hide()
 
+        if stan == "zasadypasjans":
+            Przycisk_Zasady_Wroc.show()
+            Przycisk_Zasady_Wroc.draw()
+            Tekst_ZasadyPasjans1.show()
+            Tekst_ZasadyPasjans1.draw()
+            Tekst_ZasadyPasjans2.show()
+            Tekst_ZasadyPasjans2.draw()
+            Tekst_ZasadyPasjans3.show()
+            Tekst_ZasadyPasjans3.draw()
+            Tekst_ZasadyPasjans4.show()
+            Tekst_ZasadyPasjans4.draw()
+        else:
+            Tekst_ZasadyPasjans1.hide()
+            Tekst_ZasadyPasjans2.hide()
+            Tekst_ZasadyPasjans3.hide()
+            Tekst_ZasadyPasjans4.hide()
+
+        if stan == "zasadyoczko":
+            Przycisk_Zasady_Wroc.show()
+            Przycisk_Zasady_Wroc.draw()
+            Tekst_ZasadyOczko1.show()
+            Tekst_ZasadyOczko1.draw()
+            Tekst_ZasadyOczko2.show()
+            Tekst_ZasadyOczko2.draw()
+            Tekst_ZasadyOczko3.show()
+            Tekst_ZasadyOczko3.draw()
+        else:
+            Tekst_ZasadyOczko1.hide()
+            Tekst_ZasadyOczko2.hide()
+            Tekst_ZasadyOczko3.hide()
+        if stan != "zasady" and stan != "zasadypasjans" and stan != "zasadyoczko":
+            Przycisk_Zasady_Wroc.hide()
         if stan == "autorzy":
             for przycisk in przyciski_autorzy:
                 przycisk.show()
