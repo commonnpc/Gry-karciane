@@ -51,11 +51,11 @@ KARTY_9_I_WYZEJ = []
 for karta in KARTY:
     if karta.wartosc in ["9", "10", "J", "Q", "K", "A"]:
         KARTY_9_I_WYZEJ.append(karta)
-Przycisk_Wroc_Pasjans = pygwidgets.TextButton(ekran, (500, 450), "Wróc do menu gier",
+Przycisk_Wroc_Gra = pygwidgets.TextButton(ekran, (500, 450), "Wróc do menu gier",
                                         fontSize = 30, width = 200, height = 100, 
                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
-Przycisk_Od_Nowa_Pasjans = pygwidgets.TextButton(ekran, (100, 450), "Spróbuj ponownie",
+Przycisk_Od_Nowa_Gra = pygwidgets.TextButton(ekran, (100, 450), "Spróbuj ponownie",
                                         fontSize = 30, width = 200, height = 100, 
                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
@@ -100,12 +100,12 @@ Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 450), "Autorzy",
 
 Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 80), "Tryb ciemny", value = False, fontSize = 60, size = 50)
 
-Przycisk_Wroc_Do_Menu_Z_Grami = pygwidgets.TextButton(ekran, (100, 450), "Wróć do menu z grami",
-                                                        fontSize = 30, width = 200, height = 100, 
+Przycisk_Wroc_Do_Menu_Z_Grami = pygwidgets.TextButton(ekran, (50, 450), "Wróć do menu z grami",
+                                                        fontSize = 30, width = 300, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
-Przycisk_Zagraj_Ponownie_Pasjans = pygwidgets.TextButton(ekran, (500, 450), "Zagraj ponownie",
-                                                        fontSize = 30, width = 200, height = 100, 
+Przycisk_Zagraj_Ponownie = pygwidgets.TextButton(ekran, (450, 450), "Zagraj ponownie",
+                                                        fontSize = 30, width = 300, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
 Tekst_Pasjans_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Gratulacje wygranej!", 
@@ -129,16 +129,18 @@ Przycisk_Zasady_Wroc = pygwidgets.TextButton(ekran, (200, 300), "Wróć",
                                         fontSize = 30, width = 400, height = 100, 
                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
+Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 30, width = 400, height = 100)
+
 przyciski_autorzy = []
-przyciski_pasjans_ponownie = []
+przyciski_koniec_ponownie = []
 przyciski_gry = []
 przyciski_menu = []
 przyciski_opcje = []
 przyciski_zasady = []
 pygame.init()
 pygame.display.set_caption("Zbiór gier")
-przyciski_pasjans_ponownie.append(Przycisk_Zagraj_Ponownie_Pasjans)
-przyciski_pasjans_ponownie.append(Przycisk_Wroc_Do_Menu_Z_Grami)
+przyciski_koniec_ponownie.append(Przycisk_Zagraj_Ponownie)
+przyciski_koniec_ponownie.append(Przycisk_Wroc_Do_Menu_Z_Grami)
 przyciski_gry.append(Przycisk_Wroc_Z_Menu_Gier)
 przyciski_gry.append(Przycisk_Pasjans)
 przyciski_gry.append(Przycisk_Oczko)
@@ -150,21 +152,45 @@ przyciski_opcje.append(Przycisk_Wroc)
 przyciski_opcje.append(Przycisk_Autorzy)
 przyciski_zasady.append(Przycisk_Zasady_Wroc)
 przyciski_autorzy.append(Przycisk_Wroc_Z_Autorow)
+przyciski = []
+przyciski.append(Przycisk_Od_Nowa_Gra)
+przyciski.append(Przycisk_Wroc_Gra)
 
+def koniecoczko(wynik):
+    global stan
+    if wynik == "wygrana":
+        stan = "wygranaoczko"
+        wygranadzwiek.play()
+    elif wynik == "remis":
+        stan = "remisoczko"
+    if wynik == "przegrana":
+        stan = "przegranaoczko"
+    widzet()
+    
 def oczko():
+    Tekst_Przebito = pygwidgets.DisplayText(ekran, (50, 10), "PRZEBITO!" , fontSize = 20)
+    Tekst_Przebito_Bota = pygwidgets.DisplayText(ekran, (690, 10), "PRZEBITO!" , fontSize = 20)
+    global stan, program
     koniec = False
     koniecB = False
     random.shuffle(KARTY_9_I_WYZEJ)
-    pula_kart = KARTY_9_I_WYZEJ
+    pula_kart = KARTY_9_I_WYZEJ.copy()
     pula_twoich_kart = []
     pula_kart_bota = []
     pula_punktow = 0
     pula_punktow_bota = 0
     pygame.init()
     pygame.display.set_caption("OCZKO") 
-    programO = True
-    while programO:
+    program = True
+    while program:
         for event in pygame.event.get():
+            for przycisk in przyciski:
+                if przycisk.handleEvent(event):
+                    if przycisk == przyciski[0]:
+                        gra_ponownie("oczko")
+                    if przycisk == przyciski[1]:
+                        stan = "gry"
+                        widzet()
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -181,7 +207,7 @@ def oczko():
                 elif pula_kart[0].wartosc == "10":
                     pula_punktow += 10
                 elif pula_kart[0].wartosc == "9":
-                    pula_punktow += 9
+                    pass
                 pula_kart.remove(pula_kart[0])
                 if pula_punktow > 21:
                     koniec = True
@@ -192,6 +218,7 @@ def oczko():
             for i in [2, 3, 4, 9, 10, 11]:
                 if i + pula_punktow_bota < 22:
                     lb += 1
+            time.sleep(1)
             if random.randrange(0, 6) < lb:
                 pula_kart_bota.append(pula_kart[0])
                 if pula_kart[0].wartosc == "A":
@@ -205,20 +232,39 @@ def oczko():
                 elif pula_kart[0].wartosc == "10":
                     pula_punktow_bota += 10
                 elif pula_kart[0].wartosc == "9":
-                    pula_punktow_bota += 9
+                    pass
                 pula_kart.remove(pula_kart[0])
-                time.sleep(1)
             else:
                 koniecB = True
         if koniec and koniecB:
             if pula_punktow_bota == pula_punktow or (pula_punktow_bota > 21 and pula_punktow > 21):
-                print("Remis")
+                koniecoczko("remis")
             elif (pula_punktow < 22 and pula_punktow > pula_punktow_bota) or pula_punktow_bota > 21:
-                print("Wygrana")
+                koniecoczko("wygrana")
             else:
-                print("Przegrana")
+                koniecoczko("przegrana")
+            program = False
         ekran.fill(TLO)
         clock.tick(KLATKI_NA_SEKUNDE)
+        for przycisk in przyciski:
+            przycisk.show()
+            przycisk.draw()
+        if pula_punktow > 21:
+            Tekst_Przebito.show()
+            Tekst_Przebito.draw()
+        else:
+            Tekst_Przebito.hide()
+        if pula_punktow_bota > 21:
+            Tekst_Przebito_Bota.show()
+            Tekst_Przebito_Bota.draw()
+        else:
+            Tekst_Przebito_Bota.hide()
+        Tekst_Punkty = pygwidgets.DisplayText(ekran, (50, 20), "Punkty: " + str(pula_punktow), fontSize = 20)
+        Tekst_Punkty_Bota = pygwidgets.DisplayText(ekran, (690, 20), "Punkty bota: " + str(pula_punktow_bota), fontSize = 20)
+        Tekst_Punkty.show()
+        Tekst_Punkty_Bota.show()
+        Tekst_Punkty.draw()
+        Tekst_Punkty_Bota.draw()
         for karta in pula_twoich_kart:
             ekran.blit(karta.obrazek, (60, 40 + pula_twoich_kart.index(karta)*60))
         for karta in pula_kart_bota:
@@ -226,7 +272,6 @@ def oczko():
         pygame.display.update()
 
             
-
 def rysuj_stos(numerstosu):
     stos = eval(f'stos{numerstosu}')
     x = -10 + numerstosu * 50
@@ -274,10 +319,13 @@ def czy_mozna_przeniesc_na_stos_tabeli(karta, stos_docelowy):
     return czy_rozny_kolor and WARTOSCI.index(karta.wartosc) == WARTOSCI.index(ostatnia_karta.wartosc) - 1
 
 
-def pasjans_ponownie():
+def gra_ponownie(gra):
     global program
     program = False
-    pasjans()
+    if gra == "pasjans":
+        pasjans()
+    elif gra == "oczko":
+        oczko()
 
 def pasjans():
     global stan, TLO
@@ -326,9 +374,6 @@ def pasjans():
     stos_odrzucony2 = []
     wybrany_stos = []
     wybrane_karty = []
-    przyciski = []
-    przyciski.append(Przycisk_Od_Nowa_Pasjans)
-    przyciski.append(Przycisk_Wroc_Pasjans)
     program = True
 
     pygame.init()
@@ -338,7 +383,7 @@ def pasjans():
             for przycisk in przyciski:
                 if przycisk.handleEvent(event):
                     if przycisk == przyciski[0]:
-                        pasjans_ponownie()
+                        gra_ponownie("pasjans")
                     if przycisk == przyciski[1]:
                         stan = "gry"
                         widzet()
@@ -449,7 +494,7 @@ def pasjans():
             widzet()
             wygranadzwiek.play()
 def widzet():
-    global stan, TLO
+    global stan, TLO, Tekst_Oczko_Ponownie
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -489,11 +534,11 @@ def widzet():
                         else:
                             TLO = (178, 227, 146)
             elif stan == "zagrajznowuwpasjans":
-                for przycisk in przyciski_pasjans_ponownie:
+                for przycisk in przyciski_koniec_ponownie:
                     if przycisk.handleEvent(event):
-                        if przycisk == przyciski_pasjans_ponownie[0]:
+                        if przycisk == przyciski_koniec_ponownie[0]:
                             pasjans()
-                        elif przycisk == przyciski_pasjans_ponownie[1]:
+                        elif przycisk == przyciski_koniec_ponownie[1]:
                             stan = "gry"
             elif stan == "zasady":
                 for przycisk in przyciski_zasady:
@@ -505,6 +550,13 @@ def widzet():
                     if przycisk.handleEvent(event):
                         if przycisk == przyciski_autorzy[0]:
                             stan = "menu"
+            elif stan == "wygranaoczko" or stan == "przegranaoczko" or stan == "remisoczko":
+                for przycisk in przyciski_koniec_ponownie:
+                    if przycisk.handleEvent(event):
+                        if przycisk == przyciski_koniec_ponownie[0]:
+                            oczko()
+                        elif przycisk == przyciski_koniec_ponownie[1]:
+                            stan = "gry"
         ekran.fill(TLO)
         if stan == "menu":
             for przycisk in przyciski_menu:
@@ -537,15 +589,32 @@ def widzet():
             Kwadracik_Tryb_Ciemny.hide()
 
         if stan == "zagrajznowuwpasjans":
-            for przycisk in przyciski_pasjans_ponownie:
+            for przycisk in przyciski_koniec_ponownie:
                 przycisk.show()
                 przycisk.draw()
             Tekst_Pasjans_Ponownie.show()
             Tekst_Pasjans_Ponownie.draw()
         else:
-            for przycisk in przyciski_pasjans_ponownie:
+            for przycisk in przyciski_koniec_ponownie:
                 przycisk.hide()
             Tekst_Pasjans_Ponownie.hide()
+
+        if stan == "wygranaoczko" or stan == "przegranaoczko" or stan == "remisoczko":
+            for przycisk in przyciski_koniec_ponownie:
+                przycisk.show()
+                przycisk.draw()
+            if stan == "wygranaoczko":
+                Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Gratulacje wygranej! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+            elif stan == "przegranaoczko":
+                Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Przegrałeś! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+            else:
+                Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zremisowałeś! czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+            Tekst_Oczko_Ponownie.show()
+            Tekst_Oczko_Ponownie.draw()
+        else:
+            for przycisk in przyciski_koniec_ponownie:
+                przycisk.hide()
+            Tekst_Oczko_Ponownie.hide()
 
         if stan == "zasady":
             for przycisk in przyciski_zasady:
