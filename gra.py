@@ -22,9 +22,10 @@ class Karta():
     def rysuj(self, ekran, x, y):
         self.prostokat.topleft = (x, y)
         ekran.blit(self.tyl if self.czyzakryta else self.obrazek, (x, y))
-        if len(wybrane_karty) > 0:
-            if wybrane_karty[0] == self:
-                ekran.blit(WYBRANA, (x, y))
+        if stan == 'pasjans':
+            if len(wybrane_karty) > 0:
+                if wybrane_karty[0] == self:
+                    ekran.blit(WYBRANA, (x, y))
 
 stan = "menu"
 TLO = (178, 227, 146)
@@ -68,6 +69,10 @@ Przycisk_Pasjans = pygwidgets.TextButton(ekran, (100,100), "Pasjans",
                                           upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
 Przycisk_Oczko = pygwidgets.TextButton(ekran, (450,100), "Oczko",
+                                          fontSize = 30, width = 250, height = 100, 
+                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+
+Przycisk_Makao = pygwidgets.TextButton(ekran, (100,250), "Makao",
                                           fontSize = 30, width = 250, height = 100, 
                                           upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
@@ -154,8 +159,9 @@ pygame.display.set_caption("Zbiór gier")
 przyciski_koniec_ponownie.append(Przycisk_Zagraj_Ponownie)
 przyciski_koniec_ponownie.append(Przycisk_Wroc_Do_Menu_Z_Grami)
 przyciski_gry.append(Przycisk_Wroc_Z_Menu_Gier)
-przyciski_gry.append(Przycisk_Pasjans)
 przyciski_gry.append(Przycisk_Oczko)
+przyciski_gry.append(Przycisk_Pasjans)
+przyciski_gry.append(Przycisk_Makao)
 przyciski_menu.append(Przycisk_Graj)
 przyciski_menu.append(Przycisk_Opcje)
 przyciski_menu.append(Przycisk_Wyjscie)
@@ -182,30 +188,122 @@ def koniecoczko(wynik):
     widzet()
 
 def makao():
+    kartaS = 0
+    t = 1
+    dobrana = None
     global stan, program
+    przycisk_koniec_tury = pygwidgets.TextButton(ekran, (50, 250), "Zakończ turę",
+                                                fontSize = 30, width = 200, height = 100, 
+                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+    przycisk_ponownie = pygwidgets.TextButton(ekran, (550, 175), "Zagraj ponownie",
+                                            fontSize = 30, width = 200, height = 100, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+    przycisk_powrot = pygwidgets.TextButton(ekran, (550, 325), "Powrót do menu",
+                                            fontSize = 30, width = 200, height = 100, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+    przyciski_makao = [przycisk_koniec_tury, przycisk_ponownie, przycisk_powrot]
     stos_dobieranie = KARTY.copy()
     random.shuffle(stos_dobieranie)
     pygame.init
     pygame.display.set_caption("MAKAO")
     twoje_karty = []
     karty_bota = []
+    stos_kladzenia = [stos_dobieranie[0]]
+    stos_dobieranie.pop(0)
     for i in range(5):
         twoje_karty.append(stos_dobieranie[0])
         stos_dobieranie.remove(stos_dobieranie[0])
         karty_bota.append(stos_dobieranie[0])
         stos_dobieranie.remove(stos_dobieranie[0])
     program = True
-    karty_funkcyjne = ["2", "3", "4", "J", "Q", "K" "A"]
-    karty_niefunkcyjne = ["5", "6", "7", "8", "9", "10"]
+    ruchyT = True
+    ruchyB = True
+    kolej = "T"
     while program:
+        ekran.fill(TLO)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if kolej == "T":
+                for karta in twoje_karty:
+                    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                        if stos_dobieranie[0].prostokat.collidepoint(pygame.mouse.get_pos()) and ruchyT:
+                            twoje_karty.append(stos_dobieranie[0])
+                            stos_dobieranie.pop(0)
+                            ruchyT = False
+                            dobrana = twoje_karty[-1]
+                            dt = t
+                        if dobrana != None:
+                            if dobrana.prostokat.collidepoint(pygame.mouse.get_pos()) and dt != t:
+                                if dobrana.wzor == stos_kladzenia[-1].wzor or dobrana.wartosc == stos_kladzenia[-1].wartosc:
+                                    stos_kladzenia.append(twoje_karty[-1])
+                                    twoje_karty.pop(-1)
+                                    kartaS = stos_kladzenia[-1].wartosc
+                                    dobrana = None
+                        if karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (karta.wzor == stos_kladzenia[-1].wzor or karta.wartosc == stos_kladzenia[-1].wartosc):
+                            if ruchyT:
+                                stos_kladzenia.append(karta)
+                                twoje_karty.remove(karta)
+                                ruchyT = False
+                                kartaS = karta.wartosc
+                            elif karta.wartosc == kartaS:
+                                stos_kladzenia.append(karta)
+                                twoje_karty.remove(karta)
+            for przycisk in przyciski_makao:
+                if przycisk.handleEvent(event):
+                    if przycisk == przyciski_makao[0] and kolej == "T":
+                        if not ruchyT:
+                            kolej = "B"
+                            dobrana = None
+                            ruchyB = True
+                            kartaS = 0
+                    elif przycisk == przyciski_makao[1]:
+                        gra_ponownie("makao")
+                    elif przycisk == przyciski_makao[2]:
+                        stan = "gry"
+                        widzet()
+        if kolej == "B":
+            for karta in karty_bota:
+                if karta.wzor == stos_kladzenia[-1].wzor or karta.wartosc == stos_kladzenia[-1].wartosc:
+                    if ruchyB:
+                        stos_kladzenia.append(karta)
+                        karty_bota.remove(karta)
+                        ruchyB = False
+                    elif karta.wartosc == kartaS:
+                        stos_kladzenia.append(karta)
+                        karty_bota.remove(karta)
+            if ruchyB:
+                karty_bota.append(stos_dobieranie[0])
+                stos_dobieranie.pop(0)
+                ruchyB = False
+                if karty_bota[-1].wzor == stos_kladzenia[-1].wzor or karty_bota[-1].wartosc == stos_kladzenia[-1].wartosc:
+                    stos_kladzenia.append(karta)
+                    karty_bota.remove(karta)
+            kartaS = 0
+            kolej = "T"
+            ruchyT = True
+        if len(stos_dobieranie) > 0:
+            stos_dobieranie[0].zakrycie()
+            stos_dobieranie[0].rysuj(ekran, 350, 270)
+        else:
+            stos_dobieranie = stos_kladzenia.copy()
+            stos_kladzenia.append(stos_dobieranie[-1])
+            stos_dobieranie.pop(-1)
+        for przycisk in przyciski_makao:
+            przycisk.show()
+            przycisk.draw()
         for karta in twoje_karty:
-            pass #rysuju karty
+            karta.obrocenie()
+            karta.rysuj(ekran, 380 + 60*(round(len(twoje_karty)/2)- twoje_karty.index(karta)), 500)
         for karta in karty_bota:
-            pass #rysuje karty bota (odwrócone)
+            karta.zakrycie()
+            karta.rysuj(ekran, 380 + 60*(len(karty_bota)/2- karty_bota.index(karta)), 100)
+        stos_kladzenia[-1].obrocenie()
+        stos_kladzenia[-1].rysuj(ekran, 410, 270)
+        pygame.display.update()
+        t  = 1 - t
+        clock.tick(KLATKI_NA_SEKUNDE)
 
 def oczko():
     Tekst_Przebito = pygwidgets.DisplayText(ekran, (50, 10), "PRZEBITO!" , fontSize = 20)
@@ -366,6 +464,8 @@ def gra_ponownie(gra):
         pasjans()
     elif gra == "oczko":
         oczko()
+    elif gra == "makao":
+        makao()
 
 def pasjans():
     global stan, TLO
@@ -557,9 +657,12 @@ def widzet():
                         if przycisk == przyciski_gry[0]:
                             stan = "menu"
                         elif przycisk == przyciski_gry[1]:
+                            stan = "pasjans"
                             pasjans()
                         elif przycisk == przyciski_gry[2]:
                             oczko()
+                        elif przycisk == przyciski_gry[3]:
+                            makao()
             elif stan == "opcje":
                 for przycisk in przyciski_opcje:
                     if przycisk.handleEvent(event):
