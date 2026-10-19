@@ -180,7 +180,33 @@ def koniecoczko(wynik):
     if wynik == "przegrana":
         stan = "przegranaoczko"
     widzet()
-    
+
+def makao():
+    global stan, program
+    stos_dobieranie = KARTY.copy()
+    random.shuffle(stos_dobieranie)
+    pygame.init
+    pygame.display.set_caption("MAKAO")
+    twoje_karty = []
+    karty_bota = []
+    for i in range(5):
+        twoje_karty.append(stos_dobieranie[0])
+        stos_dobieranie.remove(stos_dobieranie[0])
+        karty_bota.append(stos_dobieranie[0])
+        stos_dobieranie.remove(stos_dobieranie[0])
+    program = True
+    karty_funkcyjne = ["2", "3", "4", "J", "Q", "K" "A"]
+    karty_niefunkcyjne = ["5", "6", "7", "8", "9", "10"]
+    while program:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+        for karta in twoje_karty:
+            pass #rysuju karty
+        for karta in karty_bota:
+            pass #rysuje karty bota (odwrócone)
+
 def oczko():
     Tekst_Przebito = pygwidgets.DisplayText(ekran, (50, 10), "PRZEBITO!" , fontSize = 20)
     Tekst_Przebito_Bota = pygwidgets.DisplayText(ekran, (690, 10), "PRZEBITO!" , fontSize = 20)
