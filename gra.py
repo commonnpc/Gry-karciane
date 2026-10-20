@@ -3,6 +3,7 @@ import pygwidgets
 import pygame
 import sys
 import time
+import emoji
 
 class Karta():
     def __init__(self, wzor, wartosc, czyzakryta=True):
@@ -147,6 +148,7 @@ Przycisk_Zasady_Oczko = pygwidgets.TextButton(ekran, (450, 100), "Zasady oczka",
                                             upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
 Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 30, width = 400, height = 100)
+Tekst_Makao_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 30, width = 500, height = 100)
 
 przyciski_autorzy = []
 przyciski_koniec_ponownie = []
@@ -190,8 +192,10 @@ def koniecoczko(wynik):
 def makao():
     kartaS = 0
     t = 1
+    pA = False
     dobrana = None
     global stan, program
+    Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 20), " Wybrany kolor: #", fontSize = 20)
     przycisk_koniec_tury = pygwidgets.TextButton(ekran, (50, 250), "Zakończ turę",
                                                 fontSize = 30, width = 200, height = 100, 
                                                 upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
@@ -201,15 +205,34 @@ def makao():
     przycisk_powrot = pygwidgets.TextButton(ekran, (550, 325), "Powrót do menu",
                                             fontSize = 30, width = 200, height = 100, 
                                             upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+
+    przycisk_kier = pygwidgets.TextButton(ekran, (50, 375), "kier",
+                                          fontSize = 40, width = 90, height = 50, 
+                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+    przycisk_karo = pygwidgets.TextButton(ekran, (160, 375), "karo",
+                                        fontSize = 40, width = 90, height = 50, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+    przycisk_trefl = pygwidgets.TextButton(ekran, (50, 450), "trefl",
+                                        fontSize = 40, width = 90, height = 50, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+    przycisk_pik = pygwidgets.TextButton(ekran, (160, 450), "pik",
+                                        fontSize = 40, width = 90, height = 50, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+        
     przyciski_makao = [przycisk_koniec_tury, przycisk_ponownie, przycisk_powrot]
+    przyciski_A = [przycisk_kier, przycisk_karo, przycisk_trefl, przycisk_pik]
+
     stos_dobieranie = KARTY.copy()
     random.shuffle(stos_dobieranie)
     pygame.init
     pygame.display.set_caption("MAKAO")
     twoje_karty = []
     karty_bota = []
-    stos_kladzenia = [stos_dobieranie[0]]
-    stos_dobieranie.pop(0)
+    for i in range(len(stos_dobieranie)):
+        if stos_dobieranie[i].wartosc in ["5", "6", "7", "8", "9", "10"]:
+            stos_kladzenia = [stos_dobieranie[i]]
+            stos_dobieranie.pop(i)
+            break
     for i in range(5):
         twoje_karty.append(stos_dobieranie[0])
         stos_dobieranie.remove(stos_dobieranie[0])
@@ -219,6 +242,11 @@ def makao():
     ruchyT = True
     ruchyB = True
     kolej = "T"
+    kolorA = ""
+    kiery_bota = 0
+    karo_bota = 0
+    trefle_bota = 0
+    piki_bota = 0
     while program:
         ekran.fill(TLO)
         for event in pygame.event.get():
@@ -228,31 +256,67 @@ def makao():
             if kolej == "T":
                 for karta in twoje_karty:
                     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                        if stos_dobieranie[0].prostokat.collidepoint(pygame.mouse.get_pos()) and ruchyT:
+                        if stos_dobieranie[0].prostokat.collidepoint(pygame.mouse.get_pos()) and ruchyT and not pA:
                             twoje_karty.append(stos_dobieranie[0])
                             stos_dobieranie.pop(0)
                             ruchyT = False
                             dobrana = twoje_karty[-1]
                             dt = t
-                        if dobrana != None:
+                        if dobrana != None and not pA:
                             if dobrana.prostokat.collidepoint(pygame.mouse.get_pos()) and dt != t:
-                                if dobrana.wzor == stos_kladzenia[-1].wzor or dobrana.wartosc == stos_kladzenia[-1].wartosc:
-                                    stos_kladzenia.append(twoje_karty[-1])
-                                    twoje_karty.pop(-1)
-                                    kartaS = stos_kladzenia[-1].wartosc
-                                    dobrana = None
-                        if karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (karta.wzor == stos_kladzenia[-1].wzor or karta.wartosc == stos_kladzenia[-1].wartosc):
-                            if ruchyT:
-                                stos_kladzenia.append(karta)
-                                twoje_karty.remove(karta)
-                                ruchyT = False
-                                kartaS = karta.wartosc
-                            elif karta.wartosc == kartaS:
-                                stos_kladzenia.append(karta)
-                                twoje_karty.remove(karta)
+                                if kolorA == "":
+                                    if dobrana.wzor == stos_kladzenia[-1].wzor or dobrana.wartosc == stos_kladzenia[-1].wartosc:
+                                        if dobrana.wartosc == "A":
+                                            pA = True
+                                        stos_kladzenia.append(twoje_karty[-1])
+                                        twoje_karty.pop(-1)
+                                        kartaS = stos_kladzenia[-1].wartosc
+                                        dobrana = None
+                                else:
+                                    if dobrana.wzor == kolorA or dobrana.wartosc == stos_kladzenia[-1].wartosc:
+                                        if dobrana.wartosc == "A":
+                                            pA = True
+                                        else:
+                                            kolorA = ""
+                                        stos_kladzenia.append(twoje_karty[-1])
+                                        twoje_karty.pop(-1)
+                                        kartaS = stos_kladzenia[-1].wartosc
+                                        dobrana = None
+                        if kolorA == "" :
+                            if karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (karta.wzor == stos_kladzenia[-1].wzor or karta.wartosc == stos_kladzenia[-1].wartosc) and not pA:
+                                if ruchyT:
+                                    if karta.wartosc == "A":
+                                        pA = True
+                                    stos_kladzenia.append(karta)
+                                    twoje_karty.remove(karta)
+                                    ruchyT = False
+                                    kartaS = karta.wartosc
+                                elif karta.wartosc == kartaS:
+                                    if karta.wartosc == "A":
+                                        pA = True
+                                    stos_kladzenia.append(karta)
+                                    twoje_karty.remove(karta)
+                        else:
+                            if karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (karta.wzor == kolorA or karta.wartosc == stos_kladzenia[-1].wartosc) and not pA:
+                                if ruchyT:
+                                    if karta.wartosc == "A":
+                                        pA = True
+                                    else:
+                                        kolorA = ""
+                                    stos_kladzenia.append(karta)
+                                    twoje_karty.remove(karta)
+                                    ruchyT = False
+                                    kartaS = karta.wartosc
+                                elif karta.wartosc == kartaS:
+                                    if karta.wartosc == "A":
+                                        pA = True
+                                    else:
+                                        kolorA = ""
+                                    stos_kladzenia.append(karta)
+                                    twoje_karty.remove(karta)
             for przycisk in przyciski_makao:
                 if przycisk.handleEvent(event):
-                    if przycisk == przyciski_makao[0] and kolej == "T":
+                    if przycisk == przyciski_makao[0] and kolej == "T" and not pA:
                         if not ruchyT:
                             kolej = "B"
                             dobrana = None
@@ -263,23 +327,183 @@ def makao():
                     elif przycisk == przyciski_makao[2]:
                         stan = "gry"
                         widzet()
+            if pA:
+                for przycisk in przyciski_A:
+                    if przycisk.handleEvent(event):
+                        if przycisk == przyciski_A[0]:
+                            kolorA = "H"
+                        elif przycisk == przyciski_A[1]:
+                            kolorA = "D"
+                        elif przycisk == przyciski_A[2]:
+                            kolorA = "C"
+                        elif przycisk == przyciski_A[3]:
+                            kolorA = "P"
+                        pA = False
         if kolej == "B":
             for karta in karty_bota:
-                if karta.wzor == stos_kladzenia[-1].wzor or karta.wartosc == stos_kladzenia[-1].wartosc:
-                    if ruchyB:
-                        stos_kladzenia.append(karta)
-                        karty_bota.remove(karta)
-                        ruchyB = False
-                    elif karta.wartosc == kartaS:
-                        stos_kladzenia.append(karta)
-                        karty_bota.remove(karta)
+                if kolorA == "":
+                    if karta.wzor == stos_kladzenia[-1].wzor or karta.wartosc == stos_kladzenia[-1].wartosc:
+                        if ruchyB:
+                            if karta.wartosc == "A":
+                                for i in range(len(karty_bota)):
+                                    if karty_bota[i].wzor == "H":
+                                        kiery_bota += 1
+                                    elif karty_bota[i].wzor == "D":
+                                        karo_bota += 1
+                                    elif karty_bota[i].wzor == "C":
+                                        trefle_bota += 1
+                                    elif karty_bota[i].wzor == "P":
+                                        piki_bota += 1
+                                if kiery_bota >= karo_bota and kiery_bota >= trefle_bota and kiery_bota >= piki_bota:
+                                    kolorA = "H"
+                                elif karo_bota >= trefle_bota and karo_bota >= piki_bota:
+                                    kolorA = "D"
+                                elif trefle_bota >= piki_bota:
+                                    kolorA = "C"
+                                else:
+                                    kolorA = "P"
+                                kiery_bota = 0
+                                karo_bota = 0
+                                trefle_bota = 0
+                                piki_bota = 0
+                            stos_kladzenia.append(karta)
+                            karty_bota.remove(karta)
+                            ruchyB = False
+                        elif karta.wartosc == kartaS:
+                            if karta.wartosc == "A":
+                                for i in range(len(karty_bota)):
+                                    if karty_bota[i].wzor == "H":
+                                        kiery_bota += 1
+                                    elif karty_bota[i].wzor == "D":
+                                        karo_bota += 1
+                                    elif karty_bota[i].wzor == "C":
+                                        trefle_bota += 1
+                                    elif karty_bota[i].wzor == "P":
+                                        piki_bota += 1
+                                if kiery_bota >= karo_bota and kiery_bota >= trefle_bota and kiery_bota >= piki_bota:
+                                    kolorA = "H"
+                                elif karo_bota >= trefle_bota and karo_bota >= piki_bota:
+                                    kolorA = "D"
+                                elif trefle_bota >= piki_bota:
+                                    kolorA = "C"
+                                else:
+                                    kolorA = "P"
+                                kiery_bota = 0
+                                karo_bota = 0
+                                trefle_bota = 0
+                                piki_bota = 0
+                            stos_kladzenia.append(karta)
+                            karty_bota.remove(karta)
+                else:
+                    if karta.wzor == kolorA or karta.wartosc == stos_kladzenia[-1].wartosc:
+                        if ruchyB:
+                            if karta.wartosc == "A":
+                                for i in range(len(karty_bota)):
+                                    if karty_bota[i].wzor == "H":
+                                        kiery_bota += 1
+                                    elif karty_bota[i].wzor == "D":
+                                        karo_bota += 1
+                                    elif karty_bota[i].wzor == "C":
+                                        trefle_bota += 1
+                                    elif karty_bota[i].wzor == "P":
+                                        piki_bota += 1
+                                if kiery_bota >= karo_bota and kiery_bota >= trefle_bota and kiery_bota >= piki_bota:
+                                    kolorA = "H"
+                                elif karo_bota >= trefle_bota and karo_bota >= piki_bota:
+                                    kolorA = "D"
+                                elif trefle_bota >= piki_bota:
+                                    kolorA = "C"
+                                else:
+                                    kolorA = "P"
+                                kiery_bota = 0
+                                karo_bota = 0
+                                trefle_bota = 0
+                                piki_bota = 0
+                            stos_kladzenia.append(karta)
+                            karty_bota.remove(karta)
+                            ruchyB = False
+                        elif karta.wartosc == kartaS:
+                            if karta.wartosc == "A":
+                                for i in range(len(karty_bota)):
+                                    if karty_bota[i].wzor == "H":
+                                        kiery_bota += 1
+                                    elif karty_bota[i].wzor == "D":
+                                        karo_bota += 1
+                                    elif karty_bota[i].wzor == "C":
+                                        trefle_bota += 1
+                                    elif karty_bota[i].wzor == "P":
+                                        piki_bota += 1
+                                if kiery_bota >= karo_bota and kiery_bota >= trefle_bota and kiery_bota >= piki_bota:
+                                    kolorA = "H"
+                                elif karo_bota >= trefle_bota and karo_bota >= piki_bota:
+                                    kolorA = "D"
+                                elif trefle_bota >= piki_bota:
+                                    kolorA = "C"
+                                else:
+                                    kolorA = "P"
+                                kiery_bota = 0
+                                karo_bota = 0
+                                trefle_bota = 0
+                                piki_bota = 0
+                            time.sleep(1)
+                            stos_kladzenia.append(karta)
+                            karty_bota.remove(karta)
             if ruchyB:
                 karty_bota.append(stos_dobieranie[0])
                 stos_dobieranie.pop(0)
                 ruchyB = False
-                if karty_bota[-1].wzor == stos_kladzenia[-1].wzor or karty_bota[-1].wartosc == stos_kladzenia[-1].wartosc:
-                    stos_kladzenia.append(karta)
-                    karty_bota.remove(karta)
+                if kolorA == "":
+                    if karty_bota[-1].wzor == stos_kladzenia[-1].wzor or karty_bota[-1].wartosc == stos_kladzenia[-1].wartosc:
+                        if karty_bota[-1].wartosc == "A":
+                            for i in range(len(karty_bota)):
+                                if karty_bota[i].wzor == "H":
+                                    kiery_bota += 1
+                                elif karty_bota[i].wzor == "D":
+                                    karo_bota += 1
+                                elif karty_bota[i].wzor == "C":
+                                    trefle_bota += 1
+                                elif karty_bota[i].wzor == "P":
+                                    piki_bota += 1
+                            if kiery_bota >= karo_bota and kiery_bota >= trefle_bota and kiery_bota >= piki_bota:
+                                kolorA = "H"
+                            elif karo_bota >= trefle_bota and karo_bota >= piki_bota:
+                                kolorA = "D"
+                            elif trefle_bota >= piki_bota:
+                                kolorA = "C"
+                            else:
+                                kolorA = "P"
+                            kiery_bota = 0
+                            karo_bota = 0
+                            trefle_bota = 0
+                            piki_bota = 0
+                        stos_kladzenia.append(karta)
+                        karty_bota.remove(karta)
+                else:
+                    if karty_bota[-1].wzor == kolorA or karty_bota[-1].wartosc == stos_kladzenia[-1].wartosc:
+                        if karty_bota[-1].wartosc == "A":
+                            for i in range(len(karty_bota)):
+                                if karty_bota[i].wzor == "H":
+                                    kiery_bota += 1
+                                elif karty_bota[i].wzor == "D":
+                                    karo_bota += 1
+                                elif karty_bota[i].wzor == "C":
+                                    trefle_bota += 1
+                                elif karty_bota[i].wzor == "P":
+                                    piki_bota += 1
+                            if kiery_bota >= karo_bota and kiery_bota >= trefle_bota and kiery_bota >= piki_bota:
+                                kolorA = "H"
+                            elif karo_bota >= trefle_bota and karo_bota >= piki_bota:
+                                kolorA = "D"
+                            elif trefle_bota >= piki_bota:
+                                kolorA = "C"
+                            else:
+                                kolorA = "P"
+                            kiery_bota = 0
+                            karo_bota = 0
+                            trefle_bota = 0
+                            piki_bota = 0
+                        stos_kladzenia.append(karta)
+                        karty_bota.remove(karta)
             kartaS = 0
             kolej = "T"
             ruchyT = True
@@ -290,19 +514,44 @@ def makao():
             stos_dobieranie = stos_kladzenia.copy()
             stos_kladzenia.append(stos_dobieranie[-1])
             stos_dobieranie.pop(-1)
+        if kolorA != "":
+            if kolorA == "H":
+                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 20), " Wybrany kolor: KIER", fontSize = 20)
+            elif kolorA == "D":
+                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 20), " Wybrany kolor: KARO", fontSize = 20)
+            elif kolorA == "C":
+                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 20), " Wybrany kolor: TREFLE", fontSize = 20)
+            elif kolorA == "P":
+                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 20), " Wybrany kolor: PIKI", fontSize = 20)
+            Tekst_Kolor.show()
+            Tekst_Kolor.draw()
+        else:
+            Tekst_Kolor.hide()
+        for przycisk in przyciski_A:
+            if pA:
+                przycisk.show()
+                przycisk.draw()
+            else:
+                przycisk.hide()
         for przycisk in przyciski_makao:
             przycisk.show()
             przycisk.draw()
         for karta in twoje_karty:
             karta.obrocenie()
-            karta.rysuj(ekran, 380 + 60*(round(len(twoje_karty)/2)- twoje_karty.index(karta)), 500)
+            karta.rysuj(ekran, 380 + 60*(len(twoje_karty)/2- twoje_karty.index(karta)), 500)
         for karta in karty_bota:
             karta.zakrycie()
             karta.rysuj(ekran, 380 + 60*(len(karty_bota)/2- karty_bota.index(karta)), 100)
+        if len(twoje_karty) == 0:
+            stan = "wygranamakao"
+            widzet()
+        elif len(karty_bota) == 0:
+            stan = "przegranamakao"
+            widzet()
         stos_kladzenia[-1].obrocenie()
         stos_kladzenia[-1].rysuj(ekran, 410, 270)
         pygame.display.update()
-        t  = 1 - t
+        t  = 100 - t
         clock.tick(KLATKI_NA_SEKUNDE)
 
 def oczko():
@@ -635,7 +884,7 @@ def pasjans():
             wygranadzwiek.play()
 
 def widzet():
-    global stan, TLO, Tekst_Oczko_Ponownie
+    global stan, TLO, Tekst_Oczko_Ponownie, Tekst_Makao_Ponownie
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -708,6 +957,13 @@ def widzet():
                             oczko()
                         elif przycisk == przyciski_koniec_ponownie[1]:
                             stan = "gry"
+            elif stan == "wygranamakao" or stan == "przegranamakao":
+                for przycisk in przyciski_koniec_ponownie:
+                    if przycisk.handleEvent(event):
+                        if przycisk == przyciski_koniec_ponownie[0]:
+                            makao()
+                        elif przycisk == przyciski_koniec_ponownie[1]:
+                            stan = "gry"
         ekran.fill(TLO)
         if stan == "menu":
             for przycisk in przyciski_menu:
@@ -766,6 +1022,21 @@ def widzet():
             for przycisk in przyciski_koniec_ponownie:
                 przycisk.hide()
             Tekst_Oczko_Ponownie.hide()
+
+        if stan == "wygranamakao" or stan == "przegranamakao":
+            for przycisk in przyciski_koniec_ponownie:
+                przycisk.show()
+                przycisk.draw()
+            if stan == "wygranamakao":
+                Tekst_Makao_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Gratulacje wygranej! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+            else:
+                Tekst_Makao_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Przegrałeś! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+            Tekst_Makao_Ponownie.show()
+            Tekst_Makao_Ponownie.draw()
+        else:
+            for przycisk in przyciski_koniec_ponownie:
+                przycisk.hide()
+            Tekst_Makao_Ponownie.hide()
 
         if stan == "zasady":
             for przycisk in przyciski_zasady:
