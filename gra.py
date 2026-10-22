@@ -227,6 +227,8 @@ def makao():
     dobrana = None
     global stan, program, kolej
     Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 20), " Wybrany kolor: #", fontSize = 20)
+    Tekst_Dobieranie = pygwidgets.DisplayText(ekran, (100, 20), " Karty do dobrania (2, 3): #", fontSize = 20)
+    Tekst_DobieranieK = pygwidgets.DisplayText(ekran, (100, 20), " Karty do dobrania (K): #", fontSize = 20)
     przycisk_koniec_tury = pygwidgets.TextButton(ekran, (50, 250), "Zakończ turę",
                                                 fontSize = 30, width = 200, height = 100, 
                                                 upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
@@ -277,7 +279,15 @@ def makao():
     program = True
     ruchyT = True
     kolej = "T"
+    koniectury = 0
     kolorA = ""
+    pobieranieTY = False
+    pobieranieK = 0
+    pobieranieTYK = 0
+    pobieranie23 = 0
+    x = 1
+    a = ""
+    kolejZmiana = False
     while program:
         ekran.fill(TLO)
         for event in pygame.event.get():
@@ -288,70 +298,214 @@ def makao():
                 for karta in twoje_karty:
                     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                         if stos_dobieranie[0].prostokat.collidepoint(pygame.mouse.get_pos()) and ruchyT and not pA:
-                            twoje_karty.append(stos_dobieranie[0])
-                            stos_dobieranie.pop(0)
+                            if pobieranieTY:
+                                for i in range(pobieranie23):
+                                    twoje_karty.append(stos_dobieranie[0])
+                                    stos_dobieranie.pop(0)
+                                    if i == 0 and (twoje_karty[-1].wartosc == "2" or twoje_karty[-1].wartosc == "3"):
+                                        time.sleep(0.1)
+                                        while a == "":
+                                            if stos_dobieranie[0].prostokat.collidepoint(pygame.mouse.get_pos()):
+                                                a = "dobieranie"
+                                            if twoje_karty[-1].prostokat.collidepoint(pygame.mouse.get_pos()):
+                                                a = "podajdalej"
+                                        if a == "podajdalej":
+                                            if twoje_karty[-1].wartosc == "2":
+                                                pobieranie23 += 2
+                                            else:
+                                                pobieranie23 += 3
+                                            kartaS = twoje_karty[-1].wartosc
+                                            stos_kladzenia.append(twoje_karty[-1])
+                                            twoje_karty.pop(-1)
+                                            pobieranieTY = False
+                                            break
+                                    else:
+                                        x = 0
+                                if x == 0:
+                                    pobieranie23 = 0
+                                    x = 1
+                                a = ""
+                            elif pobieranieTYK:
+                                for i in range(pobieranieK):
+                                    twoje_karty.append(stos_dobieranie[0])
+                                    stos_dobieranie.pop(0)
+                                    if i == 0 and twoje_karty[-1].wartosc == "K" and (twoje_karty[-1].wzor == "H" or twoje_karty[-1].wzor == "P"):
+                                        time.sleep(0.1)
+                                        while a == "":
+                                            if stos_dobieranie[0].prostokat.collidepoint(pygame.mouse.get_pos()):
+                                                a = "dobieranie"
+                                            if twoje_karty[-1].prostokat.collidepoint(pygame.mouse.get_pos()):
+                                                a = "podajdalej"
+                                        if a == "podajdalej":
+                                            if twoje_karty[-1].wzor == "H":
+                                                pobieranieK += 5
+                                                kolejZmiana = False
+                                            else:
+                                                pobieranieK += 5
+                                                kolejZmiana = True
+                                            kartaS = twoje_karty[-1].wartosc
+                                            stos_kladzenia.append(twoje_karty[-1])
+                                            twoje_karty.pop(-1)
+                                            break
+                                    else:
+                                        x = 0
+                                if x == 0:
+                                    pobieranieK = 0
+                                    pobieranieTYK = False
+                                    x = 1
+                            else:
+                                twoje_karty.append(stos_dobieranie[0])
+                                stos_dobieranie.pop(0)
+                                dobrana = twoje_karty[-1]
                             ruchyT = False
-                            dobrana = twoje_karty[-1]
-                            dt = t
+                            t = 0
                         if dobrana != None and not pA:
-                            if dobrana.prostokat.collidepoint(pygame.mouse.get_pos()) and dt != t:
+                            if dobrana.prostokat.collidepoint(pygame.mouse.get_pos()) and  t != 0:
                                 if kolorA == "":
-                                    if dobrana.wzor == stos_kladzenia[-1].wzor or dobrana.wartosc == stos_kladzenia[-1].wartosc:
+                                    if dobrana.wzor == stos_kladzenia[-1].wzor or dobrana.wartosc == stos_kladzenia[-1].wartosc or stos_kladzenia[-1].wartosc == "Q" or dobrana.wartosc == "Q":
                                         if dobrana.wartosc == "A":
                                             pA = True
+                                        elif dobrana.wartosc == "2":
+                                            pobieranie23 += 2
+                                            pobieranieTY = False
+                                        elif dobrana.wartosc == "3":
+                                            pobieranie23 += 3
+                                            pobieranieTY = False
+                                        elif dobrana.wartosc == "K" and dobrana.wzor == "H":
+                                            pobieranieK += 5
+                                            kolejZmiana = False
+                                        elif dobrana.wartosc == "K" and dobrana.wzor == "P":
+                                            pobieranieK += 5
+                                            kolejZmiana = True
                                         stos_kladzenia.append(twoje_karty[-1])
                                         twoje_karty.pop(-1)
                                         kartaS = stos_kladzenia[-1].wartosc
+                                        kartaQ = stos_kladzenia[-1].wzor
                                         dobrana = None
                                 else:
-                                    if dobrana.wzor == kolorA or dobrana.wartosc == stos_kladzenia[-1].wartosc:
+                                    if dobrana.wzor == kolorA or dobrana.wartosc == stos_kladzenia[-1].wartosc or dobrana.wartosc == "Q":
                                         if dobrana.wartosc == "A":
                                             pA = True
                                         else:
                                             kolorA = ""
+                                        if dobrana.wartosc == "2":
+                                            pobieranie23 += 2
+                                            pobieranieTY = False
+                                        elif dobrana.wartosc == "3":
+                                            pobieranie23 += 3
+                                            pobieranieTY = False
+                                        elif dobrana.wartosc == "K" and dobrana.wzor == "H":
+                                            pobieranieK += 5
+                                            kolejZmiana = False
+                                        elif dobrana.wartosc == "K" and dobrana.wzor == "P":
+                                            pobieranieK += 5
+                                            kolejZmiana = True
                                         stos_kladzenia.append(twoje_karty[-1])
                                         twoje_karty.pop(-1)
                                         kartaS = stos_kladzenia[-1].wartosc
+                                        kartaQ = stos_kladzenia[-1].wzor
                                         dobrana = None
                         if kolorA == "" :
-                            if karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (karta.wzor == stos_kladzenia[-1].wzor or karta.wartosc == stos_kladzenia[-1].wartosc) and not pA:
-                                if ruchyT:
-                                    if karta.wartosc == "A":
-                                        pA = True
-                                    stos_kladzenia.append(karta)
-                                    twoje_karty.remove(karta)
-                                    ruchyT = False
-                                    kartaS = karta.wartosc
-                                elif karta.wartosc == kartaS:
-                                    if karta.wartosc == "A":
-                                        pA = True
-                                    stos_kladzenia.append(karta)
-                                    twoje_karty.remove(karta)
+                            if karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (karta.wzor == stos_kladzenia[-1].wzor or karta.wartosc == stos_kladzenia[-1].wartosc or karta.wartosc == "Q" or stos_kladzenia[-1].wartosc == "Q") and not pA:
+                                if (not pobieranieTY or (karta.wartosc == "2" or karta.wartosc == "3")) and (not pobieranieTYK or (karta.wartosc == "K" and (karta.wzor == "H" or karta.wzor == "P"))):
+                                    if ruchyT:
+                                        if karta.wartosc == "A":
+                                            pA = True
+                                        elif karta.wartosc == "2":
+                                            pobieranie23 += 2
+                                            pobieranieTY = False
+                                        elif karta.wartosc == "3":
+                                            pobieranie23 += 3
+                                            pobieranieTY = False
+                                        elif karta.wartosc == "K" and karta.wzor == "H":
+                                            pobieranieK += 5
+                                            kolejZmiana = False
+                                        elif karta.wartosc == "K" and karta.wzor == "P":
+                                            pobieranieK += 5
+                                            kolejZmiana = True
+                                        stos_kladzenia.append(karta)
+                                        twoje_karty.remove(karta)
+                                        ruchyT = False
+                                        kartaS = karta.wartosc
+                                        kartaQ = karta.wzor
+                                    elif karta.wartosc == kartaS:
+                                        if not (kartaS == "K" and (kartaQ == "H" or kartaQ == "P") and (kartaQ == "H" or kartaQ == "P")):
+                                            if karta.wartosc == "A":
+                                                pA = True
+                                            elif karta.wartosc == "2":
+                                                pobieranie23 += 2
+                                                pobieranieTY = False
+                                            elif karta.wartosc == "3":
+                                                pobieranie23 += 3
+                                                pobieranieTY = False
+                                            elif karta.wartosc == "K" and karta.wzor == "H":
+                                                pobieranieK += 5
+                                                kolejZmiana = False
+                                            elif karta.wartosc == "K" and karta.wzor == "P":
+                                                pobieranieK += 5
+                                                kolejZmiana = True
+                                            stos_kladzenia.append(karta)
+                                            twoje_karty.remove(karta)
                         else:
-                            if karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (karta.wzor == kolorA or karta.wartosc == stos_kladzenia[-1].wartosc) and not pA:
+                            if karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (karta.wzor == kolorA or karta.wartosc == stos_kladzenia[-1].wartosc or karta.wartosc == "Q") and not pA and (not pobieranieTY or (karta.wartosc == "2" or karta.wartosc == "3")) and (not pobieranieTYK or (karta.wartosc == "K" and (karta.wzor == "H" or karta.wzor == "P"))):
                                 if ruchyT:
                                     if karta.wartosc == "A":
                                         pA = True
                                     else:
                                         kolorA = ""
+                                    if karta.wartosc == "2":
+                                        pobieranie23 += 2
+                                        pobieranieTY = False
+                                    if karta.wartosc == "3":
+                                        pobieranie23 += 3
+                                        pobieranieTY = False
+                                    elif karta.wartosc == "K" and karta.wzor == "H":
+                                        pobieranieK += 5
+                                        kolejZmiana = False
+                                    elif karta.wartosc == "K" and karta.wzor == "P":
+                                        pobieranieK += 5
+                                        kolejZmiana = True
                                     stos_kladzenia.append(karta)
                                     twoje_karty.remove(karta)
                                     ruchyT = False
                                     kartaS = karta.wartosc
+                                    kartaQ = karta.wzor
                                 elif karta.wartosc == kartaS:
-                                    if karta.wartosc == "A":
-                                        pA = True
-                                    else:
-                                        kolorA = ""
-                                    stos_kladzenia.append(karta)
-                                    twoje_karty.remove(karta)
+                                    if not (kartaS == "K" and (kartaQ == "H" or kartaQ == "P") and (kartaQ == "H" or kartaQ == "P")):
+                                        if karta.wartosc == "A":
+                                            pA = True
+                                        else:
+                                            kolorA = ""
+                                        if karta.wartosc == "2":
+                                            pobieranie23 += 2
+                                            pobieranieTY = False
+                                        if karta.wartosc == "3":
+                                            pobieranie23 += 3
+                                            pobieranieTY = False
+                                        elif karta.wartosc == "K" and karta.wzor == "H":
+                                            pobieranieK += 5
+                                            kolejZmiana = False
+                                        elif karta.wartosc == "K" and karta.wzor == "P":
+                                            pobieranieK += 5
+                                            kolejZmiana = True
+                                        stos_kladzenia.append(karta)
+                                        twoje_karty.remove(karta)
             for przycisk in przyciski_makao:
                 if przycisk.handleEvent(event):
                     if przycisk == przyciski_makao[0] and kolej == "T" and not pA:
                         if not ruchyT:
-                            kolej = "A"
+                            if kolejZmiana:
+                                kolej = "C"
+                                botC.ruchy = True
+                                kolejZmiana = False
+                            else:
+                                kolej = "A"
+                                botA.ruchy = True
+                            if pobieranie23 != 0:
+                                pobieranieTY = True
+                            if pobieranieK != 0:
+                                pobieranieTYK = True
                             dobrana = None
-                            botA.ruchy = True
                             kartaS = 0
                     elif przycisk == przyciski_makao[1]:
                         gra_ponownie("makao")
@@ -377,62 +531,179 @@ def makao():
                 BOT = botB
             else:
                 BOT = botC
+            koniectury = len(BOT.karty)
             for karta in BOT.karty:
                 if kolorA == "":
-                    if karta.wzor == stos_kladzenia[-1].wzor or karta.wartosc == stos_kladzenia[-1].wartosc:
-                        if BOT.ruchy:
-                            if karta.wartosc == "A":
-                                kolorA = BOT.zmiana_koloru()
-                            stos_kladzenia.append(karta)
-                            BOT.karty.remove(karta)
-                            BOT.ruchy = False
-                            time.sleep(1)
-                            continue
-                        elif karta.wartosc == kartaS:
-                            if karta.wartosc == "A":
-                                kolorA = BOT.zmiana_koloru()
-                            stos_kladzenia.append(karta)
-                            BOT.karty.remove(karta)
-                            time.sleep(1)
-                            continue
+                    if (not pobieranieTY or karta.wartosc == "2" or karta.wartosc == "3") and (not pobieranieTYK or (karta.wartosc == "K" and (karta.wzor == "H" or karta.wzor == "P"))):
+                        if karta.wzor == stos_kladzenia[-1].wzor or karta.wartosc == stos_kladzenia[-1].wartosc or karta.wartosc == "Q" or stos_kladzenia[-1].wartosc == "Q":
+                            if BOT.ruchy:
+                                if karta.wartosc == "A":
+                                    kolorA = BOT.zmiana_koloru()
+                                elif karta.wartosc == "2":
+                                    pobieranieTY = False
+                                    pobieranie23 += 2
+                                elif karta.wartosc == "3":
+                                    pobieranieTY = False
+                                    pobieranie23 += 3
+                                elif karta.wartosc == "K" and karta.wzor == "H":
+                                    pobieranieK += 5
+                                    kolejZmiana = False
+                                elif karta.wartosc == "K" and karta.wzor == "P":
+                                    pobieranieK += 5
+                                    kolejZmiana = True
+                                stos_kladzenia.append(karta)
+                                BOT.karty.remove(karta)
+                                BOT.ruchy = False
+                                kartaS = karta.wartosc
+                                kartaQ = karta.wzor
+                                continue
+                            elif karta.wartosc == kartaS:
+                                if not (kartaS == "K" and (kartaQ == "H" or kartaQ == "P") and (kartaQ == "H" or kartaQ == "P")):
+                                    if karta.wartosc == "A":
+                                        kolorA = BOT.zmiana_koloru()
+                                    elif karta.wartosc == "2":
+                                        pobieranieTY = False
+                                        pobieranie23 += 2
+                                    elif karta.wartosc == "3":
+                                        pobieranieTY = False
+                                        pobieranie23 += 3
+                                    elif karta.wartosc == "K" and karta.wzor == "H":
+                                        pobieranieK += 5
+                                        kolejZmiana = False
+                                    elif karta.wartosc == "K" and karta.wzor == "P":
+                                        pobieranieK += 5
+                                        kolejZmiana = True
+                                    stos_kladzenia.append(karta)
+                                    BOT.karty.remove(karta)
+                                    continue
                 else:
-                    if karta.wzor == kolorA or karta.wartosc == stos_kladzenia[-1].wartosc:
+                    if (karta.wzor == kolorA or karta.wartosc == stos_kladzenia[-1].wartosc or karta.wartosc == "Q") and (not pobieranieTY or karta.wartosc == "2" or karta.wartosc == "3") and (not pobieranieTYK or (karta.wartosc == "K" and (karta.wzor == "H" or karta.wzor == "P"))):
                         if BOT.ruchy:
                             if karta.wartosc == "A":
                                 kolorA = BOT.zmiana_koloru()
                             else:
                                 kolorA = ""
+                            if karta.wartosc == "2":
+                                pobieranieTY = False
+                                pobieranie23 += 2
+                            elif karta.wartosc == "3":
+                                pobieranieTY = False
+                                pobieranie23 += 3
+                            elif karta.wartosc == "K" and karta.wzor == "H":
+                                pobieranieK += 5
+                                kolejZmiana = False
+                            elif karta.wartosc == "K" and karta.wzor == "P":
+                                pobieranieK += 5
+                                kolejZmiana = True
                             stos_kladzenia.append(karta)
                             BOT.karty.remove(karta)
                             BOT.ruchy = False
-                            time.sleep(1)
+                            kartaS = karta.wartosc
+                            kartaQ = karta.wzor
                             continue
                         elif karta.wartosc == kartaS:
-                            if karta.wartosc == "A":
-                                kolorA = BOT.zmiana_koloru()
-                            else:
-                                kolorA = ""
-                            stos_kladzenia.append(karta)
-                            BOT.karty.remove(karta)
-                            time.sleep(1)
-                            continue
+                            if not (kartaS == "K" and (kartaQ == "H" or kartaQ == "P") and (kartaQ == "H" or kartaQ == "P")):
+                                if karta.wartosc == "A":
+                                    kolorA = BOT.zmiana_koloru()
+                                else:
+                                    kolorA = ""
+                                if karta.wartosc == "2":
+                                    pobieranieTY = False
+                                    pobieranie23 += 2
+                                elif karta.wartosc == "3":
+                                    pobieranieTY = False
+                                    pobieranie23 += 3
+                                elif karta.wartosc == "K" and karta.wzor == "H":
+                                    pobieranieK += 5
+                                    kolejZmiana = False
+                                elif karta.wartosc == "K" and karta.wzor == "P":
+                                    pobieranieK += 5
+                                    kolejZmiana = True
+                                stos_kladzenia.append(karta)
+                                BOT.karty.remove(karta)
+                                continue
             if BOT.ruchy:
-                BOT.karty.append(stos_dobieranie[0])
-                stos_dobieranie.pop(0)
-                time.sleep(1)
+                if pobieranieTY:
+                    for i in range(pobieranie23):
+                        BOT.karty.append(stos_dobieranie[0])
+                        stos_dobieranie.pop(0)
+                        if i == 0 and (BOT.karty[-1].wartosc == "2" or BOT.karty[-1].wartosc == "3"):
+                            if BOT.karty[-1].wartosc == "2":
+                                pobieranie23 += 2
+                            else:
+                                pobieranie23 += 3
+                            pobieranieTY = False
+                            stos_kladzenia.append(BOT.karty[-1])
+                            kartaS = BOT.karty[-1].wartosc
+                            kartaQ = BOT.karty[-1].wzor
+                            BOT.karty.pop(-1)
+                            break
+                        else:
+                            x = 0
+                    if x == 0:
+                        pobieranie23 = 0
+                        pobieranieTY = False
+                        x = 1
+                elif pobieranieTYK:
+                    for i in range(pobieranieK):
+                        BOT.karty.append(stos_dobieranie[0])
+                        stos_dobieranie.pop(0)
+                        if i == 0 and (BOT.karty[-1].wartosc == "K" and (BOT.karty[-1].wzor == "H" or BOT.karty[-1].wzor == "P")):
+                            if BOT.karty[-1].wzor == "H":
+                                pobieranieK += 5
+                                kolejZmiana = False
+                            else:
+                                pobieranieK += 5
+                                kolejZmiana = True
+                            pobieranieTY = False
+                            stos_kladzenia.append(BOT.karty[-1])
+                            kartaS = BOT.karty[-1].wartosc
+                            BOT.karty.pop(-1)
+                            break
+                        else:
+                            x = 0
+                    if x == 0:
+                        pobieranieK = 0
+                        pobieranieTYK = False
+                        x = 1
+                else:
+                    BOT.karty.append(stos_dobieranie[0])
+                    stos_dobieranie.pop(0)
+                    kartaS = BOT.karty[-1].wartosc
+                    kartaQ = BOT.karty[-1].wartosc
+                
                 BOT.ruchy = False
-                kartaS = BOT.karty[-1].wartosc
                 continue
             kartaS = 0
-            if kolej == "A":
-                kolej = "B"
-                botB.ruchy = True
-            elif kolej == "B":
-                kolej = "C"
-                botC.ruchy = True
-            elif kolej == "C":
-                kolej = "T"
-                ruchyT= True
+            if koniectury == len(BOT.karty) and not BOT.ruchy:
+                if pobieranie23 != 0:
+                    pobieranieTY = True
+                if pobieranieK != 0:
+                    pobieranieTYK = True
+                if kolejZmiana:
+                    if kolej == "A":
+                        kolej = "T"
+                        ruchyT = True
+                        kolejZmiana = False
+                    elif kolej == "B":
+                        kolej = "A"
+                        botA.ruchy = True
+                        kolejZmiana = False
+                    elif kolej == "C":
+                        kolej = "B"
+                        botB.ruchy = True
+                        kolejZmiana = False
+                else:
+                    if kolej == "A":
+                        kolej = "B"
+                        botB.ruchy = True
+                    elif kolej == "B":
+                        kolej = "C"
+                        botC.ruchy = True
+                    elif kolej == "C":
+                        kolej = "T"
+                        ruchyT= True
+            koniectury = 0
         if len(stos_dobieranie) > 0:
             stos_dobieranie[0].zakrycie()
             stos_dobieranie[0].rysuj(ekran, 540, 270)
@@ -453,6 +724,18 @@ def makao():
             Tekst_Kolor.draw()
         else:
             Tekst_Kolor.hide()
+        if pobieranie23 != 0:
+            Tekst_Dobieranie = pygwidgets.DisplayText(ekran, (250, 10), " Karty do dobrania (2, 3): " + str(pobieranie23), fontSize = 20)
+            Tekst_Dobieranie.show()
+            Tekst_Dobieranie.draw()
+        else:
+            Tekst_Dobieranie.hide()
+        if pobieranieK != 0:
+            Tekst_DobieranieK = pygwidgets.DisplayText(ekran, (450, 10), " Karty do dobrania (K): " + str(pobieranieK), fontSize = 20)
+            Tekst_DobieranieK.show()
+            Tekst_DobieranieK.draw()
+        else:
+            Tekst_DobieranieK.hide()
         for przycisk in przyciski_A:
             if pA:
                 przycisk.show()
@@ -487,7 +770,10 @@ def makao():
         stos_kladzenia[-1].obrocenie()
         stos_kladzenia[-1].rysuj(ekran, 480, 270)
         pygame.display.update()
-        t  = 100 - t
+        if kolej != "T":
+            time.sleep(2)
+        if t == 0:
+            t = 1
         clock.tick(KLATKI_NA_SEKUNDE)
 
 def oczko():
