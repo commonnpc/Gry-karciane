@@ -196,6 +196,7 @@ class MakaoBot():
         self.ABC = ABC
         self.karty = []
         self.ruchy = True
+        self.blok = 0
 
     def zmiana_koloru(self):
         self.kiery = 0
@@ -221,14 +222,21 @@ class MakaoBot():
                 return "P"
     
 def makao():
+    suma_blokad = 0
+    twoje_bloki = 0
     kartaS = 0
     t = 1
     pA = False
     dobrana = None
     global stan, program, kolej
-    Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 20), " Wybrany kolor: #", fontSize = 20)
-    Tekst_Dobieranie = pygwidgets.DisplayText(ekran, (100, 20), " Karty do dobrania (2, 3): #", fontSize = 20)
-    Tekst_DobieranieK = pygwidgets.DisplayText(ekran, (100, 20), " Karty do dobrania (K): #", fontSize = 20)
+    Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 20), "Wybrany kolor: #", fontSize = 20)
+    Tekst_Dobieranie = pygwidgets.DisplayText(ekran, (100, 20), "Karty do dobrania (2, 3): #", fontSize = 20)
+    Tekst_DobieranieK = pygwidgets.DisplayText(ekran, (100, 20), "Karty do dobrania (K): #", fontSize = 20)
+    Tekst_BlokA = pygwidgets.DisplayText(ekran, (100, 20), "Gracz po lewej jest zablokowany na # tur", fontSize = 20)
+    Tekst_BlokB = pygwidgets.DisplayText(ekran, (100, 20), "Gracz na górze jest zablokowany na # tur", fontSize = 20)
+    Tekst_BlokC = pygwidgets.DisplayText(ekran, (100, 20), "Gracz po prawej jest zablokowany na # tur", fontSize = 20)
+    Tekst_BlokT = pygwidgets.DisplayText(ekran, (100, 20), "Jestes zablokowany na # tur", fontSize = 20)
+    Tekst_Blokada = pygwidgets.DisplayText(ekran, (100, 20), "Blok: #", fontSize = 20)
     przycisk_koniec_tury = pygwidgets.TextButton(ekran, (50, 250), "Zakończ turę",
                                                 fontSize = 30, width = 200, height = 100, 
                                                 upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
@@ -279,6 +287,7 @@ def makao():
     program = True
     ruchyT = True
     kolej = "T"
+    cel_blokad = ""
     koniectury = 0
     kolorA = ""
     pobieranieTY = False
@@ -297,7 +306,7 @@ def makao():
             if kolej == "T":
                 for karta in twoje_karty:
                     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                        if stos_dobieranie[0].prostokat.collidepoint(pygame.mouse.get_pos()) and ruchyT and not pA:
+                        if stos_dobieranie[0].prostokat.collidepoint(pygame.mouse.get_pos()) and ruchyT and not pA and (suma_blokad == 0 or cel_blokad != "T") and twoje_bloki == 0:
                             if pobieranieTY:
                                 for i in range(pobieranie23):
                                     twoje_karty.append(stos_dobieranie[0])
@@ -359,7 +368,7 @@ def makao():
                                 dobrana = twoje_karty[-1]
                             ruchyT = False
                             t = 0
-                        if dobrana != None and not pA:
+                        if dobrana != None and not pA and (dobrana.wartosc == "4" or (suma_blokad == 0 or not cel_blokad == "T")) and twoje_bloki == 0:
                             if dobrana.prostokat.collidepoint(pygame.mouse.get_pos()) and  t != 0:
                                 if kolorA == "":
                                     if dobrana.wzor == stos_kladzenia[-1].wzor or dobrana.wartosc == stos_kladzenia[-1].wartosc or stos_kladzenia[-1].wartosc == "Q" or dobrana.wartosc == "Q":
@@ -377,6 +386,13 @@ def makao():
                                         elif dobrana.wartosc == "K" and dobrana.wzor == "P":
                                             pobieranieK += 5
                                             kolejZmiana = True
+                                        elif dobrana.wartosc == "4":
+                                            if botA.blok == 0:
+                                                suma_blokad += 1
+                                                cel_blokad = "A"
+                                            else:
+                                                suma_blokad += 1
+                                                cel_blokad = "B"
                                         stos_kladzenia.append(twoje_karty[-1])
                                         twoje_karty.pop(-1)
                                         kartaS = stos_kladzenia[-1].wartosc
@@ -400,6 +416,13 @@ def makao():
                                         elif dobrana.wartosc == "K" and dobrana.wzor == "P":
                                             pobieranieK += 5
                                             kolejZmiana = True
+                                        elif dobrana.wartosc == "4":
+                                            if botA.blok == 0:
+                                                suma_blokad += 1
+                                                cel_blokad = "A"
+                                            else:
+                                                suma_blokad += 1
+                                                cel_blokad = "B"
                                         stos_kladzenia.append(twoje_karty[-1])
                                         twoje_karty.pop(-1)
                                         kartaS = stos_kladzenia[-1].wartosc
@@ -407,7 +430,7 @@ def makao():
                                         dobrana = None
                         if kolorA == "" :
                             if karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (karta.wzor == stos_kladzenia[-1].wzor or karta.wartosc == stos_kladzenia[-1].wartosc or karta.wartosc == "Q" or stos_kladzenia[-1].wartosc == "Q") and not pA:
-                                if (not pobieranieTY or (karta.wartosc == "2" or karta.wartosc == "3")) and (not pobieranieTYK or (karta.wartosc == "K" and (karta.wzor == "H" or karta.wzor == "P"))):
+                                if (not pobieranieTY or (karta.wartosc == "2" or karta.wartosc == "3")) and (not pobieranieTYK or (karta.wartosc == "K" and (karta.wzor == "H" or karta.wzor == "P"))) and (karta.wartosc == "4" or (suma_blokad == 0 or not cel_blokad == "T")) and twoje_bloki == 0:
                                     if ruchyT:
                                         if karta.wartosc == "A":
                                             pA = True
@@ -423,6 +446,13 @@ def makao():
                                         elif karta.wartosc == "K" and karta.wzor == "P":
                                             pobieranieK += 5
                                             kolejZmiana = True
+                                        elif karta.wartosc == "4":
+                                            if botA.blok == 0:
+                                                suma_blokad += 1
+                                                cel_blokad = "A"
+                                            else:
+                                                suma_blokad += 1
+                                                cel_blokad = "B"
                                         stos_kladzenia.append(karta)
                                         twoje_karty.remove(karta)
                                         ruchyT = False
@@ -444,10 +474,17 @@ def makao():
                                             elif karta.wartosc == "K" and karta.wzor == "P":
                                                 pobieranieK += 5
                                                 kolejZmiana = True
+                                            elif karta.wartosc == "4":
+                                                if botA.blok == 0:
+                                                    suma_blokad += 1
+                                                    cel_blokad = "A"
+                                                else:
+                                                    suma_blokad += 1
+                                                    cel_blokad = "B"
                                             stos_kladzenia.append(karta)
                                             twoje_karty.remove(karta)
                         else:
-                            if karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (karta.wzor == kolorA or karta.wartosc == stos_kladzenia[-1].wartosc or karta.wartosc == "Q") and not pA and (not pobieranieTY or (karta.wartosc == "2" or karta.wartosc == "3")) and (not pobieranieTYK or (karta.wartosc == "K" and (karta.wzor == "H" or karta.wzor == "P"))):
+                            if karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (karta.wzor == kolorA or karta.wartosc == stos_kladzenia[-1].wartosc or karta.wartosc == "Q") and not pA and (not pobieranieTY or (karta.wartosc == "2" or karta.wartosc == "3")) and (not pobieranieTYK or (karta.wartosc == "K" and (karta.wzor == "H" or karta.wzor == "P"))) and (karta.wartosc == "4" or (suma_blokad == 0 or not cel_blokad == "T")) and twoje_bloki == 0:
                                 if ruchyT:
                                     if karta.wartosc == "A":
                                         pA = True
@@ -465,6 +502,13 @@ def makao():
                                     elif karta.wartosc == "K" and karta.wzor == "P":
                                         pobieranieK += 5
                                         kolejZmiana = True
+                                    elif karta.wartosc == "4":
+                                        if botA.blok == 0:
+                                            suma_blokad += 1
+                                            cel_blokad = "A"
+                                        else:
+                                            suma_blokad += 1
+                                            cel_blokad = "B"
                                     stos_kladzenia.append(karta)
                                     twoje_karty.remove(karta)
                                     ruchyT = False
@@ -488,12 +532,22 @@ def makao():
                                         elif karta.wartosc == "K" and karta.wzor == "P":
                                             pobieranieK += 5
                                             kolejZmiana = True
+                                        elif karta.wartosc == "4":
+                                            if botA.blok == 0:
+                                                suma_blokad += 1
+                                                cel_blokad = "A"
+                                            else:
+                                                suma_blokad += 1
+                                                cel_blokad = "B"
                                         stos_kladzenia.append(karta)
                                         twoje_karty.remove(karta)
             for przycisk in przyciski_makao:
                 if przycisk.handleEvent(event):
                     if przycisk == przyciski_makao[0] and kolej == "T" and not pA:
-                        if not ruchyT:
+                        if not ruchyT or twoje_bloki != 0 or (suma_blokad != 0 and cel_blokad == "T"):
+                            if suma_blokad != 0 and cel_blokad == "T":
+                                twoje_bloki == suma_blokad
+                                suma_blokad = 0
                             if kolejZmiana:
                                 kolej = "C"
                                 botC.ruchy = True
@@ -507,6 +561,8 @@ def makao():
                                 pobieranieTYK = True
                             dobrana = None
                             kartaS = 0
+                            if twoje_bloki != 0:
+                                twoje_bloki -= 1
                     elif przycisk == przyciski_makao[1]:
                         gra_ponownie("makao")
                     elif przycisk == przyciski_makao[2]:
@@ -534,7 +590,7 @@ def makao():
             koniectury = len(BOT.karty)
             for karta in BOT.karty:
                 if kolorA == "":
-                    if (not pobieranieTY or karta.wartosc == "2" or karta.wartosc == "3") and (not pobieranieTYK or (karta.wartosc == "K" and (karta.wzor == "H" or karta.wzor == "P"))):
+                    if (not pobieranieTY or karta.wartosc == "2" or karta.wartosc == "3") and (not pobieranieTYK or (karta.wartosc == "K" and (karta.wzor == "H" or karta.wzor == "P"))) and (karta.wartosc == "4" or (suma_blokad == 0 or not cel_blokad == BOT.ABC)) and BOT.blok == 0:
                         if karta.wzor == stos_kladzenia[-1].wzor or karta.wartosc == stos_kladzenia[-1].wartosc or karta.wartosc == "Q" or stos_kladzenia[-1].wartosc == "Q":
                             if BOT.ruchy:
                                 if karta.wartosc == "A":
@@ -551,6 +607,23 @@ def makao():
                                 elif karta.wartosc == "K" and karta.wzor == "P":
                                     pobieranieK += 5
                                     kolejZmiana = True
+                                elif karta.wartosc == "4":
+                                    suma_blokad += 1
+                                    if BOT.ABC == "A":
+                                        if botB.blok == 0:
+                                            cel_blokad = "B"
+                                        else:
+                                            cel_blokad = "C"
+                                    elif BOT.ABC == "B":
+                                        if botC.blok == 0:
+                                            cel_blokad = "C"
+                                        else:
+                                            cel_blokad = "T"
+                                    elif BOT.ABC == "C":
+                                        if twoje_bloki == 0:
+                                            cel_blokad = "T"
+                                        else:
+                                            cel_blokad = "C"
                                 stos_kladzenia.append(karta)
                                 BOT.karty.remove(karta)
                                 BOT.ruchy = False
@@ -558,7 +631,7 @@ def makao():
                                 kartaQ = karta.wzor
                                 continue
                             elif karta.wartosc == kartaS:
-                                if not (kartaS == "K" and (kartaQ == "H" or kartaQ == "P") and (kartaQ == "H" or kartaQ == "P")):
+                                if not ((kartaS == "K" and (kartaQ == "H" or kartaQ == "P") and (kartaQ == "H" or kartaQ == "P"))):
                                     if karta.wartosc == "A":
                                         kolorA = BOT.zmiana_koloru()
                                     elif karta.wartosc == "2":
@@ -573,11 +646,28 @@ def makao():
                                     elif karta.wartosc == "K" and karta.wzor == "P":
                                         pobieranieK += 5
                                         kolejZmiana = True
+                                    elif karta.wartosc == "4":
+                                        suma_blokad += 1
+                                        if BOT.ABC == "A":
+                                            if botB.blok == 0:
+                                                cel_blokad = "B"
+                                            else:
+                                                cel_blokad = "C"
+                                        elif BOT.ABC == "B":
+                                            if botC.blok == 0:
+                                                cel_blokad = "C"
+                                            else:
+                                                cel_blokad = "T"
+                                        elif BOT.ABC == "C":
+                                            if twoje_bloki == 0:
+                                                cel_blokad = "T"
+                                            else:
+                                                cel_blokad = "A"
                                     stos_kladzenia.append(karta)
                                     BOT.karty.remove(karta)
                                     continue
                 else:
-                    if (karta.wzor == kolorA or karta.wartosc == stos_kladzenia[-1].wartosc or karta.wartosc == "Q") and (not pobieranieTY or karta.wartosc == "2" or karta.wartosc == "3") and (not pobieranieTYK or (karta.wartosc == "K" and (karta.wzor == "H" or karta.wzor == "P"))):
+                    if (karta.wzor == kolorA or karta.wartosc == stos_kladzenia[-1].wartosc or karta.wartosc == "Q") and (not pobieranieTY or karta.wartosc == "2" or karta.wartosc == "3") and (not pobieranieTYK or (karta.wartosc == "K" and (karta.wzor == "H" or karta.wzor == "P"))) and (karta.wartosc == "4" or (suma_blokad == 0 or not cel_blokad == BOT.ABC)) and BOT.blok == 0:
                         if BOT.ruchy:
                             if karta.wartosc == "A":
                                 kolorA = BOT.zmiana_koloru()
@@ -595,6 +685,24 @@ def makao():
                             elif karta.wartosc == "K" and karta.wzor == "P":
                                 pobieranieK += 5
                                 kolejZmiana = True
+                            elif karta.wartosc == "4":
+                                suma_blokad += 1
+                                suma_blokad += 1
+                                if BOT.ABC == "A":
+                                    if botB.blok == 0:
+                                        cel_blokad = "B"
+                                    else:
+                                        cel_blokad = "C"
+                                elif BOT.ABC == "B":
+                                    if botC.blok == 0:
+                                        cel_blokad = "C"
+                                    else:
+                                        cel_blokad = "T"
+                                elif BOT.ABC == "C":
+                                    if twoje_bloki == 0:
+                                        cel_blokad = "T"
+                                    else:
+                                        cel_blokad = "C"
                             stos_kladzenia.append(karta)
                             BOT.karty.remove(karta)
                             BOT.ruchy = False
@@ -619,61 +727,86 @@ def makao():
                                 elif karta.wartosc == "K" and karta.wzor == "P":
                                     pobieranieK += 5
                                     kolejZmiana = True
+                                elif karta.wartosc == "4":
+                                    suma_blokad += 1
+                                    if BOT.ABC == "A":
+                                        if botB.blok == 0:
+                                            cel_blokad = "B"
+                                        else:
+                                            cel_blokad = "C"
+                                    elif BOT.ABC == "B":
+                                        if botC.blok == 0:
+                                            cel_blokad = "C"
+                                        else:
+                                            cel_blokad = "T"
+                                    elif BOT.ABC == "C":
+                                        if twoje_bloki == 0:
+                                            cel_blokad = "T"
+                                        else:
+                                            cel_blokad = "C"
                                 stos_kladzenia.append(karta)
                                 BOT.karty.remove(karta)
                                 continue
             if BOT.ruchy:
-                if pobieranieTY:
-                    for i in range(pobieranie23):
+                if (suma_blokad == 0 or not cel_blokad == BOT.ABC) and BOT.blok == 0:
+                    if pobieranieTY:
+                        for i in range(pobieranie23):
+                            BOT.karty.append(stos_dobieranie[0])
+                            stos_dobieranie.pop(0)
+                            if i == 0 and (BOT.karty[-1].wartosc == "2" or BOT.karty[-1].wartosc == "3"):
+                                if BOT.karty[-1].wartosc == "2":
+                                    pobieranie23 += 2
+                                else:
+                                    pobieranie23 += 3
+                                pobieranieTY = False
+                                stos_kladzenia.append(BOT.karty[-1])
+                                kartaS = BOT.karty[-1].wartosc
+                                kartaQ = BOT.karty[-1].wzor
+                                BOT.karty.pop(-1)
+                                break
+                            else:
+                                x = 0
+                        if x == 0:
+                            pobieranie23 = 0
+                            pobieranieTY = False
+                            x = 1
+                    elif pobieranieTYK:
+                        for i in range(pobieranieK):
+                            BOT.karty.append(stos_dobieranie[0])
+                            stos_dobieranie.pop(0)
+                            if i == 0 and (BOT.karty[-1].wartosc == "K" and (BOT.karty[-1].wzor == "H" or BOT.karty[-1].wzor == "P")):
+                                if BOT.karty[-1].wzor == "H":
+                                    pobieranieK += 5
+                                    kolejZmiana = False
+                                else:
+                                    pobieranieK += 5
+                                    kolejZmiana = True
+                                pobieranieTY = False
+                                stos_kladzenia.append(BOT.karty[-1])
+                                kartaS = BOT.karty[-1].wartosc
+                                BOT.karty.pop(-1)
+                                break
+                            else:
+                                x = 0
+                        if x == 0:
+                            pobieranieK = 0
+                            pobieranieTYK = False
+                            x = 1
+                    else:
                         BOT.karty.append(stos_dobieranie[0])
                         stos_dobieranie.pop(0)
-                        if i == 0 and (BOT.karty[-1].wartosc == "2" or BOT.karty[-1].wartosc == "3"):
-                            if BOT.karty[-1].wartosc == "2":
-                                pobieranie23 += 2
-                            else:
-                                pobieranie23 += 3
-                            pobieranieTY = False
-                            stos_kladzenia.append(BOT.karty[-1])
-                            kartaS = BOT.karty[-1].wartosc
-                            kartaQ = BOT.karty[-1].wzor
-                            BOT.karty.pop(-1)
-                            break
-                        else:
-                            x = 0
-                    if x == 0:
-                        pobieranie23 = 0
-                        pobieranieTY = False
-                        x = 1
-                elif pobieranieTYK:
-                    for i in range(pobieranieK):
-                        BOT.karty.append(stos_dobieranie[0])
-                        stos_dobieranie.pop(0)
-                        if i == 0 and (BOT.karty[-1].wartosc == "K" and (BOT.karty[-1].wzor == "H" or BOT.karty[-1].wzor == "P")):
-                            if BOT.karty[-1].wzor == "H":
-                                pobieranieK += 5
-                                kolejZmiana = False
-                            else:
-                                pobieranieK += 5
-                                kolejZmiana = True
-                            pobieranieTY = False
-                            stos_kladzenia.append(BOT.karty[-1])
-                            kartaS = BOT.karty[-1].wartosc
-                            BOT.karty.pop(-1)
-                            break
-                        else:
-                            x = 0
-                    if x == 0:
-                        pobieranieK = 0
-                        pobieranieTYK = False
-                        x = 1
+                        kartaS = BOT.karty[-1].wartosc
+                        kartaQ = BOT.karty[-1].wartosc
+                    
+                    BOT.ruchy = False
+                    continue
                 else:
-                    BOT.karty.append(stos_dobieranie[0])
-                    stos_dobieranie.pop(0)
-                    kartaS = BOT.karty[-1].wartosc
-                    kartaQ = BOT.karty[-1].wartosc
-                
-                BOT.ruchy = False
-                continue
+                    if suma_blokad != 0:
+                        BOT.blok = suma_blokad
+                        suma_blokad = 0
+                    BOT.blok -= 1
+                    BOT.ruchy = False
+                    continue
             kartaS = 0
             if koniectury == len(BOT.karty) and not BOT.ruchy:
                 if pobieranie23 != 0:
@@ -713,29 +846,59 @@ def makao():
             stos_dobieranie.pop(-1)
         if kolorA != "":
             if kolorA == "H":
-                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), " Wybrany kolor: KIER", fontSize = 20)
+                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: KIER", fontSize = 20)
             elif kolorA == "D":
-                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), " Wybrany kolor: KARO", fontSize = 20)
+                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: KARO", fontSize = 20)
             elif kolorA == "C":
-                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), " Wybrany kolor: TREFLE", fontSize = 20)
+                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: TREFLE", fontSize = 20)
             elif kolorA == "P":
-                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), " Wybrany kolor: PIKI", fontSize = 20)
+                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: PIKI", fontSize = 20)
             Tekst_Kolor.show()
             Tekst_Kolor.draw()
         else:
             Tekst_Kolor.hide()
         if pobieranie23 != 0:
-            Tekst_Dobieranie = pygwidgets.DisplayText(ekran, (250, 10), " Karty do dobrania (2, 3): " + str(pobieranie23), fontSize = 20)
+            Tekst_Dobieranie = pygwidgets.DisplayText(ekran, (50, 10), "Karty do dobrania (2, 3): " + str(pobieranie23), fontSize = 20)
             Tekst_Dobieranie.show()
             Tekst_Dobieranie.draw()
         else:
             Tekst_Dobieranie.hide()
         if pobieranieK != 0:
-            Tekst_DobieranieK = pygwidgets.DisplayText(ekran, (450, 10), " Karty do dobrania (K): " + str(pobieranieK), fontSize = 20)
+            Tekst_DobieranieK = pygwidgets.DisplayText(ekran, (50, 10), "Karty do dobrania (K): " + str(pobieranieK), fontSize = 20)
             Tekst_DobieranieK.show()
             Tekst_DobieranieK.draw()
         else:
             Tekst_DobieranieK.hide()
+        if suma_blokad != 0:
+            Tekst_Blokada = pygwidgets.DisplayText(ekran, (50, 10), "Bloki: " + str(suma_blokad), fontSize = 20)
+            Tekst_Blokada.show()
+            Tekst_Blokada.draw()
+        else:
+            Tekst_Blokada.hide()
+        if twoje_bloki != 0:
+            Tekst_BlokT = pygwidgets.DisplayText(ekran, (150, 10), "Jesteś zablokowany na " + str(twoje_bloki) + " tur", fontSize = 20)
+            Tekst_BlokT.show()
+            Tekst_BlokT.draw()
+        else:
+            Tekst_BlokT.hide()
+        if botA.blok != 0:
+            Tekst_BlokA = pygwidgets.DisplayText(ekran, (350, 10), "Gracz po lewej jest zablokowany na " + str(botA.blok) + " tur", fontSize = 20)
+            Tekst_BlokA.show()
+            Tekst_BlokA.draw()
+        else:
+            Tekst_BlokA.hide()
+        if botB.blok != 0:
+            Tekst_BlokB = pygwidgets.DisplayText(ekran, (550, 10), "Gracz na górze jest zablokowany na " + str(botB.blok) + " tur", fontSize = 20)
+            Tekst_BlokB.show()
+            Tekst_BlokB.draw()
+        else:
+            Tekst_BlokB.hide()
+        if botC.blok != 0:
+            Tekst_BlokC = pygwidgets.DisplayText(ekran, (550, 40), "Gracz po prawej jest zablokowany na " + str(botC.blok) + " tur", fontSize = 20)
+            Tekst_BlokC.show()
+            Tekst_BlokC.draw()
+        else:
+            Tekst_BlokC.hide()
         for przycisk in przyciski_A:
             if pA:
                 przycisk.show()
