@@ -104,6 +104,10 @@ Tekst_ZasadyOczko1 = pygwidgets.DisplayText(ekran, (50, 80), "Aby pobrać kartę
 Tekst_ZasadyOczko2 = pygwidgets.DisplayText(ekran, (50, 110), "przycisk myszy. Twoja tura kończy się automatycznie jezeli przebijesz 21 punktów.", fontSize = 25, width = 700, height = 400)
 Tekst_ZasadyOczko3 = pygwidgets.DisplayText(ekran, (50, 140), "Dla sprawiedliwości bot nie zna twoich kart i nie wpływają one na jego decyzje.", fontSize = 25, width = 700, height = 400)
 
+Tekst_ZasadyMakao1 = pygwidgets.DisplayText(ekran, (50, 80), "Aby pobrać kartę ze stosu, naciśnij na sos kart odwróconych lewym przyciskiem", fontSize = 25, width = 700, height = 400)
+Tekst_ZasadyMakao2 = pygwidgets.DisplayText(ekran, (50, 110), "myszy, a by położyć kartę na stos naciśnij ją prawym przyciskiem myszy.", fontSize = 25, width = 700, height = 400)
+Tekst_ZasadyMakao3 = pygwidgets.DisplayText(ekran, (50, 140), "By zakończyć turę, naciśnij przycisk Zakończ Turę.", fontSize = 25, width = 700, height = 400)
+
 Tekst_Autorzy1 = pygwidgets.DisplayText(ekran, (50, 80), "Gra - Bartosz Kujawa", fontSize = 25, width = 700, height = 400)
 Tekst_Autorzy2 = pygwidgets.DisplayText(ekran, (50, 110), "Efekty Muzyczne - pakiet 400 Sounds Pack", fontSize = 25, width = 700, height = 400)
 Tekst_Autorzy3 = pygwidgets.DisplayText(ekran, (50, 140), "Muzyka - pakiet Cozy Tunes", fontSize = 25, width = 700, height = 400)
@@ -117,44 +121,32 @@ Przycisk_Zasady_Wroc = pygwidgets.TextButton(ekran, (200, 450), "Wróć",
                                         fontSize = 30, width = 400, height = 100, 
                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
-Przycisk_Zasady_Pasjans = pygwidgets.TextButton(ekran, (150, 100), "Zasady pasjansa", fontSize = 30, 
-                                        width = 200, height = 100, 
+Przycisk_Zasady_Pasjans = pygwidgets.TextButton(ekran, (100, 100), "Zasady pasjansa", fontSize = 30, 
+                                        width = 250, height = 100, 
                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
 Przycisk_Zasady_Oczko = pygwidgets.TextButton(ekran, (450, 100), "Zasady oczka", fontSize = 30, 
-                                              width = 200, height = 100, 
+                                              width = 250, height = 100, 
                                             upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+
+Przycisk_Zasady_Makao = pygwidgets.TextButton(ekran, (100, 250), "Zasady makao", fontSize = 30, 
+                                              width = 250, height = 100, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+
+
 
 Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 30, width = 400, height = 100)
 Tekst_Makao_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 30, width = 500, height = 100)
 
-przyciski_autorzy = []
-przyciski_koniec_ponownie = []
-przyciski_gry = []
-przyciski_menu = []
-przyciski_opcje = []
-przyciski_zasady = []
+przyciski_autorzy = [Przycisk_Wroc_Z_Autorow]
+przyciski_koniec_ponownie = [Przycisk_Zagraj_Ponownie, Przycisk_Wroc_Do_Menu_Z_Grami]
+przyciski = [Przycisk_Od_Nowa_Gra, Przycisk_Wroc_Gra]
+przyciski_gry = [Przycisk_Wroc_Z_Menu_Gier, Przycisk_Pasjans, Przycisk_Oczko, Przycisk_Makao]
+przyciski_menu = [Przycisk_Graj, Przycisk_Opcje, Przycisk_Wyjscie]
+przyciski_opcje = [Przycisk_Zasady, Przycisk_Wroc, Przycisk_Autorzy]
+przyciski_zasady = [Przycisk_Zasady_Wroc, Przycisk_Zasady_Pasjans, Przycisk_Zasady_Oczko, Przycisk_Zasady_Makao]
 pygame.init()
 pygame.display.set_caption("Zbiór gier")
-przyciski_koniec_ponownie.append(Przycisk_Zagraj_Ponownie)
-przyciski_koniec_ponownie.append(Przycisk_Wroc_Do_Menu_Z_Grami)
-przyciski_gry.append(Przycisk_Wroc_Z_Menu_Gier)
-przyciski_gry.append(Przycisk_Pasjans)
-przyciski_gry.append(Przycisk_Oczko)
-przyciski_gry.append(Przycisk_Makao)
-przyciski_menu.append(Przycisk_Graj)
-przyciski_menu.append(Przycisk_Opcje)
-przyciski_menu.append(Przycisk_Wyjscie)
-przyciski_opcje.append(Przycisk_Zasady)
-przyciski_opcje.append(Przycisk_Wroc)
-przyciski_opcje.append(Przycisk_Autorzy)
-przyciski_zasady.append(Przycisk_Zasady_Wroc)
-przyciski_zasady.append(Przycisk_Zasady_Pasjans)
-przyciski_zasady.append(Przycisk_Zasady_Oczko)
-przyciski_autorzy.append(Przycisk_Wroc_Z_Autorow)
-przyciski = []
-przyciski.append(Przycisk_Od_Nowa_Gra)
-przyciski.append(Przycisk_Wroc_Gra)
 
 def koniecoczko(wynik):
     global stan
@@ -1073,7 +1065,7 @@ def oczko():
         pygame.display.update()
 
             
-def rysuj_stos(numerstosu):
+def rysuj_stos(numerstosu, wybrane_karty):
     stos = eval(f'stos{numerstosu}')
     x = -10 + numerstosu * 50
     if len(stos) > 0:
@@ -1081,19 +1073,19 @@ def rysuj_stos(numerstosu):
         for karta in stos:
             karta.rysuj(ekran, x, 50 + (stos.index(karta)-1)*20, stan = stan, WYBRANA = WYBRANA, wybrane_karty = wybrane_karty)
 
-def rysuj_stos_odrzucony():
+def rysuj_stos_odrzucony(stos_odrzucony, wybrane_karty):
     x = 400
     if len(stos_odrzucony) > 0:
         stos_odrzucony[-1].obrocenie()
     for karta in stos_odrzucony:
         karta.rysuj(ekran, x, 50+(stos_odrzucony.index(karta)-1)*3, stan = stan, WYBRANA = WYBRANA, wybrane_karty = wybrane_karty)
  
-def rysuj_stos_odrzucony2():
+def rysuj_stos_odrzucony2(stos_odrzucony2, wybrane_karty):
     x = 450
     for karta in stos_odrzucony2:
         karta.rysuj(ekran, x, 50+(stos_odrzucony2.index(karta)-1)*3, stan = stan, WYBRANA = WYBRANA, wybrane_karty = wybrane_karty)
 
-def rysuj_stos_wzor(stos, x):
+def rysuj_stos_wzor(stos, x, wybrane_karty):
     if len(stos) > 0:
         stos[-1].rysuj(ekran, x, 50, stan = stan, WYBRANA = WYBRANA, wybrane_karty = wybrane_karty)
 
@@ -1131,54 +1123,24 @@ def gra_ponownie(gra):
         makao()
 
 def pasjans():
-    global stan, TLO
-    global stos_kiery, stos_karo, stos_trefle, stos_piki, ekran, stos_odrzucony, stos_odrzucony2, wybrane_karty, stos1, stos2, stos3, stos4, stos5, stos6, stos7
+    global stan, TLO, ekran
     stos_kiery = []
     stos_karo = []
     stos_trefle = []
     stos_piki = []
     random.shuffle(KARTY)
-    stos1 = []
-    stos1.append(KARTY[0])
-    stos2 = []
-    stos2.append(KARTY[1])
-    stos2.append(KARTY[2])
-    stos3 = []
-    stos3.append(KARTY[3])
-    stos3.append(KARTY[4]) 
-    stos3.append(KARTY[5])
-    stos4 = []
-    stos4.append(KARTY[6])
-    stos4.append(KARTY[7])
-    stos4.append(KARTY[8])
-    stos4.append(KARTY[9])
-    stos5 = []
-    stos5.append(KARTY[10])
-    stos5.append(KARTY[11])
-    stos5.append(KARTY[12])
-    stos5.append(KARTY[13])
-    stos5.append(KARTY[14])
-    stos6 = []
-    stos6.append(KARTY[15])
-    stos6.append(KARTY[16])
-    stos6.append(KARTY[17])
-    stos6.append(KARTY[18])
-    stos6.append(KARTY[19])
-    stos6.append(KARTY[20])
-    stos7 = []
-    stos7.append(KARTY[21])
-    stos7.append(KARTY[22])
-    stos7.append(KARTY[23])
-    stos7.append(KARTY[24])
-    stos7.append(KARTY[25])
-    stos7.append(KARTY[26])
-    stos7.append(KARTY[27])
+    stos1 = KARTY[0:1]
+    stos2 = KARTY[1:3]
+    stos3 = KARTY[3:6]
+    stos4 = KARTY[6:10]
+    stos5 = KARTY[10:15]
+    stos6 = KARTY[15:21]
+    stos7 = KARTY[21:28]
     stos_odrzucony = KARTY[28:]
     stos_odrzucony2 = []
     wybrany_stos = []
     wybrane_karty = []
     program = True
-
     pygame.init()
     pygame.display.set_caption("PASJANS")
     while program:
@@ -1200,8 +1162,8 @@ def pasjans():
                 else:
                     kartydzwiek.play()
                     for i in range(len(stos_odrzucony2)):
-                        stos_odrzucony2.append(stos_odrzucony[0])
-                        stos_odrzucony.pop(0)
+                        stos_odrzucony.append(stos_odrzucony2[0])
+                        stos_odrzucony2.pop(0)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -1278,19 +1240,19 @@ def pasjans():
         for przycisk in przyciski:
             przycisk.show()
             przycisk.draw()
-        rysuj_stos(1)
+        rysuj_stos(1, wybrane_karty)
         rysuj_stos(2)
         rysuj_stos(3)
         rysuj_stos(4)
         rysuj_stos(5)
         rysuj_stos(6)
         rysuj_stos(7)
-        rysuj_stos_odrzucony()
-        rysuj_stos_odrzucony2()
-        rysuj_stos_wzor(stos_kiery, 500)
-        rysuj_stos_wzor(stos_karo, 540)
-        rysuj_stos_wzor(stos_trefle, 580)
-        rysuj_stos_wzor(stos_piki, 620)
+        rysuj_stos_odrzucony(stos_odrzucony, wybrane_karty)
+        rysuj_stos_odrzucony2(stos_odrzucony2, wybrane_karty)
+        rysuj_stos_wzor(stos_kiery, 500, wybrane_karty)
+        rysuj_stos_wzor(stos_karo, 540, wybrane_karty)
+        rysuj_stos_wzor(stos_trefle, 580, wybrane_karty)
+        rysuj_stos_wzor(stos_piki, 620, wybrane_karty)
         pygame.display.update()
         if len(stos_kiery) + len(stos_karo) + len(stos_trefle) + len(stos_piki) == len(KARTY):
             stan = "zagrajznowuwpasjans"
@@ -1356,7 +1318,9 @@ def widzet():
                             stan = "zasadypasjans"
                         elif przycisk == przyciski_zasady[2]:
                             stan = "zasadyoczko"
-            elif stan == "zasadypasjans" or stan == "zasadyoczko":
+                        elif przycisk == przyciski_zasady[3]:
+                            stan = "zasadymakao"
+            elif stan == "zasadypasjans" or stan == "zasadyoczko" or stan == "zasadymakao":
                 if Przycisk_Zasady_Wroc.handleEvent(event):
                     stan = "zasady"
             elif stan == "autorzy":
@@ -1491,8 +1455,24 @@ def widzet():
             Tekst_ZasadyOczko1.hide()
             Tekst_ZasadyOczko2.hide()
             Tekst_ZasadyOczko3.hide()
-        if stan != "zasady" and stan != "zasadypasjans" and stan != "zasadyoczko":
+
+        if stan == "zasadymakao":
+            Przycisk_Zasady_Wroc.show()
+            Przycisk_Zasady_Wroc.draw()
+            Tekst_ZasadyMakao1.show()
+            Tekst_ZasadyMakao1.draw()
+            Tekst_ZasadyMakao2.show()
+            Tekst_ZasadyMakao2.draw()
+            Tekst_ZasadyMakao3.show()
+            Tekst_ZasadyMakao3.draw()
+        else:
+            Tekst_ZasadyMakao1.hide()
+            Tekst_ZasadyMakao2.hide()
+            Tekst_ZasadyMakao3.hide()
+            
+        if stan != "zasady" and stan != "zasadypasjans" and stan != "zasadyoczko" and stan != "zasadymakao":
             Przycisk_Zasady_Wroc.hide()
+
         if stan == "autorzy":
             for przycisk in przyciski_autorzy:
                 przycisk.show()
