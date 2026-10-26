@@ -3,32 +3,8 @@ import pygwidgets
 import pygame
 import sys
 import time
-
-class Karta():
-    def __init__(self, wzor, wartosc, czyzakryta=True):
-        self.wzor = wzor
-        self.wartosc = wartosc
-        self.czyzakryta = czyzakryta
-        self.obrazek = pygame.transform.smoothscale(pygame.image.load(f'karty/{wartosc}-{wzor}.png'), (40, 60))
-        self.tyl = pygame.transform.smoothscale(pygame.image.load(f'karty/BACK.png'), (40, 60))
-        self.prostokat = self.obrazek.get_rect()
-
-    def obrocenie(self):
-        self.czyzakryta = False
-
-    def zakrycie(self):
-        self.czyzakryta = True
-
-    def rysuj(self, ekran, x, y, obrocenie = False):
-        self.prostokat.topleft = (x, y)
-        if obrocenie:
-            ekran.blit(pygame.transform.rotate(self.tyl, 90) if self.czyzakryta else pygame.transform.rotate(self.obrazek, 90), (x, y))
-        else:
-            ekran.blit(self.tyl if self.czyzakryta else self.obrazek, (x, y))
-        if stan == 'pasjans':
-            if len(wybrane_karty) > 0:
-                if wybrane_karty[0] == self:
-                    ekran.blit(WYBRANA, (x, y))
+from MakaoBot import *
+from Karta import *
 
 stan = "menu"
 TLO = (178, 227, 146)
@@ -163,8 +139,8 @@ pygame.display.set_caption("Zbiór gier")
 przyciski_koniec_ponownie.append(Przycisk_Zagraj_Ponownie)
 przyciski_koniec_ponownie.append(Przycisk_Wroc_Do_Menu_Z_Grami)
 przyciski_gry.append(Przycisk_Wroc_Z_Menu_Gier)
-przyciski_gry.append(Przycisk_Oczko)
 przyciski_gry.append(Przycisk_Pasjans)
+przyciski_gry.append(Przycisk_Oczko)
 przyciski_gry.append(Przycisk_Makao)
 przyciski_menu.append(Przycisk_Graj)
 przyciski_menu.append(Przycisk_Opcje)
@@ -191,71 +167,6 @@ def koniecoczko(wynik):
         stan = "przegranaoczko"
     widzet()
 
-class MakaoBot():
-    def __init__(self, ABC):
-        self.ABC = ABC
-        self.karty = []
-        self.ruchy = True
-        self.blok = 0
-
-    def zmiana_koloru(self):
-        self.kiery = 0
-        self.karo = 0
-        self.trefle = 0
-        self.piki = 0
-        for i in range(len(self.karty)):
-            if self.karty[i].wzor == "H":
-                self.kiery += 1
-            elif self.karty[i].wzor == "D":
-                self.karo += 1
-            elif self.karty[i].wzor == "C":
-                self.trefle += 1
-            elif self.karty[i].wzor == "P":
-                self.trefle += 1
-            if self.kiery >= self.karo and self.kiery >= self.trefle and self.kiery >= self.piki:
-                return "H"
-            elif self.karo >= self.trefle and self.karo >= self.piki:
-                return "D"
-            elif self.trefle >= self.piki:
-                return "C"
-            else:
-                return "P"
-
-    def rzadana(self):
-        self.J5 = 0
-        self.J6 = 0
-        self.J7 = 0
-        self.J8 = 0
-        self.J9 = 0
-        self.J10 = 0
-        for i in range(len(self.karty)):
-            if self.karty[i].wartosc == "5":
-                self.J5 += 1
-            elif self.karty[i].wartosc == "6":
-                self.J6 += 1
-            elif self.karty[i].wartosc == "7":
-                self.J7 += 1
-            elif self.karty[i].wartosc == "8":
-                self.J8 += 1
-            elif self.karty[i].wartosc == "9":
-                self.J9 += 1
-            elif self.karty[i].wartosc == "10":
-                self.J10 += 1
-        self.lJ = [self.J5, self.J6, self.J7, self.J8, self.J9, self.J10]
-        self.lJ.sort()
-        if self.lJ[-1] == self.J5:
-            return "5", self.ABC
-        elif self.lJ[-1] == self.J6:
-            return "6", self.ABC
-        elif self.lJ[-1] == self.J7:
-            return "7", self.ABC
-        elif self.lJ[-1] == self.J8:
-            return "8", self.ABC
-        elif self.lJ[-1] == self.J9:
-            return "9", self.ABC
-        elif self.lJ[-1] == self.J10:
-            return "10", self.ABC
-        
 def makao():
     suma_blokad = 0
     twoje_bloki = 0
@@ -321,7 +232,7 @@ def makao():
 
     stos_dobieranie = KARTY.copy()
     random.shuffle(stos_dobieranie)
-    pygame.init
+    pygame.init()
     pygame.display.set_caption("MAKAO")
     twoje_karty = []
     botA = MakaoBot("A")
@@ -1168,23 +1079,23 @@ def rysuj_stos(numerstosu):
     if len(stos) > 0:
         stos[-1].obrocenie()
         for karta in stos:
-            karta.rysuj(ekran, x, 50 + (stos.index(karta)-1)*20)
+            karta.rysuj(ekran, x, 50 + (stos.index(karta)-1)*20, stan = stan, WYBRANA = WYBRANA, wybrane_karty = wybrane_karty)
 
 def rysuj_stos_odrzucony():
     x = 400
     if len(stos_odrzucony) > 0:
         stos_odrzucony[-1].obrocenie()
     for karta in stos_odrzucony:
-        karta.rysuj(ekran, x, 50+(stos_odrzucony.index(karta)-1)*3)
+        karta.rysuj(ekran, x, 50+(stos_odrzucony.index(karta)-1)*3, stan = stan, WYBRANA = WYBRANA, wybrane_karty = wybrane_karty)
  
 def rysuj_stos_odrzucony2():
     x = 450
     for karta in stos_odrzucony2:
-        karta.rysuj(ekran, x, 50+(stos_odrzucony2.index(karta)-1)*3)
+        karta.rysuj(ekran, x, 50+(stos_odrzucony2.index(karta)-1)*3, stan = stan, WYBRANA = WYBRANA, wybrane_karty = wybrane_karty)
 
 def rysuj_stos_wzor(stos, x):
     if len(stos) > 0:
-        stos[-1].rysuj(ekran, x, 50)
+        stos[-1].rysuj(ekran, x, 50, stan = stan, WYBRANA = WYBRANA, wybrane_karty = wybrane_karty)
 
 
 def czy_mozna_przeniesc_na_stos_wzor(karta, stos_wzor):
