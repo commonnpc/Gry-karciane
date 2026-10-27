@@ -5,6 +5,7 @@ import sys
 import time
 from MakaoBot import *
 from Karta import *
+from SercaBot import *
 
 stan = "menu"
 TLO = (178, 227, 146)
@@ -24,6 +25,7 @@ WYBRANA = pygame.transform.smoothscale(pygame.image.load(f'WYBRANA.png'), (40, 6
 KARTY = []
 WZORY = ['H', 'D', 'C', 'P']
 WARTOSCI = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+WARTOSCI_ROSNAC = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 for wzor in WZORY:
     for wartosc in WARTOSCI:
         KARTY.append(Karta(wzor, wartosc))
@@ -52,6 +54,10 @@ Przycisk_Oczko = pygwidgets.TextButton(ekran, (450,100), "Oczko",
                                           upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
 Przycisk_Makao = pygwidgets.TextButton(ekran, (100,250), "Makao",
+                                          fontSize = 30, width = 250, height = 100, 
+                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+
+Przycisk_Serca = pygwidgets.TextButton(ekran, (450,250), "Serca",
                                           fontSize = 30, width = 250, height = 100, 
                                           upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
 
@@ -141,12 +147,203 @@ Tekst_Makao_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 
 przyciski_autorzy = [Przycisk_Wroc_Z_Autorow]
 przyciski_koniec_ponownie = [Przycisk_Zagraj_Ponownie, Przycisk_Wroc_Do_Menu_Z_Grami]
 przyciski = [Przycisk_Od_Nowa_Gra, Przycisk_Wroc_Gra]
-przyciski_gry = [Przycisk_Wroc_Z_Menu_Gier, Przycisk_Pasjans, Przycisk_Oczko, Przycisk_Makao]
+przyciski_gry = [Przycisk_Wroc_Z_Menu_Gier, Przycisk_Pasjans, Przycisk_Oczko, Przycisk_Makao, Przycisk_Serca]
 przyciski_menu = [Przycisk_Graj, Przycisk_Opcje, Przycisk_Wyjscie]
 przyciski_opcje = [Przycisk_Zasady, Przycisk_Wroc, Przycisk_Autorzy]
 przyciski_zasady = [Przycisk_Zasady_Wroc, Przycisk_Zasady_Pasjans, Przycisk_Zasady_Oczko, Przycisk_Zasady_Makao]
 pygame.init()
 pygame.display.set_caption("Zbiór gier")
+
+def serca():
+    botA = SercaBot("A")
+    botB = SercaBot("B")
+    botC = SercaBot("C")
+    boty = [botA, botB, botC]
+    KartySerca = KARTY.copy()
+    random.shuffle(KartySerca)
+    for i in range(13):
+        for bot in boty:
+            bot.karty.append(KartySerca[0])
+            KartySerca.pop(0)
+    twoje_karty = KartySerca.copy()
+    pygame.init()
+    pygame.display.set_caption("SERCA")
+    program = True
+    kiery = False
+    wystawione_karty = {"T" : None, "A" : None, "B" : None, "C" : None}
+    botA.lsymboli()
+    botB.lsymboli()
+    botC.lsymboli()
+    twoje_symbole = {"H" : 0, "D" : 0, "C" : 0, "P" : 0}
+    for karta in twoje_karty:
+        twoje_symbole[karta.wzor] += 1
+    wybrany_kolor = ""
+    wylozone_karty = 0
+    kolejki = ["T", "A", "B", "C"]
+    for karta in twoje_karty:
+        if karta.wzor == "C" and karta.wartosc == "2":
+            kolej = 0
+    for karta in botA.karty:
+        if karta.wzor == "C" and karta.wartosc == "2":
+            kolej = 1
+    for karta in botB.karty:
+        if karta.wzor == "C" and karta.wartosc == "2":
+            kolej = 2
+    for karta in botC.karty:
+        if karta.wzor == "C" and karta.wartosc == "2":
+            kolej = 3
+    while program:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if kolejki[kolej % len(kolejki)] == "T" and wylozone_karty == 0:
+                for karta in twoje_karty:
+                    if twoje_karty.index(karta) != len(twoje_karty) - 1:
+                        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (kiery or karta.wzor != "H") and not twoje_karty[twoje_karty.index(karta)+1].prostokat.collidepoint(pygame.mouse.get_pos()):
+                            wystawione_karty = wystawienie_serca(karta, kolejki[kolej % len(kolejki)], wystawione_karty)
+                            wybrany_kolor = karta.wzor
+                            wylozone_karty = 1
+                            karta_zabierajaca = karta
+                            zabierajacy = "T"
+                            twoje_symbole[wybrany_kolor] -= 1
+                            twoje_karty.remove(karta)
+                    else:
+                        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (kiery or karta.wzor != "H"):
+                            wystawione_karty = wystawienie_serca(karta, kolejki[kolej % len(kolejki)], wystawione_karty)
+                            wybrany_kolor = karta.wzor
+                            wylozone_karty = 1
+                            karta_zabierajaca = karta
+                            zabierajacy = "T"
+                            twoje_symbole[wybrany_kolor] -= 1
+                            twoje_karty.remove(karta)
+            if kolejki[(kolej + wylozone_karty) % len(kolejki)] == "T" and wylozone_karty != 0:
+                for karta in twoje_karty:
+                    if twoje_karty.index(karta) != len(twoje_karty) - 1:
+                        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and karta.prostokat.collidepoint(pygame.mouse.get_pos()) and not twoje_karty[twoje_karty.index(karta)+1].prostokat.collidepoint(pygame.mouse.get_pos()):
+                            if (karta.wzor == wybrany_kolor) or (twoje_symbole[wybrany_kolor] == 0):
+                                if (WARTOSCI_ROSNAC.index(karta_zabierajaca.wartosc) < WARTOSCI_ROSNAC.index(karta.wartosc)) and (karta.wzor == wybrany_kolor):
+                                    karta_zabierajaca = karta
+                                    zabierajacy = "T"
+                                twoje_symbole[karta.wzor] -= 1
+                                wystawione_karty = wystawienie_serca(karta, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)
+                                wylozone_karty += 1
+                                twoje_karty.remove(karta)
+                    else:
+                        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and karta.prostokat.collidepoint(pygame.mouse.get_pos()):
+                            if (karta.wzor == wybrany_kolor) or (twoje_symbole[wybrany_kolor] == 0):
+                                if (karta_zabierajaca.wartosc < karta.wartosc) and (karta.wzor == wybrany_kolor):
+                                    karta_zabierajaca = karta
+                                    zabierajacy = "T"
+                                twoje_symbole[karta.wzor] -= 1
+                                wystawione_karty = wystawienie_serca(karta, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)
+                                twoje_karty.remove(karta)
+                                wylozone_karty += 1
+        if kolejki[kolej % len(kolejki)] != "T" and wylozone_karty == 0:
+            time.sleep(1)
+            if kolejki[kolej % len(kolejki)] == "A":
+                botX = botA
+            elif kolejki[kolej % len(kolejki)] == "B":
+                botX = botB
+            else:
+                botX = botC
+            wartosc_karty_do_wylozenia = "A"
+            for karta in botX.karty:
+                if WARTOSCI_ROSNAC.index(karta.wartosc) <= WARTOSCI_ROSNAC.index(wartosc_karty_do_wylozenia) and (kiery or karta.wzor != "H"):
+                    wybrana_karta = karta
+                    wartosc_karty_do_wylozenia = karta.wartosc
+                    karta_zabierajaca = karta
+                    zabierajacy = kolejki[kolej % len(kolejki)]
+            wystawione_karty = wystawienie_serca(wybrana_karta, kolejki[kolej % len(kolejki)], wystawione_karty)
+            wybrany_kolor = wybrana_karta.wzor
+            wylozone_karty = 1
+            botX.symbole[wybrany_kolor] -= 1
+            botX.karty.remove(wybrana_karta)  
+        if kolejki[(kolej + wylozone_karty) % len(kolejki)] != "T" and wylozone_karty != 0:
+            time.sleep(1)
+            if kolejki[(kolej + wylozone_karty) % len(kolejki)] == "A":
+                botX = botA
+            elif kolejki[(kolej + wylozone_karty) % len(kolejki)] == "B":
+                botX = botB
+            else:
+                botX = botC
+            kartaS = None
+            for karta in botX.karty:
+                if (karta.wzor == wybrany_kolor) and WARTOSCI_ROSNAC.index(karta.wartosc) < WARTOSCI_ROSNAC.index(karta_zabierajaca.wartosc) and (kartaS == None or WARTOSCI_ROSNAC.index(karta.wartosc) > WARTOSCI_ROSNAC.index(kartaS.wartosc)):
+                    kartaS = karta
+            if kartaS != None:
+                botX.symbole[kartaS.wzor] -= 1
+                wystawione_karty = wystawienie_serca(kartaS, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)
+                wylozone_karty += 1
+            else:
+                for karta in botX.karty:
+                    if (karta.wzor == wybrany_kolor) and (kartaS == None or WARTOSCI_ROSNAC.index(karta.wartosc) < WARTOSCI_ROSNAC.index(kartaS.wartosc)):
+                        kartaS = karta
+                if kartaS != None:
+                    wybrana_karta = kartaS
+                    wartosc_karty_do_wylozenia = kartaS.wartosc
+                    karta_zabierajaca = kartaS
+                    zabierajacy = kolejki[(kolej + wylozone_karty) % len(kolejki)]
+                    botX.symbole[kartaS.wzor] -= 1
+                    wystawione_karty = wystawienie_serca(kartaS, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)
+                    wylozone_karty += 1
+                else:
+                    for karta in botX.karty:
+                        if (karta.wzor == wybrany_kolor) and (kartaS == None or WARTOSCI_ROSNAC.index(karta.wartosc) > WARTOSCI_ROSNAC.index(kartaS.wartosc)):
+                            kartaS = karta
+                    if kartaS != None:
+                        botX.symbole[kartaS.wzor] -= 1
+                        wystawione_karty = wystawienie_serca(kartaS, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)
+                        wylozone_karty += 1
+                    else:
+                        for karta in botX.karty:
+                            if kartaS == None or WARTOSCI_ROSNAC.index(karta.wartosc) > WARTOSCI_ROSNAC.index(kartaS.wartosc):
+                                kartaS = karta
+                        botX.symbole[kartaS.wzor] -= 1
+                        wystawione_karty = wystawienie_serca(kartaS, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)  
+                        wylozone_karty += 1
+            botX.karty.remove(kartaS)
+            
+        ekran.fill(TLO)
+        if wystawione_karty.get("T") != None:
+            wystawione_karty.get("T").obrocenie()
+            wystawione_karty.get("T").rysuj(ekran, 510, 420)
+        if wystawione_karty.get("A") != None:
+            wystawione_karty.get("A").obrocenie()
+            wystawione_karty.get("A").rysuj(ekran, 400, 280)
+        if wystawione_karty.get("B") != None:
+            wystawione_karty.get("B").obrocenie()
+            wystawione_karty.get("B").rysuj(ekran, 510, 120)
+        if wystawione_karty.get("C") != None:
+            wystawione_karty.get("C").obrocenie()
+            wystawione_karty.get("C").rysuj(ekran, 620, 280)
+        for karta in twoje_karty:
+            karta.obrocenie()
+            karta.rysuj(ekran, 390 + (0 if len(twoje_karty) <= 1 else 240/(len(twoje_karty)-1)) * twoje_karty.index(karta), 500)
+        for karta in botA.karty:
+            karta.zakrycie()
+            karta.rysuj(ekran, 320, 160 + (0 if len(botA.karty) <= 1 else 240/(len(botA.karty)-1)) * botA.karty.index(karta), obrocenie = True)
+        for karta in botC.karty:
+            karta.zakrycie()
+            karta.rysuj(ekran, 680, 160 + (0 if len(botC.karty) <= 1 else 240/(len(botC.karty)-1)) * botC.karty.index(karta), obrocenie = True)
+        for karta in botB.karty:
+            karta.zakrycie()
+            karta.rysuj(ekran, 390 + (0 if len(botB.karty) <= 1 else 240/(len(botB.karty)-1)) * botB.karty.index(karta), 40)
+        pygame.display.update()
+        clock.tick(KLATKI_NA_SEKUNDE)
+        if wystawione_karty.get("T") != None and wystawione_karty.get("A") != None and wystawione_karty.get("B") != None and wystawione_karty.get("C"):
+            wystawione_karty = {"T" : None, "A" : None, "B" : None, "C" : None}
+            #zabierający zabiera punkty
+            kolej = kolejki.index(zabierajacy)
+            wylozone_karty = 0
+            wybrany_kolor = ""
+            karta_zabierajaca = None
+            zabierajacy = None
+            time.sleep(1)
+
+def wystawienie_serca(karta, kto, wystawione_karty):
+    wystawione_karty[kto] = karta
+    return wystawione_karty
 
 def koniecoczko(wynik):
     global stan
@@ -955,7 +1152,7 @@ def makao():
         stos_kladzenia[-1].rysuj(ekran, 480, 270)
         pygame.display.update()
         if kolej != "T":
-            time.sleep(2)
+            time.sleep(1)
         if t == 0:
             t = 1
         clock.tick(KLATKI_NA_SEKUNDE)
@@ -1288,6 +1485,8 @@ def widzet():
                             oczko()
                         elif przycisk == przyciski_gry[3]:
                             makao()
+                        elif przycisk == przyciski_gry[4]:
+                            serca()
             elif stan == "opcje":
                 for przycisk in przyciski_opcje:
                     if przycisk.handleEvent(event):
