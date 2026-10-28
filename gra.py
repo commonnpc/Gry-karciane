@@ -24,6 +24,7 @@ wygranadzwiek.set_volume(0.7)
 WYBRANA = pygame.transform.smoothscale(pygame.image.load(f'WYBRANA.png'), (40, 60))
 KARTY = []
 WZORY = ['H', 'D', 'C', 'P']
+WZORY2 = ['H', 'C', 'D', 'P']
 WARTOSCI = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
 WARTOSCI_ROSNAC = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 for wzor in WZORY:
@@ -154,7 +155,12 @@ przyciski_zasady = [Przycisk_Zasady_Wroc, Przycisk_Zasady_Pasjans, Przycisk_Zasa
 pygame.init()
 pygame.display.set_caption("Zbiór gier")
 
-def serca():
+def serca(Tpunkty, Apunkty, Bpunkty, Cpunkty):
+    ApunktyNieostateczne = 0
+    TpunktyNieostateczne = 0
+    BpunktyNieostateczne = 0
+    CpunktyNieostateczne = 0
+    global karty_do_otrzymania_mieszaniaT, botA, botB, botC
     botA = SercaBot("A")
     botB = SercaBot("B")
     botC = SercaBot("C")
@@ -166,17 +172,21 @@ def serca():
             bot.karty.append(KartySerca[0])
             KartySerca.pop(0)
     twoje_karty = KartySerca.copy()
+    tkarty = []
+    while len(twoje_karty) != 0:
+        kartaS = None
+        for karta in twoje_karty:
+            if (kartaS == None) or (WZORY2.index(kartaS.wzor) > WZORY2.index(karta.wzor)) or ((kartaS.wzor == karta.wzor) and (WARTOSCI_ROSNAC.index(kartaS.wartosc) > WARTOSCI_ROSNAC.index(karta.wartosc))):
+                kartaS = karta
+        tkarty.append(kartaS)
+        twoje_karty.remove(kartaS)
+    twoje_karty = tkarty.copy()
+    tkarty = []
     pygame.init()
     pygame.display.set_caption("SERCA")
     program = True
     kiery = False
     wystawione_karty = {"T" : None, "A" : None, "B" : None, "C" : None}
-    botA.lsymboli()
-    botB.lsymboli()
-    botC.lsymboli()
-    twoje_symbole = {"H" : 0, "D" : 0, "C" : 0, "P" : 0}
-    for karta in twoje_karty:
-        twoje_symbole[karta.wzor] += 1
     wybrany_kolor = ""
     wylozone_karty = 0
     kolejki = ["T", "A", "B", "C"]
@@ -192,12 +202,63 @@ def serca():
     for karta in botC.karty:
         if karta.wzor == "C" and karta.wartosc == "2":
             kolej = 3
+    mieszanieT = 0
+    karty_do_otrzymania_mieszaniaT = []
+    wymieszano = False
     while program:
+        if len(twoje_karty) == 0 and len(botA.karty) == 0 and len(botB.karty) == 0 and len(botC.karty) == 0:
+            if (Apunkty + ApunktyNieostateczne >= 100) or (Bpunkty + BpunktyNieostateczne >= 100) or (Cpunkty + CpunktyNieostateczne >= 100) or (Tpunkty + TpunktyNieostateczne >= 100):
+                pass #wynik
+            time.sleep(1)
+            if TpunktyNieostateczne == 26:
+                serca(Tpunkty, Apunkty + 26, Bpunkty + 26, Cpunkty + 26)
+            elif ApunktyNieostateczne == 26:
+                serca(Tpunkty + 26, Apunkty, Bpunkty + 26, Cpunkty + 26)
+            elif BpunktyNieostateczne == 26:
+                serca(Tpunkty + 26, Apunkty + 26, Bpunkty, Cpunkty + 26)
+            elif CpunktyNieostateczne == 26:
+                serca(Tpunkty + 26, Apunkty + 26, Bpunkty + 26, Cpunkty)
+            else:
+                serca(Tpunkty + TpunktyNieostateczne, Apunkty + ApunktyNieostateczne, Bpunkty + BpunktyNieostateczne, Cpunkty + CpunktyNieostateczne)
+        if ((mieszanieT + botA.mieszanie + botB.mieszanie + botC.mieszanie) == 12) and not wymieszano:
+            for bot in boty:
+                bot.karty.extend(bot.karty_do_otrzymanaia_mieszania)
+                bot.karty_do_otrzymanaia_mieszania.clear()
+            twoje_karty.extend(karty_do_otrzymania_mieszaniaT)
+            karty_do_otrzymania_mieszaniaT.clear()
+            wymieszano = True
+            botA.lsymboli()
+            botB.lsymboli()
+            botC.lsymboli()
+            twoje_symbole = {"H" : 0, "D" : 0, "C" : 0, "P" : 0}
+            for karta in twoje_karty:
+                twoje_symbole[karta.wzor] += 1
+            while len(twoje_karty) != 0:
+                kartaS = None
+                for karta in twoje_karty:
+                    if (kartaS == None) or (WZORY2.index(kartaS.wzor) > WZORY2.index(karta.wzor)) or ((kartaS.wzor == karta.wzor) and (WARTOSCI_ROSNAC.index(kartaS.wartosc) > WARTOSCI_ROSNAC.index(karta.wartosc))):
+                        kartaS = karta
+                tkarty.append(kartaS)
+                twoje_karty.remove(kartaS)
+            twoje_karty = tkarty.copy()
+            tkarty = []
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if kolejki[kolej % len(kolejki)] == "T" and wylozone_karty == 0:
+            if mieszanieT < 3:
+                for karta in twoje_karty:
+                    if twoje_karty.index(karta) != len(twoje_karty) - 1:
+                        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and karta.prostokat.collidepoint(pygame.mouse.get_pos()) and not twoje_karty[twoje_karty.index(karta)+1].prostokat.collidepoint(pygame.mouse.get_pos()):
+                            mieszanie_kart(karta, "A")
+                            twoje_karty.remove(karta)
+                            mieszanieT += 1
+                    else:
+                        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and karta.prostokat.collidepoint(pygame.mouse.get_pos()):
+                            mieszanie_kart(karta, "A")
+                            twoje_karty.remove(karta)
+                            mieszanieT += 1
+            if kolejki[kolej % len(kolejki)] == "T" and wylozone_karty == 0 and wymieszano:
                 for karta in twoje_karty:
                     if twoje_karty.index(karta) != len(twoje_karty) - 1:
                         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (kiery or karta.wzor != "H") and not twoje_karty[twoje_karty.index(karta)+1].prostokat.collidepoint(pygame.mouse.get_pos()):
@@ -217,7 +278,7 @@ def serca():
                             zabierajacy = "T"
                             twoje_symbole[wybrany_kolor] -= 1
                             twoje_karty.remove(karta)
-            if kolejki[(kolej + wylozone_karty) % len(kolejki)] == "T" and wylozone_karty != 0:
+            if kolejki[(kolej + wylozone_karty) % len(kolejki)] == "T" and wylozone_karty != 0 and wymieszano:
                 for karta in twoje_karty:
                     if twoje_karty.index(karta) != len(twoje_karty) - 1:
                         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and karta.prostokat.collidepoint(pygame.mouse.get_pos()) and not twoje_karty[twoje_karty.index(karta)+1].prostokat.collidepoint(pygame.mouse.get_pos()):
@@ -225,6 +286,8 @@ def serca():
                                 if (WARTOSCI_ROSNAC.index(karta_zabierajaca.wartosc) < WARTOSCI_ROSNAC.index(karta.wartosc)) and (karta.wzor == wybrany_kolor):
                                     karta_zabierajaca = karta
                                     zabierajacy = "T"
+                                if (karta.wzor == "H" or (karta.wzor == "P" and karta.wartosc == "Q")) and not kiery:
+                                    kiery = True
                                 twoje_symbole[karta.wzor] -= 1
                                 wystawione_karty = wystawienie_serca(karta, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)
                                 wylozone_karty += 1
@@ -235,11 +298,22 @@ def serca():
                                 if (karta_zabierajaca.wartosc < karta.wartosc) and (karta.wzor == wybrany_kolor):
                                     karta_zabierajaca = karta
                                     zabierajacy = "T"
+                                if (karta.wzor == "H" or (karta.wzor == "P" and karta.wartosc == "Q")) and not kiery:
+                                    kiery = True
                                 twoje_symbole[karta.wzor] -= 1
                                 wystawione_karty = wystawienie_serca(karta, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)
                                 twoje_karty.remove(karta)
                                 wylozone_karty += 1
-        if kolejki[kolej % len(kolejki)] != "T" and wylozone_karty == 0:
+        for bot in boty:
+            if bot.mieszanie < 3:
+                kartaS = None
+                for karta in bot.karty:
+                    if kartaS == None or WARTOSCI_ROSNAC.index(karta.wartosc) > WARTOSCI_ROSNAC.index(kartaS.wartosc):
+                        kartaS = karta
+                bot.karty.remove(kartaS)
+                bot.mieszanie += 1
+                mieszanie_kart(kartaS, kolejki[(kolejki.index(bot.ABC) + 1) % len(kolejki)])
+        if kolejki[kolej % len(kolejki)] != "T" and wylozone_karty == 0 and wymieszano:
             time.sleep(1)
             if kolejki[kolej % len(kolejki)] == "A":
                 botX = botA
@@ -259,7 +333,7 @@ def serca():
             wylozone_karty = 1
             botX.symbole[wybrany_kolor] -= 1
             botX.karty.remove(wybrana_karta)  
-        if kolejki[(kolej + wylozone_karty) % len(kolejki)] != "T" and wylozone_karty != 0:
+        if kolejki[(kolej + wylozone_karty) % len(kolejki)] != "T" and wylozone_karty != 0 and wymieszano:
             time.sleep(1)
             if kolejki[(kolej + wylozone_karty) % len(kolejki)] == "A":
                 botX = botA
@@ -303,6 +377,8 @@ def serca():
                         wystawione_karty = wystawienie_serca(kartaS, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)  
                         wylozone_karty += 1
             botX.karty.remove(kartaS)
+            if (kartaS.wzor == "H" or (kartaS.wzor == "P" and kartaS.wartosc == "Q")) and not kiery:
+                kiery = True
             
         ekran.fill(TLO)
         if wystawione_karty.get("T") != None:
@@ -332,6 +408,25 @@ def serca():
         pygame.display.update()
         clock.tick(KLATKI_NA_SEKUNDE)
         if wystawione_karty.get("T") != None and wystawione_karty.get("A") != None and wystawione_karty.get("B") != None and wystawione_karty.get("C"):
+            for karta in wystawione_karty.values():
+                if karta.wzor == "H":
+                    if zabierajacy == "T":
+                        TpunktyNieostateczne += 1
+                    elif zabierajacy == "A":
+                        ApunktyNieostateczne += 1
+                    elif zabierajacy == "B":
+                        BpunktyNieostateczne += 1
+                    else:
+                        CpunktyNieostateczne += 1
+                elif karta.wzor == "P" and karta.wartosc == "Q":
+                    if zabierajacy == "T":
+                        TpunktyNieostateczne += 13
+                    elif zabierajacy == "A":
+                        ApunktyNieostateczne += 13
+                    elif zabierajacy == "B":
+                        BpunktyNieostateczne += 13
+                    else:
+                        CpunktyNieostateczne += 13
             wystawione_karty = {"T" : None, "A" : None, "B" : None, "C" : None}
             #zabierający zabiera punkty
             kolej = kolejki.index(zabierajacy)
@@ -341,6 +436,17 @@ def serca():
             zabierajacy = None
             time.sleep(1)
 
+def mieszanie_kart(karta, kto):
+    if kto == "T":
+        karty_do_otrzymania_mieszaniaT.append(karta)
+    else:
+        if kto == "A":
+            botA.karty_do_otrzymanaia_mieszania.append(karta)
+        elif kto == "B":
+            botB.karty_do_otrzymanaia_mieszania.append(karta)
+        else:
+            botC.karty_do_otrzymanaia_mieszania.append(karta)
+        
 def wystawienie_serca(karta, kto, wystawione_karty):
     wystawione_karty[kto] = karta
     return wystawione_karty
@@ -1486,7 +1592,7 @@ def widzet():
                         elif przycisk == przyciski_gry[3]:
                             makao()
                         elif przycisk == przyciski_gry[4]:
-                            serca()
+                            serca(0, 0, 0, 0)
             elif stan == "opcje":
                 for przycisk in przyciski_opcje:
                     if przycisk.handleEvent(event):
