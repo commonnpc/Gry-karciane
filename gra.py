@@ -156,11 +156,18 @@ pygame.init()
 pygame.display.set_caption("Zbiór gier")
 
 def serca(Tpunkty, Apunkty, Bpunkty, Cpunkty):
+    przycisk_ponownie = pygwidgets.TextButton(ekran, (50, 390), "Zagraj ponownie",
+                                                fontSize = 30, width = 200, height = 100, 
+                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+    przycisk_powrot = pygwidgets.TextButton(ekran, (50, 280), "Powrót do menu",
+                                                fontSize = 30, width = 200, height = 100, 
+                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+    przyciski_serca = [przycisk_ponownie, przycisk_powrot]
     ApunktyNieostateczne = 0
     TpunktyNieostateczne = 0
     BpunktyNieostateczne = 0
     CpunktyNieostateczne = 0
-    global karty_do_otrzymania_mieszaniaT, botA, botB, botC
+    global karty_do_otrzymania_mieszaniaT, botA, botB, botC, stan
     botA = SercaBot("A")
     botB = SercaBot("B")
     botC = SercaBot("C")
@@ -190,26 +197,25 @@ def serca(Tpunkty, Apunkty, Bpunkty, Cpunkty):
     wybrany_kolor = ""
     wylozone_karty = 0
     kolejki = ["T", "A", "B", "C"]
-    for karta in twoje_karty:
-        if karta.wzor == "C" and karta.wartosc == "2":
-            kolej = 0
-    for karta in botA.karty:
-        if karta.wzor == "C" and karta.wartosc == "2":
-            kolej = 1
-    for karta in botB.karty:
-        if karta.wzor == "C" and karta.wartosc == "2":
-            kolej = 2
-    for karta in botC.karty:
-        if karta.wzor == "C" and karta.wartosc == "2":
-            kolej = 3
     mieszanieT = 0
     karty_do_otrzymania_mieszaniaT = []
     wymieszano = False
+    kolej = 0
     while program:
         if len(twoje_karty) == 0 and len(botA.karty) == 0 and len(botB.karty) == 0 and len(botC.karty) == 0:
-            if (Apunkty + ApunktyNieostateczne >= 100) or (Bpunkty + BpunktyNieostateczne >= 100) or (Cpunkty + CpunktyNieostateczne >= 100) or (Tpunkty + TpunktyNieostateczne >= 100):
-                pass #wynik
             time.sleep(1)
+            if (Apunkty + ApunktyNieostateczne >= 100) or (Bpunkty + BpunktyNieostateczne >= 100) or (Cpunkty + CpunktyNieostateczne >= 100) or (Tpunkty + TpunktyNieostateczne >= 100):
+                wygrane = [Apunkty + ApunktyNieostateczne, Bpunkty + BpunktyNieostateczne, Cpunkty + CpunktyNieostateczne, Tpunkty + TpunktyNieostateczne]
+                wygrane.sort(reverse = True)
+                if wygrane.index(Tpunkty + TpunktyNieostateczne) == 0:
+                    stan = "kiery_1"
+                elif wygrane.index(Tpunkty + TpunktyNieostateczne) == 1:
+                    stan = "kiery_2"
+                elif wygrane.index(Tpunkty + TpunktyNieostateczne) == 2:
+                    stan = "kiery_3"
+                elif wygrane.index(Tpunkty + TpunktyNieostateczne) == 3:
+                    stan = "kiery_4"
+                widzet()
             if TpunktyNieostateczne == 26:
                 serca(Tpunkty, Apunkty + 26, Bpunkty + 26, Cpunkty + 26)
             elif ApunktyNieostateczne == 26:
@@ -242,10 +248,28 @@ def serca(Tpunkty, Apunkty, Bpunkty, Cpunkty):
                 twoje_karty.remove(kartaS)
             twoje_karty = tkarty.copy()
             tkarty = []
+            for karta in twoje_karty:
+                if karta.wzor == "C" and karta.wartosc == "2":
+                    kolej = 0
+            for karta in botA.karty:
+                if karta.wzor == "C" and karta.wartosc == "2":
+                    kolej = 1
+            for karta in botB.karty:
+                if karta.wzor == "C" and karta.wartosc == "2":
+                    kolej = 2
+            for karta in botC.karty:
+                if karta.wzor == "C" and karta.wartosc == "2":
+                    kolej = 3
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            for przycisk in przyciski_serca:
+                if przycisk.handleEvent(event):
+                    if przycisk == przyciski_serca[0]:
+                        serca(0, 0, 0, 0)
+                    else:
+                        widzet()
             if mieszanieT < 3:
                 for karta in twoje_karty:
                     if twoje_karty.index(karta) != len(twoje_karty) - 1:
@@ -261,6 +285,8 @@ def serca(Tpunkty, Apunkty, Bpunkty, Cpunkty):
             if kolejki[kolej % len(kolejki)] == "T" and wylozone_karty == 0 and wymieszano:
                 for karta in twoje_karty:
                     if twoje_karty.index(karta) != len(twoje_karty) - 1:
+                        if all(karta.wzor == 'H' for karta in twoje_karty):
+                            kiery = True
                         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and karta.prostokat.collidepoint(pygame.mouse.get_pos()) and (kiery or karta.wzor != "H") and not twoje_karty[twoje_karty.index(karta)+1].prostokat.collidepoint(pygame.mouse.get_pos()):
                             wystawione_karty = wystawienie_serca(karta, kolejki[kolej % len(kolejki)], wystawione_karty)
                             wybrany_kolor = karta.wzor
@@ -322,6 +348,8 @@ def serca(Tpunkty, Apunkty, Bpunkty, Cpunkty):
             else:
                 botX = botC
             wartosc_karty_do_wylozenia = "A"
+            if all(karta.wzor == 'H' for karta in botX.karty):
+                kiery = True
             for karta in botX.karty:
                 if WARTOSCI_ROSNAC.index(karta.wartosc) <= WARTOSCI_ROSNAC.index(wartosc_karty_do_wylozenia) and (kiery or karta.wzor != "H"):
                     wybrana_karta = karta
@@ -333,7 +361,7 @@ def serca(Tpunkty, Apunkty, Bpunkty, Cpunkty):
             wylozone_karty = 1
             botX.symbole[wybrany_kolor] -= 1
             botX.karty.remove(wybrana_karta)  
-        if kolejki[(kolej + wylozone_karty) % len(kolejki)] != "T" and wylozone_karty != 0 and wymieszano:
+        if kolejki[(kolej + wylozone_karty) % len(kolejki)] != "T" and wylozone_karty != 0 and wymieszano and wylozone_karty != 4:
             time.sleep(1)
             if kolejki[(kolej + wylozone_karty) % len(kolejki)] == "A":
                 botX = botA
@@ -341,46 +369,71 @@ def serca(Tpunkty, Apunkty, Bpunkty, Cpunkty):
                 botX = botB
             else:
                 botX = botC
-            kartaS = None
+            kartaSB = None
             for karta in botX.karty:
-                if (karta.wzor == wybrany_kolor) and WARTOSCI_ROSNAC.index(karta.wartosc) < WARTOSCI_ROSNAC.index(karta_zabierajaca.wartosc) and (kartaS == None or WARTOSCI_ROSNAC.index(karta.wartosc) > WARTOSCI_ROSNAC.index(kartaS.wartosc)):
-                    kartaS = karta
-            if kartaS != None:
-                botX.symbole[kartaS.wzor] -= 1
-                wystawione_karty = wystawienie_serca(kartaS, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)
+                if (karta.wzor == wybrany_kolor) and WARTOSCI_ROSNAC.index(karta.wartosc) < WARTOSCI_ROSNAC.index(karta_zabierajaca.wartosc) and (kartaSB == None or WARTOSCI_ROSNAC.index(karta.wartosc) > WARTOSCI_ROSNAC.index(kartaSB.wartosc)):
+                    kartaSB = karta
+            if kartaSB != None:
+                botX.symbole[kartaSB.wzor] -= 1
+                wystawione_karty = wystawienie_serca(kartaSB, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)
                 wylozone_karty += 1
+                botX.karty.remove(kartaSB)
             else:
                 for karta in botX.karty:
-                    if (karta.wzor == wybrany_kolor) and (kartaS == None or WARTOSCI_ROSNAC.index(karta.wartosc) < WARTOSCI_ROSNAC.index(kartaS.wartosc)):
-                        kartaS = karta
-                if kartaS != None:
-                    wybrana_karta = kartaS
-                    wartosc_karty_do_wylozenia = kartaS.wartosc
-                    karta_zabierajaca = kartaS
+                    if (karta.wzor == wybrany_kolor) and (kartaSB == None or WARTOSCI_ROSNAC.index(karta.wartosc) < WARTOSCI_ROSNAC.index(kartaSB.wartosc)):
+                        kartaSB = karta
+                if kartaSB != None:
+                    wybrana_karta = kartaSB
+                    wartosc_karty_do_wylozenia = kartaSB.wartosc
+                    karta_zabierajaca = kartaSB
                     zabierajacy = kolejki[(kolej + wylozone_karty) % len(kolejki)]
-                    botX.symbole[kartaS.wzor] -= 1
-                    wystawione_karty = wystawienie_serca(kartaS, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)
+                    botX.symbole[kartaSB.wzor] -= 1
+                    wystawione_karty = wystawienie_serca(kartaSB, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)
                     wylozone_karty += 1
+                    botX.karty.remove(kartaSB)
                 else:
                     for karta in botX.karty:
-                        if (karta.wzor == wybrany_kolor) and (kartaS == None or WARTOSCI_ROSNAC.index(karta.wartosc) > WARTOSCI_ROSNAC.index(kartaS.wartosc)):
-                            kartaS = karta
-                    if kartaS != None:
-                        botX.symbole[kartaS.wzor] -= 1
-                        wystawione_karty = wystawienie_serca(kartaS, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)
+                        if (karta.wzor == wybrany_kolor) and (kartaSB == None or WARTOSCI_ROSNAC.index(karta.wartosc) > WARTOSCI_ROSNAC.index(kartaSB.wartosc)):
+                            kartaSB = karta
+                    if kartaSB != None:
+                        botX.symbole[kartaSB.wzor] -= 1
+                        wystawione_karty = wystawienie_serca(kartaSB, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)
                         wylozone_karty += 1
+                        botX.karty.remove(kartaSB)
                     else:
                         for karta in botX.karty:
-                            if kartaS == None or WARTOSCI_ROSNAC.index(karta.wartosc) > WARTOSCI_ROSNAC.index(kartaS.wartosc):
-                                kartaS = karta
-                        botX.symbole[kartaS.wzor] -= 1
-                        wystawione_karty = wystawienie_serca(kartaS, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)  
+                            if kartaSB == None or WARTOSCI_ROSNAC.index(karta.wartosc) > WARTOSCI_ROSNAC.index(kartaSB.wartosc):
+                                kartaSB = karta
+                        botX.symbole[kartaSB.wzor] -= 1
+                        wystawione_karty = wystawienie_serca(kartaSB, kolejki[(kolej + wylozone_karty) % len(kolejki)], wystawione_karty)  
                         wylozone_karty += 1
-            botX.karty.remove(kartaS)
-            if (kartaS.wzor == "H" or (kartaS.wzor == "P" and kartaS.wartosc == "Q")) and not kiery:
+                        botX.karty.remove(kartaSB)
+            if (kartaSB.wzor == "H" or (kartaSB.wzor == "P" and kartaS.wartosc == "Q")) and not kiery:
                 kiery = True
-            
+            kartaSB = None
         ekran.fill(TLO)
+        przycisk_ponownie.show()
+        przycisk_ponownie.draw()
+        przycisk_powrot.show()
+        przycisk_powrot.draw()
+        Tekst_PunktyA = pygwidgets.DisplayText(ekran, (50, 20), "Punkty bota po lewej: " + str(Apunkty), fontSize = 20)
+        Tekst_PunktyB = pygwidgets.DisplayText(ekran, (50, 80), "Punkty bota na górze: " + str(Bpunkty), fontSize = 20)
+        Tekst_PunktyC = pygwidgets.DisplayText(ekran, (50, 140), "Punkty bota po prawej: " + str(Cpunkty), fontSize = 20)
+        Tekst_PunktyT = pygwidgets.DisplayText(ekran, (50, 200), "Twoje punkty: " + str(Tpunkty), fontSize = 20)
+        Tekst_Tymczasowe_PunktyA = pygwidgets.DisplayText(ekran, (50, 50), "Punkty bota po lewej: " + str(ApunktyNieostateczne) + " (w tej rundzie)", fontSize = 20)
+        Tekst_Tymczasowe_PunktyB = pygwidgets.DisplayText(ekran, (50, 110), "Punkty bota na górze: " + str(BpunktyNieostateczne) + " (w tej rundzie)", fontSize = 20)
+        Tekst_Tymczasowe_PunktyC = pygwidgets.DisplayText(ekran, (50, 170), "Punkty bota po prawej: " + str(CpunktyNieostateczne) + " (w tej rundzie)", fontSize = 20)
+        Tekst_Tymczasowe_PunktyT = pygwidgets.DisplayText(ekran, (50, 230), "Twoje punkty: " + str(TpunktyNieostateczne) + " (w tej rundzie)", fontSize = 20)
+        teksty = [Tekst_PunktyA, Tekst_PunktyB, Tekst_PunktyC, Tekst_PunktyT, Tekst_Tymczasowe_PunktyA, Tekst_Tymczasowe_PunktyB, Tekst_Tymczasowe_PunktyC, Tekst_Tymczasowe_PunktyT]
+        for tekst in teksty:
+            tekst.show()
+            tekst.draw()
+        Tekst_wymiana = pygwidgets.DisplayText(ekran, (50, 520), "Karty do wymiany: " + str(3 - mieszanieT), fontSize = 30, width = 500, height = 100)
+        if mieszanieT != 3:
+            Tekst_wymiana.show()
+            Tekst_wymiana.draw()
+        else:
+            Tekst_wymiana.hide()
         if wystawione_karty.get("T") != None:
             wystawione_karty.get("T").obrocenie()
             wystawione_karty.get("T").rysuj(ekran, 510, 420)
@@ -428,7 +481,6 @@ def serca(Tpunkty, Apunkty, Bpunkty, Cpunkty):
                     else:
                         CpunktyNieostateczne += 13
             wystawione_karty = {"T" : None, "A" : None, "B" : None, "C" : None}
-            #zabierający zabiera punkty
             kolej = kolejki.index(zabierajacy)
             wylozone_karty = 0
             wybrany_kolor = ""
@@ -1564,6 +1616,7 @@ def pasjans():
 
 def widzet():
     global stan, TLO, Tekst_Oczko_Ponownie, Tekst_Makao_Ponownie
+    Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś # miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1647,6 +1700,13 @@ def widzet():
                             makao()
                         elif przycisk == przyciski_koniec_ponownie[1]:
                             stan = "gry"
+            elif stan == "kiery_1" or stan == "kiery_2" or stan == "kiery_3" or stan == "kiery_4":
+                for przycisk in przyciski_koniec_ponownie:
+                    if przycisk.handleEvent(event):
+                        if przycisk == przyciski_koniec_ponownie[0]:
+                            serca(0, 0, 0, 0)
+                        elif przycisk == przyciski_koniec_ponownie[1]:
+                            stan = "gry"
         ekran.fill(TLO)
         if stan == "menu":
             for przycisk in przyciski_menu:
@@ -1677,6 +1737,26 @@ def widzet():
             for przycisk in przyciski_opcje:
                 przycisk.hide()
             Kwadracik_Tryb_Ciemny.hide()
+        if not(stan == "kiery_1" or stan == "kiery_2" or stan == "kiery_3" or stan == "kiery_4" or stan == "zagrajznowuwpasjans" or stan == "wygranaoczko" or stan == "przegranaoczko" or stan == "remisoczko" or stan == "wygranamakao" or stan == "przegranamakao"):
+            for przycisk in przyciski_koniec_ponownie:
+                przycisk.hide()
+
+        if stan == "kiery_1" or stan == "kiery_2" or stan == "kiery_3" or stan == "kiery_4":
+            for przycisk in przyciski_koniec_ponownie:
+                przycisk.show()
+                przycisk.draw()
+            if stan == "kiery_1":
+                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 1 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+            elif stan == "kiery_2":
+                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 2 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+            elif stan == "kiery_3":
+                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 3 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+            else:
+                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 4 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+            Tekst_Kiery_Ponownie.show()
+            Tekst_Kiery_Ponownie.draw()
+        else:
+            Tekst_Kiery_Ponownie.hide()
 
         if stan == "zagrajznowuwpasjans":
             for przycisk in przyciski_koniec_ponownie:
@@ -1685,8 +1765,6 @@ def widzet():
             Tekst_Pasjans_Ponownie.show()
             Tekst_Pasjans_Ponownie.draw()
         else:
-            for przycisk in przyciski_koniec_ponownie:
-                przycisk.hide()
             Tekst_Pasjans_Ponownie.hide()
 
         if stan == "wygranaoczko" or stan == "przegranaoczko" or stan == "remisoczko":
@@ -1702,8 +1780,6 @@ def widzet():
             Tekst_Oczko_Ponownie.show()
             Tekst_Oczko_Ponownie.draw()
         else:
-            for przycisk in przyciski_koniec_ponownie:
-                przycisk.hide()
             Tekst_Oczko_Ponownie.hide()
 
         if stan == "wygranamakao" or stan == "przegranamakao":
@@ -1717,8 +1793,6 @@ def widzet():
             Tekst_Makao_Ponownie.show()
             Tekst_Makao_Ponownie.draw()
         else:
-            for przycisk in przyciski_koniec_ponownie:
-                przycisk.hide()
             Tekst_Makao_Ponownie.hide()
 
         if stan == "zasady":
