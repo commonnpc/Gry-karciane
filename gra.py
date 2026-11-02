@@ -6,8 +6,11 @@ import time
 from MakaoBot import *
 from Karta import *
 from SercaBot import *
+import asyncio
 
+moja_czcionka = "czcionka.ttf"
 stan = "menu"
+restart_makao = False
 TLO = (178, 227, 146)
 SZEROKOSC = 800
 WYSOKOSC = 600
@@ -21,6 +24,7 @@ kartydzwiek = pygame.mixer.Sound("card_draw_3.wav")
 kartydzwiek.set_volume(0.5)
 wygranadzwiek = pygame.mixer.Sound("match_xylophone_6.wav")
 wygranadzwiek.set_volume(0.7)
+BLOKADA = pygame.transform.smoothscale(pygame.image.load(f'BLOK.png'), (76, 76))
 WYBRANA = pygame.transform.smoothscale(pygame.image.load(f'WYBRANA.png'), (40, 60))
 KARTY = []
 WZORY = ['H', 'D', 'C', 'P']
@@ -35,115 +39,115 @@ for karta in KARTY:
     if karta.wartosc in ["9", "10", "J", "Q", "K", "A"]:
         KARTY_9_I_WYZEJ.append(karta)
 Przycisk_Wroc_Gra = pygwidgets.TextButton(ekran, (500, 450), "Wróc do menu gier",
-                                        fontSize = 30, width = 200, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                        fontSize = 20, width = 200, height = 100, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Od_Nowa_Gra = pygwidgets.TextButton(ekran, (100, 450), "Spróbuj ponownie",
-                                        fontSize = 30, width = 200, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                        fontSize = 20, width = 200, height = 100, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
-Przycisk_Wroc_Z_Menu_Gier = pygwidgets.TextButton(ekran, (275 ,450), "Wróć do menu głównego",
-                                          fontSize = 30, width = 250, height = 100, 
-                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+Przycisk_Wroc_Z_Menu_Gier = pygwidgets.TextButton(ekran, (200 ,450), "Wróć do menu głównego",
+                                          fontSize = 20, width = 400, height = 100, 
+                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Pasjans = pygwidgets.TextButton(ekran, (100,100), "Pasjans",
                                           fontSize = 30, width = 250, height = 100, 
-                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Oczko = pygwidgets.TextButton(ekran, (450,100), "Oczko",
                                           fontSize = 30, width = 250, height = 100, 
-                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Makao = pygwidgets.TextButton(ekran, (100,250), "Makao",
                                           fontSize = 30, width = 250, height = 100, 
-                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Serca = pygwidgets.TextButton(ekran, (450,250), "Serca",
                                           fontSize = 30, width = 250, height = 100, 
-                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Graj = pygwidgets.TextButton(ekran, (200, 190), "Graj",
                                           fontSize = 30, width = 400, height = 100, 
-                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Opcje = pygwidgets.TextButton(ekran, (200, 320), "Opcje",
                                         fontSize = 30, width = 400, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Wyjscie = pygwidgets.TextButton(ekran, (200, 450), "Wyjście",
                                         fontSize = 30, width = 400, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Tekst_Tytul = pygwidgets.DisplayText(ekran, (200, 50), "Gry Karciane", 
-                                     fontSize = 90, width = 400, height = 100)
+                                     fontSize = 65, width = 400, height = 100, fontName = moja_czcionka)
 
 Przycisk_Zasady = pygwidgets.TextButton(ekran, (200, 150), "Zasady",
                                         fontSize = 30, width = 400, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Wroc = pygwidgets.TextButton(ekran, (200, 300), "Wróć",
                                         fontSize = 30, width = 400, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 450), "Autorzy",
                                         fontSize = 30, width = 400, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
-Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 80), "Tryb ciemny", value = False, fontSize = 60, size = 50)
+Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 80), "Tryb ciemny", value = False, fontSize = 60, size = 50, fontName = moja_czcionka)
 
 Przycisk_Wroc_Do_Menu_Z_Grami = pygwidgets.TextButton(ekran, (50, 450), "Wróć do menu z grami",
-                                                        fontSize = 30, width = 300, height = 100, 
-                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                                        fontSize = 20, width = 300, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Zagraj_Ponownie = pygwidgets.TextButton(ekran, (450, 450), "Zagraj ponownie",
-                                                        fontSize = 30, width = 300, height = 100, 
-                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                                        fontSize = 20, width = 300, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Tekst_Pasjans_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Gratulacje wygranej!", 
-                                     fontSize = 30, width = 400, height = 100)
+                                     fontSize = 60, width = 400, height = 100, fontName = moja_czcionka)
                                                         
-Tekst_ZasadyPasjans1 = pygwidgets.DisplayText(ekran, (50, 80), "Aby przenieść kartę na drugi stos naciśnij ją prawym przyciskiem myszy, po czym", fontSize = 25, width = 700, height = 400)
-Tekst_ZasadyPasjans2 = pygwidgets.DisplayText(ekran, (50, 110), "tym samym przyciskiem naciśnij stos na który chcesz go przełożyć. Jezeli chcesz tą ", fontSize = 25, width = 700, height = 400)
-Tekst_ZasadyPasjans3 = pygwidgets.DisplayText(ekran, (50, 140), "kartę przełożyć na stosy znaków naciśnij ją lewym przyciskiem myszy. Aby przełozyć ", fontSize = 25, width = 700, height = 400)
-Tekst_ZasadyPasjans4 = pygwidgets.DisplayText(ekran, (50, 170), "kartę ze stosu kart niewykorzystanych, naciśnij klawisz spacja.", fontSize = 25, width = 700, height = 400)
+Tekst_ZasadyPasjans1 = pygwidgets.DisplayText(ekran, (50, 80), "Aby przenieść kartę na drugi stos naciśnij ją prawym przyciskiem myszy, po czym", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
+Tekst_ZasadyPasjans2 = pygwidgets.DisplayText(ekran, (50, 110), "tym samym przyciskiem naciśnij stos na który chcesz go przełożyć. Jezeli chcesz tą ", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
+Tekst_ZasadyPasjans3 = pygwidgets.DisplayText(ekran, (50, 140), "kartę przełożyć na stosy znaków naciśnij ją lewym przyciskiem myszy. Aby przełozyć ", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
+Tekst_ZasadyPasjans4 = pygwidgets.DisplayText(ekran, (50, 170), "kartę ze stosu kart niewykorzystanych, naciśnij klawisz spacja.", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
 
-Tekst_ZasadyOczko1 = pygwidgets.DisplayText(ekran, (50, 80), "Aby pobrać kartę, naciśnij lewy przycisk myszy, a żeby zakończyć turę naciśnij prawy", fontSize = 25, width = 700, height = 400)
-Tekst_ZasadyOczko2 = pygwidgets.DisplayText(ekran, (50, 110), "przycisk myszy. Twoja tura kończy się automatycznie jezeli przebijesz 21 punktów.", fontSize = 25, width = 700, height = 400)
-Tekst_ZasadyOczko3 = pygwidgets.DisplayText(ekran, (50, 140), "Dla sprawiedliwości bot nie zna twoich kart i nie wpływają one na jego decyzje.", fontSize = 25, width = 700, height = 400)
+Tekst_ZasadyOczko1 = pygwidgets.DisplayText(ekran, (50, 80), "Aby pobrać kartę, naciśnij lewy przycisk myszy, a żeby zakończyć turę naciśnij prawy", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
+Tekst_ZasadyOczko2 = pygwidgets.DisplayText(ekran, (50, 110), "przycisk myszy. Twoja tura kończy się automatycznie jezeli przebijesz 21 punktów.", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
+Tekst_ZasadyOczko3 = pygwidgets.DisplayText(ekran, (50, 140), "Dla sprawiedliwości bot nie zna twoich kart i nie wpływają one na jego decyzje.", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
 
-Tekst_ZasadyMakao1 = pygwidgets.DisplayText(ekran, (50, 80), "Aby pobrać kartę ze stosu, naciśnij na sos kart odwróconych lewym przyciskiem", fontSize = 25, width = 700, height = 400)
-Tekst_ZasadyMakao2 = pygwidgets.DisplayText(ekran, (50, 110), "myszy, a by położyć kartę na stos naciśnij ją prawym przyciskiem myszy.", fontSize = 25, width = 700, height = 400)
-Tekst_ZasadyMakao3 = pygwidgets.DisplayText(ekran, (50, 140), "By zakończyć turę, naciśnij przycisk Zakończ Turę.", fontSize = 25, width = 700, height = 400)
+Tekst_ZasadyMakao1 = pygwidgets.DisplayText(ekran, (50, 80), "Aby pobrać kartę ze stosu, naciśnij na sos kart odwróconych lewym przyciskiem", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
+Tekst_ZasadyMakao2 = pygwidgets.DisplayText(ekran, (50, 110), "myszy, a by położyć kartę na stos naciśnij ją prawym przyciskiem myszy.", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
+Tekst_ZasadyMakao3 = pygwidgets.DisplayText(ekran, (50, 140), "By zakończyć turę, naciśnij przycisk Zakończ Turę.", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
 
-Tekst_Autorzy1 = pygwidgets.DisplayText(ekran, (50, 80), "Gra - Bartosz Kujawa", fontSize = 25, width = 700, height = 400)
-Tekst_Autorzy2 = pygwidgets.DisplayText(ekran, (50, 110), "Efekty Muzyczne - pakiet 400 Sounds Pack", fontSize = 25, width = 700, height = 400)
-Tekst_Autorzy3 = pygwidgets.DisplayText(ekran, (50, 140), "Muzyka - pakiet Cozy Tunes", fontSize = 25, width = 700, height = 400)
-Tekst_Autorzy4 = pygwidgets.DisplayText(ekran, (50, 170), "Grafika - pakiet Pixel Poker Cards", fontSize = 25, width = 700, height = 400)
+Tekst_Autorzy1 = pygwidgets.DisplayText(ekran, (50, 80), "Gra - Bartosz Kujawa", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
+Tekst_Autorzy2 = pygwidgets.DisplayText(ekran, (50, 110), "Efekty Muzyczne - pakiet 400 Sounds Pack", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
+Tekst_Autorzy3 = pygwidgets.DisplayText(ekran, (50, 140), "Muzyka - pakiet Cozy Tunes", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
+Tekst_Autorzy4 = pygwidgets.DisplayText(ekran, (50, 170), "Grafika - pakiet Pixel Poker Cards", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
 
 Przycisk_Wroc_Z_Autorow = pygwidgets.TextButton(ekran, (200, 450), "Wróć",
                                                         fontSize = 30, width = 400, height = 100, 
-                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Zasady_Wroc = pygwidgets.TextButton(ekran, (200, 450), "Wróć",
                                         fontSize = 30, width = 400, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Zasady_Pasjans = pygwidgets.TextButton(ekran, (100, 100), "Zasady pasjansa", fontSize = 30, 
                                         width = 250, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Zasady_Oczko = pygwidgets.TextButton(ekran, (450, 100), "Zasady oczka", fontSize = 30, 
                                               width = 250, height = 100, 
-                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 Przycisk_Zasady_Makao = pygwidgets.TextButton(ekran, (100, 250), "Zasady makao", fontSize = 30, 
                                               width = 250, height = 100, 
-                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
 
 
-Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 30, width = 400, height = 100)
-Tekst_Makao_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 30, width = 500, height = 100)
+Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 30, width = 400, height = 100, fontName = moja_czcionka)
+Tekst_Makao_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
 
 przyciski_autorzy = [Przycisk_Wroc_Z_Autorow]
 przyciski_koniec_ponownie = [Przycisk_Zagraj_Ponownie, Przycisk_Wroc_Do_Menu_Z_Grami]
@@ -156,12 +160,13 @@ pygame.init()
 pygame.display.set_caption("Zbiór gier")
 
 def serca(Tpunkty, Apunkty, Bpunkty, Cpunkty):
+    global stos_dobieranie
     przycisk_ponownie = pygwidgets.TextButton(ekran, (50, 390), "Zagraj ponownie",
-                                                fontSize = 30, width = 200, height = 100, 
-                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                                fontSize = 20, width = 200, height = 100, 
+                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
     przycisk_powrot = pygwidgets.TextButton(ekran, (50, 280), "Powrót do menu",
-                                                fontSize = 30, width = 200, height = 100, 
-                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
+                                                fontSize = 20, width = 200, height = 100, 
+                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
     przyciski_serca = [przycisk_ponownie, przycisk_powrot]
     ApunktyNieostateczne = 0
     TpunktyNieostateczne = 0
@@ -416,19 +421,19 @@ def serca(Tpunkty, Apunkty, Bpunkty, Cpunkty):
         przycisk_ponownie.draw()
         przycisk_powrot.show()
         przycisk_powrot.draw()
-        Tekst_PunktyA = pygwidgets.DisplayText(ekran, (50, 20), "Punkty bota po lewej: " + str(Apunkty), fontSize = 20)
-        Tekst_PunktyB = pygwidgets.DisplayText(ekran, (50, 80), "Punkty bota na górze: " + str(Bpunkty), fontSize = 20)
-        Tekst_PunktyC = pygwidgets.DisplayText(ekran, (50, 140), "Punkty bota po prawej: " + str(Cpunkty), fontSize = 20)
-        Tekst_PunktyT = pygwidgets.DisplayText(ekran, (50, 200), "Twoje punkty: " + str(Tpunkty), fontSize = 20)
-        Tekst_Tymczasowe_PunktyA = pygwidgets.DisplayText(ekran, (50, 50), "Punkty bota po lewej: " + str(ApunktyNieostateczne) + " (w tej rundzie)", fontSize = 20)
-        Tekst_Tymczasowe_PunktyB = pygwidgets.DisplayText(ekran, (50, 110), "Punkty bota na górze: " + str(BpunktyNieostateczne) + " (w tej rundzie)", fontSize = 20)
-        Tekst_Tymczasowe_PunktyC = pygwidgets.DisplayText(ekran, (50, 170), "Punkty bota po prawej: " + str(CpunktyNieostateczne) + " (w tej rundzie)", fontSize = 20)
-        Tekst_Tymczasowe_PunktyT = pygwidgets.DisplayText(ekran, (50, 230), "Twoje punkty: " + str(TpunktyNieostateczne) + " (w tej rundzie)", fontSize = 20)
+        Tekst_PunktyA = pygwidgets.DisplayText(ekran, (40, 20), "Punkty bota po lewej: " + str(Apunkty), fontSize = 15, fontName = moja_czcionka)
+        Tekst_PunktyB = pygwidgets.DisplayText(ekran, (40, 80), "Punkty bota na górze: " + str(Bpunkty), fontSize = 15, fontName = moja_czcionka)
+        Tekst_PunktyC = pygwidgets.DisplayText(ekran, (40, 140), "Punkty bota po prawej: " + str(Cpunkty), fontSize = 15, fontName = moja_czcionka)
+        Tekst_PunktyT = pygwidgets.DisplayText(ekran, (40, 200), "Twoje punkty: " + str(Tpunkty), fontSize = 15, fontName = moja_czcionka)
+        Tekst_Tymczasowe_PunktyA = pygwidgets.DisplayText(ekran, (40, 50), "Punkty bota po lewej: " + str(ApunktyNieostateczne) + " (w tej rundzie)", fontSize = 15, fontName = moja_czcionka)
+        Tekst_Tymczasowe_PunktyB = pygwidgets.DisplayText(ekran, (40, 110), "Punkty bota na górze: " + str(BpunktyNieostateczne) + " (w tej rundzie)", fontSize = 15, fontName = moja_czcionka)
+        Tekst_Tymczasowe_PunktyC = pygwidgets.DisplayText(ekran, (40, 170), "Punkty bota po prawej: " + str(CpunktyNieostateczne) + " (w tej rundzie)", fontSize = 15, fontName = moja_czcionka)
+        Tekst_Tymczasowe_PunktyT = pygwidgets.DisplayText(ekran, (40, 230), "Twoje punkty: " + str(TpunktyNieostateczne) + " (w tej rundzie)", fontSize = 15, fontName = moja_czcionka)
         teksty = [Tekst_PunktyA, Tekst_PunktyB, Tekst_PunktyC, Tekst_PunktyT, Tekst_Tymczasowe_PunktyA, Tekst_Tymczasowe_PunktyB, Tekst_Tymczasowe_PunktyC, Tekst_Tymczasowe_PunktyT]
         for tekst in teksty:
             tekst.show()
             tekst.draw()
-        Tekst_wymiana = pygwidgets.DisplayText(ekran, (50, 520), "Karty do wymiany: " + str(3 - mieszanieT), fontSize = 30, width = 500, height = 100)
+        Tekst_wymiana = pygwidgets.DisplayText(ekran, (50, 520), "Karty do wymiany: " + str(3 - mieszanieT), fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
         if mieszanieT != 3:
             Tekst_wymiana.show()
             Tekst_wymiana.draw()
@@ -502,6 +507,9 @@ def mieszanie_kart(karta, kto):
 def wystawienie_serca(karta, kto, wystawione_karty):
     wystawione_karty[kto] = karta
     return wystawione_karty
+        
+async def main():
+    await asyncio.gather(makao_gra(), makao_rysowanie())
 
 def koniecoczko(wynik):
     global stan
@@ -514,108 +522,129 @@ def koniecoczko(wynik):
         stan = "przegranaoczko"
     widzet()
 
-def makao():
-    suma_blokad = 0
-    twoje_bloki = 0
-    kartaS = 0
-    t = 1
-    pA = False
-    dobrana = None
-    global stan, program, kolej
-    Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 20), "Wybrany kolor: #", fontSize = 20)
-    Tekst_Rzadanie = pygwidgets.DisplayText(ekran, (50, 20), "Rządana wartość: #", fontSize = 20)
-    Tekst_Dobieranie = pygwidgets.DisplayText(ekran, (100, 20), "Karty do dobrania (2, 3): #", fontSize = 20)
-    Tekst_DobieranieK = pygwidgets.DisplayText(ekran, (100, 20), "Karty do dobrania (K): #", fontSize = 20)
-    przycisk_koniec_tury = pygwidgets.TextButton(ekran, (50, 250), "Zakończ turę",
-                                                fontSize = 30, width = 200, height = 100, 
-                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
-    przycisk_ponownie = pygwidgets.TextButton(ekran, (50, 140), "Zagraj ponownie",
-                                            fontSize = 30, width = 200, height = 100, 
-                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
-    przycisk_powrot = pygwidgets.TextButton(ekran, (50, 30), "Powrót do menu",
-                                            fontSize = 30, width = 200, height = 100, 
-                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
-
-    przycisk_kier = pygwidgets.TextButton(ekran, (50, 375), "kier",
-                                          fontSize = 40, width = 90, height = 50, 
-                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
-    przycisk_karo = pygwidgets.TextButton(ekran, (160, 375), "karo",
-                                        fontSize = 40, width = 90, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
-    przycisk_trefl = pygwidgets.TextButton(ekran, (50, 450), "trefl",
-                                        fontSize = 40, width = 90, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
-    przycisk_pik = pygwidgets.TextButton(ekran, (160, 450), "pik",
-                                        fontSize = 40, width = 90, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
-
-    przycisk_5 = pygwidgets.TextButton(ekran, (50, 375), "5",
-                                        fontSize = 40, width = 60, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
-
-    przycisk_6 = pygwidgets.TextButton(ekran, (120, 375), "6",
-                                        fontSize = 40, width = 60, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
-
-    przycisk_7 = pygwidgets.TextButton(ekran, (190, 375), "7",
-                                        fontSize = 40, width = 60, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
-
-    przycisk_8 = pygwidgets.TextButton(ekran, (50, 450), "8",
-                                        fontSize = 40, width = 60, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
-    
-    przycisk_9 = pygwidgets.TextButton(ekran, (120, 450), "9",
-                                        fontSize = 40, width = 60, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
-    
-    przycisk_10 = pygwidgets.TextButton(ekran, (190, 450), "10",
-                                        fontSize = 40, width = 60, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187))
-        
-    przyciski_makao = [przycisk_koniec_tury, przycisk_ponownie, przycisk_powrot]
-    przyciski_A = [przycisk_kier, przycisk_karo, przycisk_trefl, przycisk_pik]
-    przyciski_J = [przycisk_5, przycisk_6, przycisk_7, przycisk_8, przycisk_9, przycisk_10]
-
-    stos_dobieranie = KARTY.copy()
-    random.shuffle(stos_dobieranie)
-    pygame.init()
-    pygame.display.set_caption("MAKAO")
-    twoje_karty = []
-    botA = MakaoBot("A")
-    botB = MakaoBot("B")
-    botC = MakaoBot("C")
-    boty = [botA, botB, botC]
-
-    for i in range(len(stos_dobieranie)):
-        if stos_dobieranie[i].wartosc in ["5", "6", "7", "8", "9", "10"]:
-            stos_kladzenia = [stos_dobieranie[i]]
-            stos_dobieranie.pop(i)
-            break
-    for i in range(5):
-        twoje_karty.append(stos_dobieranie[0])
-        stos_dobieranie.pop(0)
-        for bot in boty:
-            bot.karty.append(stos_dobieranie[0])
-            stos_dobieranie.pop(0)
-    program = True
-    ruchyT = True
-    kolej = "T"
-    cel_blokad = ""
-    koniectury = 0
-    kolorA = ""
-    pobieranieTY = False
-    pobieranieK = 0
-    pobieranieTYK = 0
-    pobieranie23 = 0
-    rzadana = ""
-    rzadajacy = ""
-    rzadanie = False
-    x = 1
-    a = ""
-    kolejZmiana = False
+async def makao_rysowanie():
+    global Tekst_Rzadanie, Tekst_Kolor, Tekst_Dobieranie, Tekst_DobieranieK
+    global stan, ekran, TLO, stos_dobieranie, stos_kladzenia, botA, kolorA, rzadana, pobieranie23, pobieranieK
     while program:
         ekran.fill(TLO)
+        if len(stos_dobieranie) > 0:
+            stos_dobieranie[0].zakrycie()
+            stos_dobieranie[0].rysuj(ekran, 540, 270)
+        else:
+            stos_dobieranie = stos_kladzenia.copy()
+            stos_kladzenia.append(stos_dobieranie[-1])
+            stos_dobieranie.pop(-1)
+        indeks_srodkowej_karty_A = max(0, (len(botA.karty) - 1) // 2)
+        y_srodkowej_karty_A = int(
+            160 + (0 if len(botA.karty) <= 1 else 240 / (len(botA.karty) - 1) * indeks_srodkowej_karty_A)
+        )
+        if botA.blok != 0:
+            for i in range(botA.blok):
+                ekran.blit(BLOKADA, (380 + 20 * i, y_srodkowej_karty_A - 18))
+
+        indeks_srodkowej_karty_B = max(0, (len(botB.karty) - 1) // 2)
+        x_srodkowej_karty_B = int(
+            390 + (0 if len(botB.karty) <= 1 else 240 / (len(botB.karty) - 1) * indeks_srodkowej_karty_B)
+        )
+        if botB.blok != 0:
+            for i in range(botB.blok):
+                ekran.blit(BLOKADA, (x_srodkowej_karty_B - 18, 105 + 20 * i))
+
+        indeks_srodkowej_karty_C = max(0, (len(botC.karty) - 1) // 2)
+        y_srodkowej_karty_C = int(
+            160 + (0 if len(botC.karty) <= 1 else 240 / (len(botC.karty) - 1) * indeks_srodkowej_karty_C)
+        )
+        if botC.blok != 0:
+            for i in range(botC.blok):
+                ekran.blit(BLOKADA, (604 - 20 * i, y_srodkowej_karty_C - 18))
+
+        indeks_srodkowej_karty_T = max(0, (len(twoje_karty) - 1) // 2)
+        x_srodkowej_karty_T = int(
+            390 + (0 if len(twoje_karty) <= 1 else 240 / (len(twoje_karty) - 1) * indeks_srodkowej_karty_T)
+        )
+        if twoje_bloki != 0:
+            for i in range(twoje_bloki):
+                ekran.blit(BLOKADA, (x_srodkowej_karty_T - 18, 419 - 20 * i))
+        if rzadana != "":
+            Tekst_Rzadanie = pygwidgets.DisplayText(ekran, (50, 10), "Żądana wartość: " + rzadana, fontSize = 15, fontName = moja_czcionka)
+            Tekst_Rzadanie.show()
+            Tekst_Rzadanie.draw()
+        else:
+            Tekst_Rzadanie.hide()
+        if kolorA != "":
+            if kolorA == "H":
+                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: KIER", fontSize = 15, fontName = moja_czcionka)
+            elif kolorA == "D":
+                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: KARO", fontSize = 15, fontName = moja_czcionka)
+            elif kolorA == "C":
+                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: TREFLE", fontSize = 15, fontName = moja_czcionka)
+            elif kolorA == "P":
+                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: PIKI", fontSize = 15, fontName = moja_czcionka)
+            Tekst_Kolor.show()
+            Tekst_Kolor.draw()
+        else:
+            Tekst_Kolor.hide()
+        if pobieranie23 != 0:
+            Tekst_Dobieranie = pygwidgets.DisplayText(ekran, (50, 10), "Karty do dobrania (2, 3): " + str(pobieranie23), fontSize = 15, fontName = moja_czcionka)
+            Tekst_Dobieranie.show()
+            Tekst_Dobieranie.draw()
+        else:
+            Tekst_Dobieranie.hide()
+        if pobieranieK != 0:
+            Tekst_DobieranieK = pygwidgets.DisplayText(ekran, (50, 10), "Karty do dobrania (K): " + str(pobieranieK), fontSize = 15, fontName = moja_czcionka)
+            Tekst_DobieranieK.show()
+            Tekst_DobieranieK.draw()
+        else:
+            Tekst_DobieranieK.hide()
+        for przycisk in przyciski_A:
+            if pA:
+                przycisk.show()
+                przycisk.draw()
+            else:
+                przycisk.hide()
+        for przycisk in przyciski_J:
+            if rzadanie:
+                przycisk.show()
+                przycisk.draw()
+            else:
+                przycisk.hide()
+        for przycisk in przyciski_makao:
+            if kolej != "T":
+                przycisk.disable()
+            else:
+                przycisk.enable()
+            przycisk.show()
+            przycisk.draw()
+        for karta in twoje_karty:
+            karta.obrocenie()
+            karta.rysuj(ekran, 390 + (0 if len(twoje_karty) <= 1 else 240/(len(twoje_karty)-1)) * twoje_karty.index(karta), 500)
+        for karta in botA.karty:
+            karta.zakrycie()
+            karta.rysuj(ekran, 320, 160 + (0 if len(botA.karty) <= 1 else 240/(len(botA.karty)-1)) * botA.karty.index(karta), obrocenie = True)
+        for karta in botC.karty:
+            karta.zakrycie()
+            karta.rysuj(ekran, 680, 160 + (0 if len(botC.karty) <= 1 else 240/(len(botC.karty)-1)) * botC.karty.index(karta), obrocenie = True)
+        for karta in botB.karty:
+            karta.zakrycie()
+            karta.rysuj(ekran, 390 + (0 if len(botB.karty) <= 1 else 240/(len(botB.karty)-1)) * botB.karty.index(karta), 40)
+        if len(twoje_karty) == 0:
+            stan = "wygranamakao"
+            widzet()
+        elif len(botA.karty) == 0 or len(botB.karty) == 0 or len(botC.karty) == 0:
+            stan = "przegranamakao"
+            widzet()
+        stos_kladzenia[-1].obrocenie()
+        stos_kladzenia[-1].rysuj(ekran, 480, 270)
+        pygame.display.update()
+        await asyncio.sleep(1/60)
+    
+async def makao_gra():
+    global stos_dobieranie
+    global a, cel_blokad, dobrana, kartaQ, kartaS, kolej, kolejZmiana
+    global kolorA, koniectury, pA, pobieranie23, pobieranieK, pobieranieTY
+    global pobieranieTYK, ruchyT, rzadajacy, rzadana, rzadanie, stan
+    global program, restart_makao, suma_blokad, t, twoje_bloki, x
+    while program:
         if len(stos_kladzenia) > 1:
             stos_dobieranie.insert(-1, stos_kladzenia[0])
             stos_kladzenia.pop(0)
@@ -631,13 +660,18 @@ def makao():
                                 for i in range(pobieranie23):
                                     twoje_karty.append(stos_dobieranie[0])
                                     stos_dobieranie.pop(0)
-                                    if i == 0 and (twoje_karty[-1].wartosc == "2" or twoje_karty[-1].wartosc == "3"):
-                                        time.sleep(0.1)
+                                    if i == 0 and (twoje_karty[-1].wartosc == "2" or twoje_karty[-1].wartosc == "3") and ((twoje_karty[-1].wzor == stos_kladzenia[-1].wzor) or (twoje_karty[-1].wartosc == stos_kladzenia[-1].wartosc)):
+                                        for przycisk in przyciski_makao:
+                                            przycisk.enable()
+                                        await asyncio.sleep(0)
                                         while a == "":
                                             if stos_dobieranie[0].prostokat.collidepoint(pygame.mouse.get_pos()):
                                                 a = "dobieranie"
-                                            if twoje_karty[-1].prostokat.collidepoint(pygame.mouse.get_pos()):
+                                            elif twoje_karty[-1].prostokat.collidepoint(pygame.mouse.get_pos()):
                                                 a = "podajdalej"
+                                            await asyncio.sleep(0.01)
+                                        for przycisk in przyciski_makao:
+                                            przycisk.disable()
                                         if a == "podajdalej":
                                             if twoje_karty[-1].wartosc == "2":
                                                 pobieranie23 += 2
@@ -652,6 +686,7 @@ def makao():
                                         x = 0
                                 if x == 0:
                                     pobieranie23 = 0
+                                    pobieranieTY = False
                                     x = 1
                                 a = ""
                             elif pobieranieTYK:
@@ -659,12 +694,17 @@ def makao():
                                     twoje_karty.append(stos_dobieranie[0])
                                     stos_dobieranie.pop(0)
                                     if i == 0 and twoje_karty[-1].wartosc == "K" and (twoje_karty[-1].wzor == "H" or twoje_karty[-1].wzor == "P"):
-                                        time.sleep(0.1)
+                                        for przycisk in przyciski_makao:
+                                            przycisk.enable()
+                                        await asyncio.sleep(0)
                                         while a == "":
                                             if stos_dobieranie[0].prostokat.collidepoint(pygame.mouse.get_pos()):
                                                 a = "dobieranie"
-                                            if twoje_karty[-1].prostokat.collidepoint(pygame.mouse.get_pos()):
+                                            elif twoje_karty[-1].prostokat.collidepoint(pygame.mouse.get_pos()):
                                                 a = "podajdalej"
+                                            await asyncio.sleep(0.01)
+                                        for przycisk in przyciski_makao:
+                                            przycisk.disable()
                                         if a == "podajdalej":
                                             if twoje_karty[-1].wzor == "H":
                                                 pobieranieK += 5
@@ -675,6 +715,7 @@ def makao():
                                             kartaS = twoje_karty[-1].wartosc
                                             stos_kladzenia.append(twoje_karty[-1])
                                             twoje_karty.pop(-1)
+                                            pobieranieTYK = False
                                             break
                                     else:
                                         x = 0
@@ -874,7 +915,7 @@ def makao():
                                         if karta.wartosc == "2":
                                             pobieranie23 += 2
                                             pobieranieTY = False
-                                        if karta.wartosc == "3":
+                                        elif karta.wartosc == "3":
                                             pobieranie23 += 3
                                             pobieranieTY = False
                                         elif karta.wartosc == "K" and karta.wzor == "H":
@@ -917,10 +958,13 @@ def makao():
                             if twoje_bloki != 0:
                                 twoje_bloki -= 1
                     elif przycisk == przyciski_makao[1]:
-                        gra_ponownie("makao")
+                        restart_makao = True
+                        program = False
+                        return
                     elif przycisk == przyciski_makao[2]:
+                        program = False
                         stan = "gry"
-                        widzet()
+                        return
             if pA:
                 for przycisk in przyciski_A:
                     if przycisk.handleEvent(event):
@@ -950,7 +994,7 @@ def makao():
                             rzadana = "10"
                         rzadanie = False
                         rzadajacy  = "T"
-
+        
         if kolej == "A" or kolej == "B" or kolej == "C":
             if kolej == "A":
                 BOT = botA
@@ -1005,6 +1049,7 @@ def makao():
                                 BOT.ruchy = False
                                 kartaS = karta.wartosc
                                 kartaQ = karta.wzor
+                                await asyncio.sleep(1)
                                 continue
                             elif karta.wartosc == kartaS:
                                 if not ((kartaS == "K" and (kartaQ == "H" or kartaQ == "P") and (kartaQ == "H" or kartaQ == "P"))):
@@ -1046,6 +1091,7 @@ def makao():
                                         rzadana, rzadajacy = BOT.rzadana()
                                     stos_kladzenia.append(karta)
                                     BOT.karty.remove(karta)
+                                    await asyncio.sleep(1)
                                     continue
                 else:
                     if (karta.wzor == kolorA or karta.wartosc == stos_kladzenia[-1].wartosc or karta.wartosc == "Q" or rzadana == karta.wartosc) and (not pobieranieTY or karta.wartosc == "2" or karta.wartosc == "3") and (not pobieranieTYK or (karta.wartosc == "K" and (karta.wzor == "H" or karta.wzor == "P"))) and (karta.wartosc == "4" or (suma_blokad == 0 or not cel_blokad == BOT.ABC)) and BOT.blok == 0 and (rzadana == "" or rzadana == karta.wartosc or karta.wartosc == "J"):
@@ -1094,6 +1140,7 @@ def makao():
                             BOT.ruchy = False
                             kartaS = karta.wartosc
                             kartaQ = karta.wzor
+                            await asyncio.sleep(1)
                             continue
                         elif karta.wartosc == kartaS:
                             if not (kartaS == "K" and (kartaQ == "H" or kartaQ == "P") and (kartaQ == "H" or kartaQ == "P")):
@@ -1137,14 +1184,16 @@ def makao():
                                     rzadana, rzadajacy = BOT.rzadana()
                                 stos_kladzenia.append(karta)
                                 BOT.karty.remove(karta)
+                                await asyncio.sleep(1)
                                 continue
             if BOT.ruchy:
+                await asyncio.sleep(1)
                 if (suma_blokad == 0 or not cel_blokad == BOT.ABC) and BOT.blok == 0:
                     if pobieranieTY:
                         for i in range(pobieranie23):
                             BOT.karty.append(stos_dobieranie[0])
                             stos_dobieranie.pop(0)
-                            if i == 0 and (BOT.karty[-1].wartosc == "2" or BOT.karty[-1].wartosc == "3"):
+                            if i == 0 and (BOT.karty[-1].wartosc == "2" or BOT.karty[-1].wartosc == "3") and ((BOT.karty[-1].wzor == stos_kladzenia[-1].wzor) or (BOT.karty[-1].wartosc == stos_kladzenia[-1].wartosc)):
                                 if BOT.karty[-1].wartosc == "2":
                                     pobieranie23 += 2
                                 else:
@@ -1191,15 +1240,18 @@ def makao():
                         if rzadajacy == BOT.ABC:
                             rzadajacy = ""
                             rzadana = ""
-                    
+                            
                     BOT.ruchy = False
+                    await asyncio.sleep(0)
                     continue
                 else:
-                    if suma_blokad != 0:
+                    if suma_blokad != 0 and cel_blokad == BOT.ABC:
                         BOT.blok = suma_blokad
                         suma_blokad = 0
+                        await asyncio.sleep(0.5)
                     BOT.blok -= 1
                     BOT.ruchy = False
+                    await asyncio.sleep(0)
                     continue
             kartaS = 0
             if koniectury == len(BOT.karty) and not BOT.ruchy:
@@ -1229,95 +1281,128 @@ def makao():
                         botC.ruchy = True
                     elif kolej == "C":
                         kolej = "T"
-                        ruchyT= True
+                        ruchyT = True
             koniectury = 0
-        if len(stos_dobieranie) > 0:
-            stos_dobieranie[0].zakrycie()
-            stos_dobieranie[0].rysuj(ekran, 540, 270)
-        else:
-            stos_dobieranie = stos_kladzenia.copy()
-            stos_kladzenia.append(stos_dobieranie[-1])
-            stos_dobieranie.pop(-1)
-        if rzadana != "":
-            Tekst_Rzadanie = pygwidgets.DisplayText(ekran, (50, 10), "Żądana wartość: " + rzadana, fontSize = 20)
-            Tekst_Rzadanie.show()
-            Tekst_Rzadanie.draw()
-        else:
-            Tekst_Rzadanie.hide()
-        if kolorA != "":
-            if kolorA == "H":
-                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: KIER", fontSize = 20)
-            elif kolorA == "D":
-                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: KARO", fontSize = 20)
-            elif kolorA == "C":
-                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: TREFLE", fontSize = 20)
-            elif kolorA == "P":
-                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: PIKI", fontSize = 20)
-            Tekst_Kolor.show()
-            Tekst_Kolor.draw()
-        else:
-            Tekst_Kolor.hide()
-        if pobieranie23 != 0:
-            Tekst_Dobieranie = pygwidgets.DisplayText(ekran, (50, 10), "Karty do dobrania (2, 3): " + str(pobieranie23), fontSize = 20)
-            Tekst_Dobieranie.show()
-            Tekst_Dobieranie.draw()
-        else:
-            Tekst_Dobieranie.hide()
-        if pobieranieK != 0:
-            Tekst_DobieranieK = pygwidgets.DisplayText(ekran, (50, 10), "Karty do dobrania (K): " + str(pobieranieK), fontSize = 20)
-            Tekst_DobieranieK.show()
-            Tekst_DobieranieK.draw()
-        else:
-            Tekst_DobieranieK.hide()
-        for przycisk in przyciski_A:
-            if pA:
-                przycisk.show()
-                przycisk.draw()
-            else:
-                przycisk.hide()
-        for przycisk in przyciski_J:
-            if rzadanie:
-                przycisk.show()
-                przycisk.draw()
-            else:
-                przycisk.hide()
-        for przycisk in przyciski_makao:
-            if kolej != "T":
-                przycisk.disable()
-            else:
-                przycisk.enable()
-            przycisk.show()
-            przycisk.draw()
-        for karta in twoje_karty:
-            karta.obrocenie()
-            karta.rysuj(ekran, 390 + (0 if len(twoje_karty) <= 1 else 240/(len(twoje_karty)-1)) * twoje_karty.index(karta), 500)
-        for karta in botA.karty:
-            karta.zakrycie()
-            karta.rysuj(ekran, 320, 160 + (0 if len(botA.karty) <= 1 else 240/(len(botA.karty)-1)) * botA.karty.index(karta), obrocenie = True)
-        for karta in botC.karty:
-            karta.zakrycie()
-            karta.rysuj(ekran, 680, 160 + (0 if len(botC.karty) <= 1 else 240/(len(botC.karty)-1)) * botC.karty.index(karta), obrocenie = True)
-        for karta in botB.karty:
-            karta.zakrycie()
-            karta.rysuj(ekran, 390 + (0 if len(botB.karty) <= 1 else 240/(len(botB.karty)-1)) * botB.karty.index(karta), 40)
-        if len(twoje_karty) == 0:
-            stan = "wygranamakao"
-            widzet()
-        elif len(botA.karty) == 0 or len(botB.karty) == 0 or len(botC.karty) == 0:
-            stan = "przegranamakao"
-            widzet()
-        stos_kladzenia[-1].obrocenie()
-        stos_kladzenia[-1].rysuj(ekran, 480, 270)
-        pygame.display.update()
-        if kolej != "T":
-            time.sleep(1)
         if t == 0:
             t = 1
         clock.tick(KLATKI_NA_SEKUNDE)
+        await asyncio.sleep(1/60)
+
+def _makao_runda():
+    global stos_dobieranie, stan, program, kolej, pA, stos_kladzenia, rzadana, kolorA, pobieranie23, pobieranieK, przyciski_A, przyciski_J, rzadanie, przyciski_makao, twoje_karty, suma_blokad, twoje_bloki, kartaS, t, pA, dobrana, Tekst_Kolor, Tekst_Rzadanie, Tekst_Dobieranie, Tekst_DobieranieK, przycisk_koniec_tury, przycisk_ponownie, przycisk_powrot, przycisk_kier, przycisk_karo, przycisk_trefl, przycisk_pik, przycisk_5, przycisk_6, przycisk_7, przycisk_8, przycisk_9, przycisk_10, ruchyT, kolejZmiana, pobieranieTY, pobieranieTYK, cel_blokad, botA, botB, botC, koniectury, rzadanie, x, a, kolej, rzadajacy
+    suma_blokad = 0
+    twoje_bloki = 0
+    kartaS = 0
+    t = 1
+    pA = False
+    dobrana = None
+    Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 20), "Wybrany kolor: #", fontSize = 20, fontName = moja_czcionka)
+    Tekst_Rzadanie = pygwidgets.DisplayText(ekran, (50, 20), "Rządana wartość: #", fontSize = 20, fontName = moja_czcionka)
+    Tekst_Dobieranie = pygwidgets.DisplayText(ekran, (100, 20), "Karty do dobrania (2, 3): #", fontSize = 20, fontName = moja_czcionka)
+    Tekst_DobieranieK = pygwidgets.DisplayText(ekran, (100, 20), "Karty do dobrania (K): #", fontSize = 20, fontName = moja_czcionka)
+    przycisk_koniec_tury = pygwidgets.TextButton(ekran, (50, 250), "Zakończ turę",
+                                                fontSize = 20, width = 200, height = 100, 
+                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    przycisk_ponownie = pygwidgets.TextButton(ekran, (50, 140), "Zagraj ponownie",
+                                            fontSize = 20, width = 200, height = 100, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    przycisk_powrot = pygwidgets.TextButton(ekran, (50, 30), "Powrót do menu",
+                                            fontSize = 20, width = 200, height = 100, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+
+    przycisk_kier = pygwidgets.TextButton(ekran, (50, 375), "kier",
+                                          fontSize = 40, width = 90, height = 50, 
+                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    przycisk_karo = pygwidgets.TextButton(ekran, (160, 375), "karo",
+                                        fontSize = 40, width = 90, height = 50, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    przycisk_trefl = pygwidgets.TextButton(ekran, (50, 450), "trefl",
+                                        fontSize = 40, width = 90, height = 50, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    przycisk_pik = pygwidgets.TextButton(ekran, (160, 450), "pik",
+                                        fontSize = 40, width = 90, height = 50, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+
+    przycisk_5 = pygwidgets.TextButton(ekran, (50, 375), "5",
+                                        fontSize = 40, width = 60, height = 50, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+
+    przycisk_6 = pygwidgets.TextButton(ekran, (120, 375), "6",
+                                        fontSize = 40, width = 60, height = 50, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+
+    przycisk_7 = pygwidgets.TextButton(ekran, (190, 375), "7",
+                                        fontSize = 40, width = 60, height = 50, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+
+    przycisk_8 = pygwidgets.TextButton(ekran, (50, 450), "8",
+                                        fontSize = 40, width = 60, height = 50, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    
+    przycisk_9 = pygwidgets.TextButton(ekran, (120, 450), "9",
+                                        fontSize = 40, width = 60, height = 50, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    
+    przycisk_10 = pygwidgets.TextButton(ekran, (190, 450), "10",
+                                        fontSize = 40, width = 60, height = 50, 
+                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        
+    przyciski_makao = [przycisk_koniec_tury, przycisk_ponownie, przycisk_powrot]
+    przyciski_A = [przycisk_kier, przycisk_karo, przycisk_trefl, przycisk_pik]
+    przyciski_J = [przycisk_5, przycisk_6, przycisk_7, przycisk_8, przycisk_9, przycisk_10]
+
+    stos_dobieranie = KARTY.copy()
+    random.shuffle(stos_dobieranie)
+    pygame.init()
+    pygame.display.set_caption("MAKAO")
+    twoje_karty = []
+    botA = MakaoBot("A")
+    botB = MakaoBot("B")
+    botC = MakaoBot("C")
+    boty = [botA, botB, botC]
+
+    for i in range(len(stos_dobieranie)):
+        if stos_dobieranie[i].wartosc in ["5", "6", "7", "8", "9", "10"]:
+            stos_kladzenia = [stos_dobieranie[i]]
+            stos_dobieranie.pop(i)
+            break
+    for i in range(5):
+        twoje_karty.append(stos_dobieranie[0])
+        stos_dobieranie.pop(0)
+        for bot in boty:
+            bot.karty.append(stos_dobieranie[0])
+            stos_dobieranie.pop(0)
+    program = True
+    ruchyT = True
+    kolej = "T"
+    cel_blokad = ""
+    koniectury = 0
+    kolorA = ""
+    pobieranieTY = False
+    pobieranieK = 0
+    pobieranieTYK = 0
+    pobieranie23 = 0
+    rzadana = ""
+    rzadajacy = ""
+    rzadanie = False
+    x = 1
+    a = ""
+    kolejZmiana = False
+    asyncio.run(main())
+
+def makao():
+    global restart_makao
+    while True:
+        restart_makao = False
+        _makao_runda()
+        if not restart_makao:
+            break
+
+
 
 def oczko():
-    Tekst_Przebito = pygwidgets.DisplayText(ekran, (50, 10), "PRZEBITO!" , fontSize = 20)
-    Tekst_Przebito_Bota = pygwidgets.DisplayText(ekran, (690, 10), "PRZEBITO!" , fontSize = 20)
+    Tekst_Przebito = pygwidgets.DisplayText(ekran, (150, 10), "PRZEBITO!" , fontSize = 20, fontName = moja_czcionka)
+    Tekst_Przebito_Bota = pygwidgets.DisplayText(ekran, (690, 10), "PRZEBITO!" , fontSize = 20, fontName = moja_czcionka)
     global stan, program
     koniec = False
     koniecB = False
@@ -1407,8 +1492,8 @@ def oczko():
             Tekst_Przebito_Bota.draw()
         else:
             Tekst_Przebito_Bota.hide()
-        Tekst_Punkty = pygwidgets.DisplayText(ekran, (50, 20), "Punkty: " + str(pula_punktow), fontSize = 20)
-        Tekst_Punkty_Bota = pygwidgets.DisplayText(ekran, (690, 20), "Punkty bota: " + str(pula_punktow_bota), fontSize = 20)
+        Tekst_Punkty = pygwidgets.DisplayText(ekran, (50, 10), "Punkty: " + str(pula_punktow), fontSize = 20, fontName = moja_czcionka)
+        Tekst_Punkty_Bota = pygwidgets.DisplayText(ekran, (540, 10), "Punkty bota: " + str(pula_punktow_bota), fontSize = 20, fontName = moja_czcionka)
         Tekst_Punkty.show()
         Tekst_Punkty_Bota.show()
         Tekst_Punkty.draw()
@@ -1478,11 +1563,13 @@ def gra_ponownie(gra):
         makao()
 
 def pasjans():
-    global stan, TLO, ekran
+    global stan, TLO, ekran, stos1, stos2, stos3, stos4, stos5, stos6, stos7
     stos_kiery = []
     stos_karo = []
     stos_trefle = []
     stos_piki = []
+    for karta in KARTY:
+        karta.zakrycie()
     random.shuffle(KARTY)
     stos1 = KARTY[0:1]
     stos2 = KARTY[1:3]
@@ -1596,12 +1683,12 @@ def pasjans():
             przycisk.show()
             przycisk.draw()
         rysuj_stos(1, wybrane_karty)
-        rysuj_stos(2)
-        rysuj_stos(3)
-        rysuj_stos(4)
-        rysuj_stos(5)
-        rysuj_stos(6)
-        rysuj_stos(7)
+        rysuj_stos(2, wybrane_karty)
+        rysuj_stos(3, wybrane_karty)
+        rysuj_stos(4, wybrane_karty)
+        rysuj_stos(5, wybrane_karty)
+        rysuj_stos(6, wybrane_karty)
+        rysuj_stos(7, wybrane_karty)
         rysuj_stos_odrzucony(stos_odrzucony, wybrane_karty)
         rysuj_stos_odrzucony2(stos_odrzucony2, wybrane_karty)
         rysuj_stos_wzor(stos_kiery, 500, wybrane_karty)
@@ -1614,9 +1701,22 @@ def pasjans():
             widzet()
             wygranadzwiek.play()
 
+def utworz_wycentrowany_naglowek(tekst):
+    rozmiar_czcionki = 60
+    czcionka = pygame.font.Font(moja_czcionka, rozmiar_czcionki)
+    szerokosc_tekstu = czcionka.size(tekst)[0]
+    x = (SZEROKOSC - szerokosc_tekstu) // 2
+    return pygwidgets.DisplayText(
+        ekran, (x, 80), tekst,
+        fontSize=rozmiar_czcionki,
+        width=szerokosc_tekstu,
+        height=100,
+        fontName=moja_czcionka
+    )
+
 def widzet():
-    global stan, TLO, Tekst_Oczko_Ponownie, Tekst_Makao_Ponownie
-    Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś # miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+    global program, restart_makao, stan, TLO, Tekst_Oczko_Ponownie, Tekst_Makao_Ponownie
+    Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś # miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1697,9 +1797,13 @@ def widzet():
                 for przycisk in przyciski_koniec_ponownie:
                     if przycisk.handleEvent(event):
                         if przycisk == przyciski_koniec_ponownie[0]:
-                            makao()
+                            restart_makao = True
+                            program = False
+                            return
                         elif przycisk == przyciski_koniec_ponownie[1]:
                             stan = "gry"
+                            program = False
+                            return
             elif stan == "kiery_1" or stan == "kiery_2" or stan == "kiery_3" or stan == "kiery_4":
                 for przycisk in przyciski_koniec_ponownie:
                     if przycisk.handleEvent(event):
@@ -1746,13 +1850,13 @@ def widzet():
                 przycisk.show()
                 przycisk.draw()
             if stan == "kiery_1":
-                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 1 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 1 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
             elif stan == "kiery_2":
-                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 2 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 2 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
             elif stan == "kiery_3":
-                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 3 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 3 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
             else:
-                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 4 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 4 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
             Tekst_Kiery_Ponownie.show()
             Tekst_Kiery_Ponownie.draw()
         else:
@@ -1772,11 +1876,12 @@ def widzet():
                 przycisk.show()
                 przycisk.draw()
             if stan == "wygranaoczko":
-                Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Gratulacje wygranej! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+                tekst_wyniku = "Gratulacje wygranej!"
             elif stan == "przegranaoczko":
-                Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Przegrałeś! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+                tekst_wyniku = "Przegrałeś!"
             else:
-                Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zremisowałeś! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+                tekst_wyniku = "Zremisowałeś"
+            Tekst_Oczko_Ponownie = utworz_wycentrowany_naglowek(tekst_wyniku)
             Tekst_Oczko_Ponownie.show()
             Tekst_Oczko_Ponownie.draw()
         else:
@@ -1787,9 +1892,10 @@ def widzet():
                 przycisk.show()
                 przycisk.draw()
             if stan == "wygranamakao":
-                Tekst_Makao_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Gratulacje wygranej! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+                tekst_wyniku = "Gratulacje wygranej!"
             else:
-                Tekst_Makao_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Przegrałeś! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100)
+                tekst_wyniku = "Przegrałeś!"
+            Tekst_Makao_Ponownie = utworz_wycentrowany_naglowek(tekst_wyniku)
             Tekst_Makao_Ponownie.show()
             Tekst_Makao_Ponownie.draw()
         else:
