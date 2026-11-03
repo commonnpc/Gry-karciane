@@ -1290,7 +1290,10 @@ def _makao_runda():
     stos_dobieranie = KARTY.copy()
     random.shuffle(stos_dobieranie)
     pygame.init()
-    pygame.display.set_caption("MAKAO")
+    if jezyk == "PL":
+        pygame.display.set_caption("MAKAO")
+    else:
+        pygame.display.set_caption("MACAU")
     twoje_karty = []
     botA = MakaoBot("A")
     botB = MakaoBot("B")
