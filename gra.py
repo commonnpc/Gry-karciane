@@ -8,6 +8,7 @@ from Karta import *
 from SercaBot import *
 import asyncio
 
+jezyk = "EN"
 moja_czcionka = "czcionka.ttf"
 stan = "menu"
 restart_makao = False
@@ -25,6 +26,7 @@ kartydzwiek.set_volume(0.5)
 wygranadzwiek = pygame.mixer.Sound("match_xylophone_6.wav")
 wygranadzwiek.set_volume(0.7)
 BLOKADA = pygame.transform.smoothscale(pygame.image.load(f'BLOK.png'), (76, 76))
+STRZALA = pygame.transform.smoothscale(pygame.image.load(f'STRZALA.png'), (56, 52))
 WYBRANA = pygame.transform.smoothscale(pygame.image.load(f'WYBRANA.png'), (40, 60))
 KARTY = []
 WZORY = ['H', 'D', 'C', 'P']
@@ -38,133 +40,22 @@ KARTY_9_I_WYZEJ = []
 for karta in KARTY:
     if karta.wartosc in ["9", "10", "J", "Q", "K", "A"]:
         KARTY_9_I_WYZEJ.append(karta)
-Przycisk_Wroc_Gra = pygwidgets.TextButton(ekran, (500, 450), "Wróc do menu gier",
-                                        fontSize = 20, width = 200, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Od_Nowa_Gra = pygwidgets.TextButton(ekran, (100, 450), "Spróbuj ponownie",
-                                        fontSize = 20, width = 200, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Wroc_Z_Menu_Gier = pygwidgets.TextButton(ekran, (200 ,450), "Wróć do menu głównego",
-                                          fontSize = 20, width = 400, height = 100, 
-                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Pasjans = pygwidgets.TextButton(ekran, (100,100), "Pasjans",
-                                          fontSize = 30, width = 250, height = 100, 
-                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Oczko = pygwidgets.TextButton(ekran, (450,100), "Oczko",
-                                          fontSize = 30, width = 250, height = 100, 
-                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Makao = pygwidgets.TextButton(ekran, (100,250), "Makao",
-                                          fontSize = 30, width = 250, height = 100, 
-                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Serca = pygwidgets.TextButton(ekran, (450,250), "Serca",
-                                          fontSize = 30, width = 250, height = 100, 
-                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Graj = pygwidgets.TextButton(ekran, (200, 190), "Graj",
-                                          fontSize = 30, width = 400, height = 100, 
-                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Opcje = pygwidgets.TextButton(ekran, (200, 320), "Opcje",
-                                        fontSize = 30, width = 400, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Wyjscie = pygwidgets.TextButton(ekran, (200, 450), "Wyjście",
-                                        fontSize = 30, width = 400, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Tekst_Tytul = pygwidgets.DisplayText(ekran, (200, 50), "Gry Karciane", 
-                                     fontSize = 65, width = 400, height = 100, fontName = moja_czcionka)
-
-Przycisk_Zasady = pygwidgets.TextButton(ekran, (200, 150), "Zasady",
-                                        fontSize = 30, width = 400, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Wroc = pygwidgets.TextButton(ekran, (200, 300), "Wróć",
-                                        fontSize = 30, width = 400, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 450), "Autorzy",
-                                        fontSize = 30, width = 400, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 80), "Tryb ciemny", value = False, fontSize = 60, size = 50, fontName = moja_czcionka)
-
-Przycisk_Wroc_Do_Menu_Z_Grami = pygwidgets.TextButton(ekran, (50, 450), "Wróć do menu z grami",
-                                                        fontSize = 20, width = 300, height = 100, 
-                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Zagraj_Ponownie = pygwidgets.TextButton(ekran, (450, 450), "Zagraj ponownie",
-                                                        fontSize = 20, width = 300, height = 100, 
-                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Tekst_Pasjans_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Gratulacje wygranej!", 
-                                     fontSize = 60, width = 400, height = 100, fontName = moja_czcionka)
-                                                        
-Tekst_ZasadyPasjans1 = pygwidgets.DisplayText(ekran, (50, 80), "Aby przenieść kartę na drugi stos naciśnij ją prawym przyciskiem myszy, po czym", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
-Tekst_ZasadyPasjans2 = pygwidgets.DisplayText(ekran, (50, 110), "tym samym przyciskiem naciśnij stos na który chcesz go przełożyć. Jezeli chcesz tą ", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
-Tekst_ZasadyPasjans3 = pygwidgets.DisplayText(ekran, (50, 140), "kartę przełożyć na stosy znaków naciśnij ją lewym przyciskiem myszy. Aby przełozyć ", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
-Tekst_ZasadyPasjans4 = pygwidgets.DisplayText(ekran, (50, 170), "kartę ze stosu kart niewykorzystanych, naciśnij klawisz spacja.", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
-
-Tekst_ZasadyOczko1 = pygwidgets.DisplayText(ekran, (50, 80), "Aby pobrać kartę, naciśnij lewy przycisk myszy, a żeby zakończyć turę naciśnij prawy", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
-Tekst_ZasadyOczko2 = pygwidgets.DisplayText(ekran, (50, 110), "przycisk myszy. Twoja tura kończy się automatycznie jezeli przebijesz 21 punktów.", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
-Tekst_ZasadyOczko3 = pygwidgets.DisplayText(ekran, (50, 140), "Dla sprawiedliwości bot nie zna twoich kart i nie wpływają one na jego decyzje.", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
-
-Tekst_ZasadyMakao1 = pygwidgets.DisplayText(ekran, (50, 80), "Aby pobrać kartę ze stosu, naciśnij na sos kart odwróconych lewym przyciskiem", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
-Tekst_ZasadyMakao2 = pygwidgets.DisplayText(ekran, (50, 110), "myszy, a by położyć kartę na stos naciśnij ją prawym przyciskiem myszy.", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
-Tekst_ZasadyMakao3 = pygwidgets.DisplayText(ekran, (50, 140), "By zakończyć turę, naciśnij przycisk Zakończ Turę.", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
-
-Tekst_Autorzy1 = pygwidgets.DisplayText(ekran, (50, 80), "Gra - Bartosz Kujawa", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
-Tekst_Autorzy2 = pygwidgets.DisplayText(ekran, (50, 110), "Efekty Muzyczne - pakiet 400 Sounds Pack", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
-Tekst_Autorzy3 = pygwidgets.DisplayText(ekran, (50, 140), "Muzyka - pakiet Cozy Tunes", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
-Tekst_Autorzy4 = pygwidgets.DisplayText(ekran, (50, 170), "Grafika - pakiet Pixel Poker Cards", fontSize = 25, width = 700, height = 400, fontName = moja_czcionka)
-
-Przycisk_Wroc_Z_Autorow = pygwidgets.TextButton(ekran, (200, 450), "Wróć",
-                                                        fontSize = 30, width = 400, height = 100, 
-                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Zasady_Wroc = pygwidgets.TextButton(ekran, (200, 450), "Wróć",
-                                        fontSize = 30, width = 400, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Zasady_Pasjans = pygwidgets.TextButton(ekran, (100, 100), "Zasady pasjansa", fontSize = 30, 
-                                        width = 250, height = 100, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Zasady_Oczko = pygwidgets.TextButton(ekran, (450, 100), "Zasady oczka", fontSize = 30, 
-                                              width = 250, height = 100, 
-                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-Przycisk_Zasady_Makao = pygwidgets.TextButton(ekran, (100, 250), "Zasady makao", fontSize = 30, 
-                                              width = 250, height = 100, 
-                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-
-
-
-Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 30, width = 400, height = 100, fontName = moja_czcionka)
-Tekst_Makao_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
-
-przyciski_autorzy = [Przycisk_Wroc_Z_Autorow]
-przyciski_koniec_ponownie = [Przycisk_Zagraj_Ponownie, Przycisk_Wroc_Do_Menu_Z_Grami]
-przyciski = [Przycisk_Od_Nowa_Gra, Przycisk_Wroc_Gra]
-przyciski_gry = [Przycisk_Wroc_Z_Menu_Gier, Przycisk_Pasjans, Przycisk_Oczko, Przycisk_Makao, Przycisk_Serca]
-przyciski_menu = [Przycisk_Graj, Przycisk_Opcje, Przycisk_Wyjscie]
-przyciski_opcje = [Przycisk_Zasady, Przycisk_Wroc, Przycisk_Autorzy]
-przyciski_zasady = [Przycisk_Zasady_Wroc, Przycisk_Zasady_Pasjans, Przycisk_Zasady_Oczko, Przycisk_Zasady_Makao]
 pygame.init()
-pygame.display.set_caption("Zbiór gier")
 
 def serca(Tpunkty, Apunkty, Bpunkty, Cpunkty):
     global stos_dobieranie
-    przycisk_ponownie = pygwidgets.TextButton(ekran, (50, 390), "Zagraj ponownie",
+    if jezyk == "PL":
+        przycisk_ponownie = pygwidgets.TextButton(ekran, (50, 390), "Zagraj ponownie",
                                                 fontSize = 20, width = 200, height = 100, 
                                                 upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-    przycisk_powrot = pygwidgets.TextButton(ekran, (50, 280), "Powrót do menu",
+        przycisk_powrot = pygwidgets.TextButton(ekran, (50, 280), "Powrót do menu",
+                                                fontSize = 20, width = 200, height = 100, 
+                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    else:
+        przycisk_ponownie = pygwidgets.TextButton(ekran, (50, 390), "Play again",
+                                                fontSize = 20, width = 200, height = 100, 
+                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        przycisk_powrot = pygwidgets.TextButton(ekran, (50, 280), "Return to menu",
                                                 fontSize = 20, width = 200, height = 100, 
                                                 upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
     przyciski_serca = [przycisk_ponownie, przycisk_powrot]
@@ -195,7 +86,10 @@ def serca(Tpunkty, Apunkty, Bpunkty, Cpunkty):
     twoje_karty = tkarty.copy()
     tkarty = []
     pygame.init()
-    pygame.display.set_caption("SERCA")
+    if jezyk == "PL":
+        pygame.display.set_caption("SERCA")
+    else:
+        pygame.display.set_caption("HEARTS")
     program = True
     kiery = False
     wystawione_karty = {"T" : None, "A" : None, "B" : None, "C" : None}
@@ -421,19 +315,33 @@ def serca(Tpunkty, Apunkty, Bpunkty, Cpunkty):
         przycisk_ponownie.draw()
         przycisk_powrot.show()
         przycisk_powrot.draw()
-        Tekst_PunktyA = pygwidgets.DisplayText(ekran, (40, 20), "Punkty bota po lewej: " + str(Apunkty), fontSize = 15, fontName = moja_czcionka)
-        Tekst_PunktyB = pygwidgets.DisplayText(ekran, (40, 80), "Punkty bota na górze: " + str(Bpunkty), fontSize = 15, fontName = moja_czcionka)
-        Tekst_PunktyC = pygwidgets.DisplayText(ekran, (40, 140), "Punkty bota po prawej: " + str(Cpunkty), fontSize = 15, fontName = moja_czcionka)
-        Tekst_PunktyT = pygwidgets.DisplayText(ekran, (40, 200), "Twoje punkty: " + str(Tpunkty), fontSize = 15, fontName = moja_czcionka)
-        Tekst_Tymczasowe_PunktyA = pygwidgets.DisplayText(ekran, (40, 50), "Punkty bota po lewej: " + str(ApunktyNieostateczne) + " (w tej rundzie)", fontSize = 15, fontName = moja_czcionka)
-        Tekst_Tymczasowe_PunktyB = pygwidgets.DisplayText(ekran, (40, 110), "Punkty bota na górze: " + str(BpunktyNieostateczne) + " (w tej rundzie)", fontSize = 15, fontName = moja_czcionka)
-        Tekst_Tymczasowe_PunktyC = pygwidgets.DisplayText(ekran, (40, 170), "Punkty bota po prawej: " + str(CpunktyNieostateczne) + " (w tej rundzie)", fontSize = 15, fontName = moja_czcionka)
-        Tekst_Tymczasowe_PunktyT = pygwidgets.DisplayText(ekran, (40, 230), "Twoje punkty: " + str(TpunktyNieostateczne) + " (w tej rundzie)", fontSize = 15, fontName = moja_czcionka)
+        if jezyk == "PL":
+            Tekst_PunktyA = pygwidgets.DisplayText(ekran, (40, 20), "Punkty bota po lewej: " + str(Apunkty), fontSize = 15, fontName = moja_czcionka)
+            Tekst_PunktyB = pygwidgets.DisplayText(ekran, (40, 80), "Punkty bota na górze: " + str(Bpunkty), fontSize = 15, fontName = moja_czcionka)
+            Tekst_PunktyC = pygwidgets.DisplayText(ekran, (40, 140), "Punkty bota po prawej: " + str(Cpunkty), fontSize = 15, fontName = moja_czcionka)
+            Tekst_PunktyT = pygwidgets.DisplayText(ekran, (40, 200), "Twoje punkty: " + str(Tpunkty), fontSize = 15, fontName = moja_czcionka)
+            Tekst_Tymczasowe_PunktyA = pygwidgets.DisplayText(ekran, (40, 50), "Punkty bota po lewej: " + str(ApunktyNieostateczne) + " (w tej rundzie)", fontSize = 15, fontName = moja_czcionka)
+            Tekst_Tymczasowe_PunktyB = pygwidgets.DisplayText(ekran, (40, 110), "Punkty bota na górze: " + str(BpunktyNieostateczne) + " (w tej rundzie)", fontSize = 15, fontName = moja_czcionka)
+            Tekst_Tymczasowe_PunktyC = pygwidgets.DisplayText(ekran, (40, 170), "Punkty bota po prawej: " + str(CpunktyNieostateczne) + " (w tej rundzie)", fontSize = 15, fontName = moja_czcionka)
+            Tekst_Tymczasowe_PunktyT = pygwidgets.DisplayText(ekran, (40, 230), "Twoje punkty: " + str(TpunktyNieostateczne) + " (w tej rundzie)", fontSize = 15, fontName = moja_czcionka)
+        else:
+            Tekst_PunktyA = pygwidgets.DisplayText(ekran, (40, 20), "Left bot points: " + str(Apunkty), fontSize = 15, fontName = moja_czcionka)
+            Tekst_PunktyB = pygwidgets.DisplayText(ekran, (40, 80), "Top bot points: " + str(Bpunkty), fontSize = 15, fontName = moja_czcionka)
+            Tekst_PunktyC = pygwidgets.DisplayText(ekran, (40, 140), "Right bot points: " + str(Cpunkty), fontSize = 15, fontName = moja_czcionka)
+            Tekst_PunktyT = pygwidgets.DisplayText(ekran, (40, 200), "Your points: " + str(Tpunkty), fontSize = 15, fontName = moja_czcionka)
+            Tekst_Tymczasowe_PunktyA = pygwidgets.DisplayText(ekran, (40, 50), "Left bot points: " + str(ApunktyNieostateczne) + " (in this round)", fontSize = 15, fontName = moja_czcionka)
+            Tekst_Tymczasowe_PunktyB = pygwidgets.DisplayText(ekran, (40, 110), "Top bot points: " + str(BpunktyNieostateczne) + " (in this round)", fontSize = 15, fontName = moja_czcionka)
+            Tekst_Tymczasowe_PunktyC = pygwidgets.DisplayText(ekran, (40, 170), "Right bot points: " + str(CpunktyNieostateczne) + " (in this round)", fontSize = 15, fontName = moja_czcionka)
+            Tekst_Tymczasowe_PunktyT = pygwidgets.DisplayText(ekran, (40, 230), "Your points: " + str(TpunktyNieostateczne) + " (in this round)", fontSize = 15, fontName = moja_czcionka)
+        
         teksty = [Tekst_PunktyA, Tekst_PunktyB, Tekst_PunktyC, Tekst_PunktyT, Tekst_Tymczasowe_PunktyA, Tekst_Tymczasowe_PunktyB, Tekst_Tymczasowe_PunktyC, Tekst_Tymczasowe_PunktyT]
         for tekst in teksty:
             tekst.show()
             tekst.draw()
-        Tekst_wymiana = pygwidgets.DisplayText(ekran, (50, 520), "Karty do wymiany: " + str(3 - mieszanieT), fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
+        if jezyk == "PL":
+            Tekst_wymiana = pygwidgets.DisplayText(ekran, (50, 520), "Karty do wymiany: " + str(3 - mieszanieT), fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
+        else:
+            Tekst_wymiana = pygwidgets.DisplayText(ekran, (50, 520), "Cards to trade: " + str(3 - mieszanieT), fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
         if mieszanieT != 3:
             Tekst_wymiana.show()
             Tekst_wymiana.draw()
@@ -534,64 +442,52 @@ async def makao_rysowanie():
             stos_dobieranie = stos_kladzenia.copy()
             stos_kladzenia.append(stos_dobieranie[-1])
             stos_dobieranie.pop(-1)
-        indeks_srodkowej_karty_A = max(0, (len(botA.karty) - 1) // 2)
-        y_srodkowej_karty_A = int(
-            160 + (0 if len(botA.karty) <= 1 else 240 / (len(botA.karty) - 1) * indeks_srodkowej_karty_A)
-        )
-        if botA.blok != 0:
-            for i in range(botA.blok):
-                ekran.blit(BLOKADA, (380 + 20 * i, y_srodkowej_karty_A - 18))
-
-        indeks_srodkowej_karty_B = max(0, (len(botB.karty) - 1) // 2)
-        x_srodkowej_karty_B = int(
-            390 + (0 if len(botB.karty) <= 1 else 240 / (len(botB.karty) - 1) * indeks_srodkowej_karty_B)
-        )
-        if botB.blok != 0:
-            for i in range(botB.blok):
-                ekran.blit(BLOKADA, (x_srodkowej_karty_B - 18, 105 + 20 * i))
-
-        indeks_srodkowej_karty_C = max(0, (len(botC.karty) - 1) // 2)
-        y_srodkowej_karty_C = int(
-            160 + (0 if len(botC.karty) <= 1 else 240 / (len(botC.karty) - 1) * indeks_srodkowej_karty_C)
-        )
-        if botC.blok != 0:
-            for i in range(botC.blok):
-                ekran.blit(BLOKADA, (604 - 20 * i, y_srodkowej_karty_C - 18))
-
-        indeks_srodkowej_karty_T = max(0, (len(twoje_karty) - 1) // 2)
-        x_srodkowej_karty_T = int(
-            390 + (0 if len(twoje_karty) <= 1 else 240 / (len(twoje_karty) - 1) * indeks_srodkowej_karty_T)
-        )
-        if twoje_bloki != 0:
-            for i in range(twoje_bloki):
-                ekran.blit(BLOKADA, (x_srodkowej_karty_T - 18, 419 - 20 * i))
         if rzadana != "":
-            Tekst_Rzadanie = pygwidgets.DisplayText(ekran, (50, 10), "Żądana wartość: " + rzadana, fontSize = 15, fontName = moja_czcionka)
+            if jezyk == "PL":
+                Tekst_Rzadanie = pygwidgets.DisplayText(ekran, (50, 10), "Żądana wartość: " + rzadana, fontSize = 15, fontName = moja_czcionka)
+            else:
+                Tekst_Rzadanie = pygwidgets.DisplayText(ekran, (50, 10), "Desired value: " + rzadana, fontSize = 15, fontName = moja_czcionka)
             Tekst_Rzadanie.show()
             Tekst_Rzadanie.draw()
         else:
             Tekst_Rzadanie.hide()
         if kolorA != "":
-            if kolorA == "H":
-                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: KIER", fontSize = 15, fontName = moja_czcionka)
-            elif kolorA == "D":
-                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: KARO", fontSize = 15, fontName = moja_czcionka)
-            elif kolorA == "C":
-                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: TREFLE", fontSize = 15, fontName = moja_czcionka)
-            elif kolorA == "P":
-                Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: PIKI", fontSize = 15, fontName = moja_czcionka)
+            if jezyk == "PL":
+                if kolorA == "H":
+                    Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: KIER", fontSize = 15, fontName = moja_czcionka)
+                elif kolorA == "D":
+                    Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: KARO", fontSize = 15, fontName = moja_czcionka)
+                elif kolorA == "C":
+                    Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: TREFLE", fontSize = 15, fontName = moja_czcionka)
+                elif kolorA == "P":
+                    Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Wybrany kolor: PIKI", fontSize = 15, fontName = moja_czcionka)
+            else:
+                if kolorA == "H":
+                    Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Chosen color: HEARTS", fontSize = 15, fontName = moja_czcionka)
+                elif kolorA == "D":
+                    Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Chosen color: DIAMONDS", fontSize = 15, fontName = moja_czcionka)
+                elif kolorA == "C":
+                    Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Chosen color: CLUBS", fontSize = 15, fontName = moja_czcionka)
+                elif kolorA == "P":
+                    Tekst_Kolor = pygwidgets.DisplayText(ekran, (50, 10), "Chosen color: SPADES", fontSize = 15, fontName = moja_czcionka)    
             Tekst_Kolor.show()
             Tekst_Kolor.draw()
         else:
             Tekst_Kolor.hide()
         if pobieranie23 != 0:
-            Tekst_Dobieranie = pygwidgets.DisplayText(ekran, (50, 10), "Karty do dobrania (2, 3): " + str(pobieranie23), fontSize = 15, fontName = moja_czcionka)
+            if jezyk == "PL":
+                Tekst_Dobieranie = pygwidgets.DisplayText(ekran, (50, 10), "Karty do dobrania (2, 3): " + str(pobieranie23), fontSize = 15, fontName = moja_czcionka)
+            else:
+                Tekst_Dobieranie = pygwidgets.DisplayText(ekran, (50, 10), "Cards to draw (2, 3): " + str(pobieranie23), fontSize = 15, fontName = moja_czcionka)
             Tekst_Dobieranie.show()
             Tekst_Dobieranie.draw()
         else:
             Tekst_Dobieranie.hide()
         if pobieranieK != 0:
-            Tekst_DobieranieK = pygwidgets.DisplayText(ekran, (50, 10), "Karty do dobrania (K): " + str(pobieranieK), fontSize = 15, fontName = moja_czcionka)
+            if jezyk == "PL":
+                Tekst_DobieranieK = pygwidgets.DisplayText(ekran, (50, 10), "Karty do dobrania (K): " + str(pobieranieK), fontSize = 15, fontName = moja_czcionka)
+            else:
+                Tekst_DobieranieK = pygwidgets.DisplayText(ekran, (50, 10), "Cards to draw (K): " + str(pobieranieK), fontSize = 15, fontName = moja_czcionka)
             Tekst_DobieranieK.show()
             Tekst_DobieranieK.draw()
         else:
@@ -627,6 +523,22 @@ async def makao_rysowanie():
         for karta in botB.karty:
             karta.zakrycie()
             karta.rysuj(ekran, 390 + (0 if len(botB.karty) <= 1 else 240/(len(botB.karty)-1)) * botB.karty.index(karta), 40)
+        if botA.blok != 0:
+            ekran.blit(BLOKADA, (311, 261))
+        if botC.blok != 0:
+            ekran.blit(BLOKADA, (671, 261))
+        if twoje_bloki != 0:
+            ekran.blit(BLOKADA, (501, 481))
+        if botB.blok != 0:
+            ekran.blit(BLOKADA, (501, 21))
+        if kolej == "T" and twoje_bloki == 0:
+            ekran.blit(pygame.transform.rotate(STRZALA, 180), (502, 434))
+        if kolej == "A" and botA.blok == 0:
+            ekran.blit(pygame.transform.rotate(STRZALA, 90), (394, 272))
+        if kolej == "B" and botB.blok == 0:
+            ekran.blit(STRZALA, (502, 114))
+        if kolej == "C" and botC.blok == 0:
+            ekran.blit(pygame.transform.rotate(STRZALA, 270), (614, 272))
         if len(twoje_karty) == 0:
             stan = "wygranamakao"
             widzet()
@@ -665,11 +577,11 @@ async def makao_gra():
                                             przycisk.enable()
                                         await asyncio.sleep(0)
                                         while a == "":
-                                            if stos_dobieranie[0].prostokat.collidepoint(pygame.mouse.get_pos()):
-                                                a = "dobieranie"
-                                            elif twoje_karty[-1].prostokat.collidepoint(pygame.mouse.get_pos()):
-                                                a = "podajdalej"
-                                            await asyncio.sleep(0.01)
+                                            if stos_dobieranie[0].prostokat.topleft != twoje_karty[-1].prostokat.topleft:
+                                                if stos_dobieranie[0].prostokat.collidepoint(pygame.mouse.get_pos()):
+                                                    a = "dobieranie"
+                                                elif twoje_karty[-1].prostokat.collidepoint(pygame.mouse.get_pos()):
+                                                    a = "podajdalej"
                                         for przycisk in przyciski_makao:
                                             przycisk.disable()
                                         if a == "podajdalej":
@@ -698,11 +610,11 @@ async def makao_gra():
                                             przycisk.enable()
                                         await asyncio.sleep(0)
                                         while a == "":
-                                            if stos_dobieranie[0].prostokat.collidepoint(pygame.mouse.get_pos()):
-                                                a = "dobieranie"
-                                            elif twoje_karty[-1].prostokat.collidepoint(pygame.mouse.get_pos()):
-                                                a = "podajdalej"
-                                            await asyncio.sleep(0.01)
+                                            if stos_dobieranie[0].prostokat.topleft != twoje_karty[-1].prostokat.topleft:
+                                                if stos_dobieranie[0].prostokat.collidepoint(pygame.mouse.get_pos()):
+                                                    a = "dobieranie"
+                                                elif twoje_karty[-1].prostokat.collidepoint(pygame.mouse.get_pos()):
+                                                    a = "podajdalej"
                                         for przycisk in przyciski_makao:
                                             przycisk.disable()
                                         if a == "podajdalej":
@@ -940,7 +852,7 @@ async def makao_gra():
                     if przycisk == przyciski_makao[0] and kolej == "T" and not pA and not rzadanie:
                         if not ruchyT or twoje_bloki != 0 or (suma_blokad != 0 and cel_blokad == "T"):
                             if suma_blokad != 0 and cel_blokad == "T":
-                                twoje_bloki == suma_blokad
+                                twoje_bloki = suma_blokad
                                 suma_blokad = 0
                             if kolejZmiana:
                                 kolej = "C"
@@ -1300,52 +1212,76 @@ def _makao_runda():
     Tekst_Rzadanie = pygwidgets.DisplayText(ekran, (50, 20), "Rządana wartość: #", fontSize = 20, fontName = moja_czcionka)
     Tekst_Dobieranie = pygwidgets.DisplayText(ekran, (100, 20), "Karty do dobrania (2, 3): #", fontSize = 20, fontName = moja_czcionka)
     Tekst_DobieranieK = pygwidgets.DisplayText(ekran, (100, 20), "Karty do dobrania (K): #", fontSize = 20, fontName = moja_czcionka)
-    przycisk_koniec_tury = pygwidgets.TextButton(ekran, (50, 250), "Zakończ turę",
+    if jezyk == "PL":
+        przycisk_koniec_tury = pygwidgets.TextButton(ekran, (50, 250), "Zakończ turę",
+                                                    fontSize = 20, width = 200, height = 100, 
+                                                    upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        przycisk_ponownie = pygwidgets.TextButton(ekran, (50, 140), "Zagraj ponownie",
                                                 fontSize = 20, width = 200, height = 100, 
                                                 upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-    przycisk_ponownie = pygwidgets.TextButton(ekran, (50, 140), "Zagraj ponownie",
-                                            fontSize = 20, width = 200, height = 100, 
-                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-    przycisk_powrot = pygwidgets.TextButton(ekran, (50, 30), "Powrót do menu",
-                                            fontSize = 20, width = 200, height = 100, 
-                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        przycisk_powrot = pygwidgets.TextButton(ekran, (50, 30), "Powrót do menu",
+                                                fontSize = 20, width = 200, height = 100, 
+                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
-    przycisk_kier = pygwidgets.TextButton(ekran, (50, 375), "kier",
-                                          fontSize = 40, width = 90, height = 50, 
-                                          upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-    przycisk_karo = pygwidgets.TextButton(ekran, (160, 375), "karo",
-                                        fontSize = 40, width = 90, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-    przycisk_trefl = pygwidgets.TextButton(ekran, (50, 450), "trefl",
-                                        fontSize = 40, width = 90, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-    przycisk_pik = pygwidgets.TextButton(ekran, (160, 450), "pik",
-                                        fontSize = 40, width = 90, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        przycisk_kier = pygwidgets.TextButton(ekran, (50, 375), "kier",
+                                            fontSize = 40, width = 90, height = 50, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        przycisk_karo = pygwidgets.TextButton(ekran, (160, 375), "karo",
+                                            fontSize = 40, width = 90, height = 50, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        przycisk_trefl = pygwidgets.TextButton(ekran, (50, 450), "trefl",
+                                            fontSize = 40, width = 90, height = 50, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        przycisk_pik = pygwidgets.TextButton(ekran, (160, 450), "pik",
+                                            fontSize = 40, width = 90, height = 50, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    else:
+        przycisk_koniec_tury = pygwidgets.TextButton(ekran, (50, 250), "End your turn",
+                                                    fontSize = 20, width = 200, height = 100, 
+                                                    upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        przycisk_ponownie = pygwidgets.TextButton(ekran, (50, 140), "Play again",
+                                                fontSize = 20, width = 200, height = 100, 
+                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        przycisk_powrot = pygwidgets.TextButton(ekran, (50, 30), "Return to menu",
+                                                fontSize = 20, width = 200, height = 100, 
+                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        przycisk_kier = pygwidgets.TextButton(ekran, (50, 375), "hearts",
+                                            fontSize = 40, width = 90, height = 50, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        przycisk_karo = pygwidgets.TextButton(ekran, (160, 375), "diamonds",
+                                            fontSize = 40, width = 90, height = 50, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        przycisk_trefl = pygwidgets.TextButton(ekran, (50, 450), "clubs",
+                                            fontSize = 40, width = 90, height = 50, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        przycisk_pik = pygwidgets.TextButton(ekran, (160, 450), "spades",
+                                            fontSize = 40, width = 90, height = 50, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
     przycisk_5 = pygwidgets.TextButton(ekran, (50, 375), "5",
-                                        fontSize = 40, width = 60, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+                                            fontSize = 40, width = 60, height = 50, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
     przycisk_6 = pygwidgets.TextButton(ekran, (120, 375), "6",
-                                        fontSize = 40, width = 60, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+                                            fontSize = 40, width = 60, height = 50, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
     przycisk_7 = pygwidgets.TextButton(ekran, (190, 375), "7",
-                                        fontSize = 40, width = 60, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+                                            fontSize = 40, width = 60, height = 50, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
 
     przycisk_8 = pygwidgets.TextButton(ekran, (50, 450), "8",
-                                        fontSize = 40, width = 60, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-    
+                                            fontSize = 40, width = 60, height = 50, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        
     przycisk_9 = pygwidgets.TextButton(ekran, (120, 450), "9",
-                                        fontSize = 40, width = 60, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
-    
+                                            fontSize = 40, width = 60, height = 50, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+        
     przycisk_10 = pygwidgets.TextButton(ekran, (190, 450), "10",
-                                        fontSize = 40, width = 60, height = 50, 
-                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+                                            fontSize = 40, width = 60, height = 50, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    
         
     przyciski_makao = [przycisk_koniec_tury, przycisk_ponownie, przycisk_powrot]
     przyciski_A = [przycisk_kier, przycisk_karo, przycisk_trefl, przycisk_pik]
@@ -1398,11 +1334,30 @@ def makao():
         if not restart_makao:
             break
 
-
-
 def oczko():
-    Tekst_Przebito = pygwidgets.DisplayText(ekran, (150, 10), "PRZEBITO!" , fontSize = 20, fontName = moja_czcionka)
-    Tekst_Przebito_Bota = pygwidgets.DisplayText(ekran, (690, 10), "PRZEBITO!" , fontSize = 20, fontName = moja_czcionka)
+    if jezyk == "PL":
+        Przycisk_Wroc_Gra = pygwidgets.TextButton(ekran, (500, 450), "Wróc do menu gier",
+                                            fontSize = 20, width = 200, height = 100, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+
+        Przycisk_Od_Nowa_Gra = pygwidgets.TextButton(ekran, (100, 450), "Spróbuj ponownie",
+                                            fontSize = 20, width = 200, height = 100, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    else:
+        Przycisk_Wroc_Gra = pygwidgets.TextButton(ekran, (500, 450), "Return to game menu",
+                                            fontSize = 20, width = 200, height = 100, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+
+        Przycisk_Od_Nowa_Gra = pygwidgets.TextButton(ekran, (100, 450), "Play again",
+                                            fontSize = 20, width = 200, height = 100, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    przyciski = [Przycisk_Od_Nowa_Gra, Przycisk_Wroc_Gra]
+    if jezyk == "PL":
+        Tekst_Przebito = pygwidgets.DisplayText(ekran, (150, 10), "PRZEBITO!" , fontSize = 20, fontName = moja_czcionka)
+        Tekst_Przebito_Bota = pygwidgets.DisplayText(ekran, (690, 10), "PRZEBITO!" , fontSize = 20, fontName = moja_czcionka)
+    else:
+        Tekst_Przebito = pygwidgets.DisplayText(ekran, (150, 10), "PUNCTURED!" , fontSize = 20, fontName = moja_czcionka)
+        Tekst_Przebito_Bota = pygwidgets.DisplayText(ekran, (690, 10), "PUNCTURED!" , fontSize = 20, fontName = moja_czcionka)
     global stan, program
     koniec = False
     koniecB = False
@@ -1413,7 +1368,10 @@ def oczko():
     pula_punktow = 0
     pula_punktow_bota = 0
     pygame.init()
-    pygame.display.set_caption("OCZKO") 
+    if jezyk == "PL":
+        pygame.display.set_caption("OCZKO") 
+    else:
+        pygame.display.set_caption("TWENTY-ONE")
     program = True
     while program:
         for event in pygame.event.get():
@@ -1492,8 +1450,12 @@ def oczko():
             Tekst_Przebito_Bota.draw()
         else:
             Tekst_Przebito_Bota.hide()
-        Tekst_Punkty = pygwidgets.DisplayText(ekran, (50, 10), "Punkty: " + str(pula_punktow), fontSize = 20, fontName = moja_czcionka)
-        Tekst_Punkty_Bota = pygwidgets.DisplayText(ekran, (540, 10), "Punkty bota: " + str(pula_punktow_bota), fontSize = 20, fontName = moja_czcionka)
+        if jezyk == "PL":
+            Tekst_Punkty = pygwidgets.DisplayText(ekran, (50, 10), "Punkty: " + str(pula_punktow), fontSize = 20, fontName = moja_czcionka)
+            Tekst_Punkty_Bota = pygwidgets.DisplayText(ekran, (540, 10), "Punkty bota: " + str(pula_punktow_bota), fontSize = 20, fontName = moja_czcionka)
+        else:
+            Tekst_Punkty = pygwidgets.DisplayText(ekran, (50, 10), "Points: " + str(pula_punktow), fontSize = 20, fontName = moja_czcionka)
+            Tekst_Punkty_Bota = pygwidgets.DisplayText(ekran, (540, 10), "Bot points: " + str(pula_punktow_bota), fontSize = 20, fontName = moja_czcionka)
         Tekst_Punkty.show()
         Tekst_Punkty_Bota.show()
         Tekst_Punkty.draw()
@@ -1564,6 +1526,23 @@ def gra_ponownie(gra):
 
 def pasjans():
     global stan, TLO, ekran, stos1, stos2, stos3, stos4, stos5, stos6, stos7
+    if jezyk == "PL":
+        Przycisk_Wroc_Gra = pygwidgets.TextButton(ekran, (500, 450), "Wróc do menu gier",
+                                            fontSize = 20, width = 200, height = 100, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+
+        Przycisk_Od_Nowa_Gra = pygwidgets.TextButton(ekran, (100, 450), "Spróbuj ponownie",
+                                            fontSize = 20, width = 200, height = 100, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    else:
+        Przycisk_Wroc_Gra = pygwidgets.TextButton(ekran, (500, 450), "Return to game menu",
+                                            fontSize = 20, width = 200, height = 100, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+
+        Przycisk_Od_Nowa_Gra = pygwidgets.TextButton(ekran, (100, 450), "Play again",
+                                            fontSize = 20, width = 200, height = 100, 
+                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    przyciski = [Przycisk_Od_Nowa_Gra, Przycisk_Wroc_Gra]
     stos_kiery = []
     stos_karo = []
     stos_trefle = []
@@ -1584,7 +1563,10 @@ def pasjans():
     wybrane_karty = []
     program = True
     pygame.init()
-    pygame.display.set_caption("PASJANS")
+    if jezyk == "PL":
+        pygame.display.set_caption("PASJANS")
+    else:
+        pygame.display.set_caption("SOLITAIRE")
     while program:
         for event in pygame.event.get():
             for przycisk in przyciski:
@@ -1701,13 +1683,12 @@ def pasjans():
             widzet()
             wygranadzwiek.play()
 
-def utworz_wycentrowany_naglowek(tekst):
-    rozmiar_czcionki = 60
+def utworz_wycentrowany_naglowek(tekst, rozmiar_czcionki, y):
     czcionka = pygame.font.Font(moja_czcionka, rozmiar_czcionki)
     szerokosc_tekstu = czcionka.size(tekst)[0]
     x = (SZEROKOSC - szerokosc_tekstu) // 2
     return pygwidgets.DisplayText(
-        ekran, (x, 80), tekst,
+        ekran, (x, y), tekst,
         fontSize=rozmiar_czcionki,
         width=szerokosc_tekstu,
         height=100,
@@ -1715,8 +1696,234 @@ def utworz_wycentrowany_naglowek(tekst):
     )
 
 def widzet():
-    global program, restart_makao, stan, TLO, Tekst_Oczko_Ponownie, Tekst_Makao_Ponownie
+    global program, restart_makao, stan, TLO, Tekst_Oczko_Ponownie, Tekst_Makao_Ponownie, jezyk
     Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś # miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
+    Tekst_Pasjans_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Gratulacje wygranej!", 
+                                            fontSize = 60, width = 400, height = 100, fontName = moja_czcionka)
+    Tekst_ZasadyPasjans1 = pygwidgets.DisplayText(ekran, (25, 80), "Aby przenieść kartę na drugi stos naciśnij ją prawym przyciskiem", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_ZasadyPasjans2 = pygwidgets.DisplayText(ekran, (25, 110), "myszy, po czym tym samym przyciskiem naciśnij stos na który", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_ZasadyPasjans3 = pygwidgets.DisplayText(ekran, (25, 140), "chcesz go przełożyć. Jezeli chcesz tą kartę przełożyć na stosy", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_ZasadyPasjans4 = pygwidgets.DisplayText(ekran, (25, 170), "znaków naciśnij ją lewym przyciskiem myszy. Aby przełozyć kartę", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_ZasadyPasjans5 = pygwidgets.DisplayText(ekran, (25, 200), "ze stosu kart niewykorzystanych, naciśnij klawisz spacja.", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+                    
+    Tekst_ZasadyOczko1 = pygwidgets.DisplayText(ekran, (25, 80), "Aby pobrać kartę, naciśnij lewy przycisk myszy, a żeby zakończyć", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_ZasadyOczko2 = pygwidgets.DisplayText(ekran, (25, 110), "turę naciśnij prawy przycisk myszy. Twoja tura kończy się", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_ZasadyOczko3 = pygwidgets.DisplayText(ekran, (25, 140), "automatycznie jezeli przebijesz 21 punktów.", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_ZasadyOczko4 = pygwidgets.DisplayText(ekran, (25, 170), "Aby zakończyć turę, naciśnij przycisk Zakończ Turę.", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+                    
+    Tekst_ZasadyMakao1 = pygwidgets.DisplayText(ekran, (25, 80), "Aby pobrać kartę ze stosu, naciśnij na sos kart", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_ZasadyMakao2 = pygwidgets.DisplayText(ekran, (25, 110), "odwróconych lewym przyciskiem myszy, a by położyć kartę", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_ZasadyMakao3 = pygwidgets.DisplayText(ekran, (25, 140), "na stos naciśnij ją prawym przyciskiem myszy.", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_ZasadyMakao4 = pygwidgets.DisplayText(ekran, (25, 170), "By zakończyć turę, naciśnij przycisk Zakończ Turę.", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+                    
+    Tekst_ZasadySerca1 = pygwidgets.DisplayText(ekran, (25, 80), "Aby zamienić kartę, naciśnij ją lewym przyciskiem myszy. Ten", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_ZasadySerca2 = pygwidgets.DisplayText(ekran, (25, 110), "sam przycisk służy również do położenia karty na stos. Przycisk", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_ZasadySerca3 = pygwidgets.DisplayText(ekran, (25, 140), "Spróbuj Ponownie resetuje całą rozgrywkę, nie tylko jedną rundę", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+                    
+    Tekst_Autorzy1 = pygwidgets.DisplayText(ekran, (25, 80), "Gra - Bartosz Kujawa", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_Autorzy2 = pygwidgets.DisplayText(ekran, (25, 110), "Efekty Muzyczne - pakiet 400 Sounds Pack", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_Autorzy3 = pygwidgets.DisplayText(ekran, (25, 140), "Muzyka - pakiet Cozy Tunes", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_Autorzy4 = pygwidgets.DisplayText(ekran, (25, 170), "Grafika - pakiet Pixel Poker Cards", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    if jezyk == "EN":
+        pygame.display.set_caption("CARD GAMES")
+        Przycisk_Wroc_Z_Menu_Gier = pygwidgets.TextButton(ekran, (200 ,450), "Return to main menu",
+                                                      fontSize = 20, width = 400, height = 100, 
+                                                      upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Pasjans = pygwidgets.TextButton(ekran, (100,100), "Solitaire",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Oczko = pygwidgets.TextButton(ekran, (450,100), "Twenty-one",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Makao = pygwidgets.TextButton(ekran, (100,250), "Macau",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Serca = pygwidgets.TextButton(ekran, (450,250), "Hearts",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Graj = pygwidgets.TextButton(ekran, (200, 190), "Play",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Opcje = pygwidgets.TextButton(ekran, (210, 320), "Options",
+                                                        fontSize = 30, width = 180, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Jezyk = pygwidgets.TextButton(ekran, (410, 320), "Language",
+                                                        fontSize = 30, width = 180, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Wyjscie = pygwidgets.TextButton(ekran, (200, 450), "Exit",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Zasady = pygwidgets.TextButton(ekran, (200, 150), "Controls",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Wroc = pygwidgets.TextButton(ekran, (200, 300), "Return",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 450), "Authors",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 80), "Dark mode", value = False, fontSize = 60, size = 50, fontName = moja_czcionka)
+            
+        Przycisk_Wroc_Do_Menu_Z_Grami = pygwidgets.TextButton(ekran, (50, 450), "Return to game menu",
+                                                                        fontSize = 20, width = 300, height = 100, 
+                                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Zagraj_Ponownie = pygwidgets.TextButton(ekran, (450, 450), "Play again",
+                                                                        fontSize = 20, width = 300, height = 100, 
+                                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Wroc_Z_Autorow = pygwidgets.TextButton(ekran, (200, 450), "Return",
+                                                                        fontSize = 30, width = 400, height = 100, 
+                                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Zasady_Wroc = pygwidgets.TextButton(ekran, (200, 450), "Return",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Zasady_Pasjans = pygwidgets.TextButton(ekran, (100, 100), "Controls - Solitaire", fontSize = 30, 
+                                                        width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Zasady_Oczko = pygwidgets.TextButton(ekran, (450, 100), "Controls - Twenty-One", fontSize = 30, 
+                                                            width = 250, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Zasady_Makao = pygwidgets.TextButton(ekran, (100, 250), "Controls - Macau", fontSize = 30, 
+                                                            width = 250, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Zasady_Serca = pygwidgets.TextButton(ekran, (450, 250), "Controls - Heart", fontSize = 30, 
+                                                            width = 250, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Jezyk_Polski = pygwidgets.TextButton(ekran, (100, 100), "Polish", fontSize = 30,
+                                                            width = 250, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Jezyk_Angielski = pygwidgets.TextButton(ekran, (450, 100), "English", fontSize = 30,
+                                                                width = 250, height = 100, 
+                                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+    else:
+        pygame.display.set_caption("GRY KARCIANE")
+        Przycisk_Wroc_Z_Menu_Gier = pygwidgets.TextButton(ekran, (200 ,450), "Wróć do menu głównego",
+                                                      fontSize = 20, width = 400, height = 100, 
+                                                      upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Pasjans = pygwidgets.TextButton(ekran, (100,100), "Pasjans",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Oczko = pygwidgets.TextButton(ekran, (450,100), "Oczko",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Makao = pygwidgets.TextButton(ekran, (100,250), "Makao",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Serca = pygwidgets.TextButton(ekran, (450,250), "Serca",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Graj = pygwidgets.TextButton(ekran, (200, 190), "Graj",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Opcje = pygwidgets.TextButton(ekran, (210, 320), "Opcje",
+                                                        fontSize = 30, width = 180, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Jezyk = pygwidgets.TextButton(ekran, (410, 320), "Język",
+                                                        fontSize = 30, width = 180, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Wyjscie = pygwidgets.TextButton(ekran, (200, 450), "Wyjście",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Zasady = pygwidgets.TextButton(ekran, (200, 150), "Kontrolki",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Wroc = pygwidgets.TextButton(ekran, (200, 300), "Wróć",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 450), "Autorzy",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 80), "Tryb ciemny", value = False, fontSize = 60, size = 50, fontName = moja_czcionka)
+            
+        Przycisk_Wroc_Do_Menu_Z_Grami = pygwidgets.TextButton(ekran, (50, 450), "Wróć do menu z grami",
+                                                                        fontSize = 20, width = 300, height = 100, 
+                                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Zagraj_Ponownie = pygwidgets.TextButton(ekran, (450, 450), "Zagraj ponownie",
+                                                                        fontSize = 20, width = 300, height = 100, 
+                                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Wroc_Z_Autorow = pygwidgets.TextButton(ekran, (200, 450), "Wróć",
+                                                                        fontSize = 30, width = 400, height = 100, 
+                                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Zasady_Wroc = pygwidgets.TextButton(ekran, (200, 450), "Wróć",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Zasady_Pasjans = pygwidgets.TextButton(ekran, (100, 100), "Kontrolki pasjansa", fontSize = 30, 
+                                                        width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Zasady_Oczko = pygwidgets.TextButton(ekran, (450, 100), "Kontrolki oczka", fontSize = 30, 
+                                                            width = 250, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Zasady_Makao = pygwidgets.TextButton(ekran, (100, 250), "Kontrolki makao", fontSize = 30, 
+                                                            width = 250, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Zasady_Serca = pygwidgets.TextButton(ekran, (450, 250), "Kontrolki serca", fontSize = 30, 
+                                                            width = 250, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Jezyk_Polski = pygwidgets.TextButton(ekran, (100, 100), "Polski", fontSize = 30,
+                                                            width = 250, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+        Przycisk_Jezyk_Angielski = pygwidgets.TextButton(ekran, (450, 100), "Angielski", fontSize = 30,
+                                                                width = 250, height = 100, 
+                                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+    Tekst_Oczko_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 30, width = 400, height = 100, fontName = moja_czcionka)
+    Tekst_Makao_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "#", fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
+            
+    przyciski_autorzy = [Przycisk_Wroc_Z_Autorow]
+    przyciski_koniec_ponownie = [Przycisk_Zagraj_Ponownie, Przycisk_Wroc_Do_Menu_Z_Grami]
+    przyciski_gry = [Przycisk_Wroc_Z_Menu_Gier, Przycisk_Pasjans, Przycisk_Oczko, Przycisk_Makao, Przycisk_Serca]
+    przyciski_menu = [Przycisk_Graj, Przycisk_Opcje, Przycisk_Wyjscie, Przycisk_Jezyk]
+    przyciski_opcje = [Przycisk_Zasady, Przycisk_Wroc, Przycisk_Autorzy]
+    przyciski_zasady = [Przycisk_Zasady_Wroc, Przycisk_Zasady_Pasjans, Przycisk_Zasady_Oczko, Przycisk_Zasady_Makao, Przycisk_Zasady_Serca]
+    przyciski_jezyk = [Przycisk_Jezyk_Polski, Przycisk_Jezyk_Angielski, Przycisk_Wroc_Z_Autorow]
+
+    if jezyk == "PL":
+        Tekst_Tytul = pygwidgets.DisplayText(ekran, (200, 50), "Gry Karciane", 
+        fontSize = 65, width = 400, height = 100, fontName = moja_czcionka)
+    else:
+        Tekst_Tytul = pygwidgets.DisplayText(ekran, (200, 50), "Card Games", 
+        fontSize = 65, width = 400, height = 100, fontName = moja_czcionka)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1732,6 +1939,8 @@ def widzet():
                         elif przycisk == przyciski_menu[2]:
                             pygame.quit()
                             sys.exit()
+                        elif przycisk == przyciski_menu[3]:
+                            stan = "jezyk"
             elif stan == "gry":
                 for przycisk in przyciski_gry:
                     if przycisk.handleEvent(event):
@@ -1778,10 +1987,12 @@ def widzet():
                             stan = "zasadyoczko"
                         elif przycisk == przyciski_zasady[3]:
                             stan = "zasadymakao"
-            elif stan == "zasadypasjans" or stan == "zasadyoczko" or stan == "zasadymakao":
+                        elif przycisk == przyciski_zasady[4]:
+                            stan = "zasadyserca"
+            elif stan == "zasadypasjans" or stan == "zasadyoczko" or stan == "zasadymakao" or stan == "zasadyserca":
                 if Przycisk_Zasady_Wroc.handleEvent(event):
                     stan = "zasady"
-            elif stan == "autorzy":
+            elif stan == "autorzy" or stan == "jezyk":
                 for przycisk in przyciski_autorzy:
                     if przycisk.handleEvent(event):
                         if przycisk == przyciski_autorzy[0]:
@@ -1811,11 +2022,218 @@ def widzet():
                             serca(0, 0, 0, 0)
                         elif przycisk == przyciski_koniec_ponownie[1]:
                             stan = "gry"
+            if stan == "jezyk":
+                for przycisk in przyciski_jezyk:
+                    if przycisk.handleEvent(event):
+                        if przycisk == przyciski_jezyk[0]:
+                            jezyk = "PL"
+                        elif przycisk == przyciski_jezyk[1]:
+                            jezyk = "EN"
+                        if jezyk == "EN":
+                            pygame.display.set_caption("CARD GAMES")
+                            Przycisk_Wroc_Z_Menu_Gier = pygwidgets.TextButton(ekran, (200 ,450), "Return to main menu",
+                                                      fontSize = 20, width = 400, height = 100, 
+                                                      upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Pasjans = pygwidgets.TextButton(ekran, (100,100), "Solitaire",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Oczko = pygwidgets.TextButton(ekran, (450,100), "Twenty-one",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Makao = pygwidgets.TextButton(ekran, (100,250), "Macau",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Serca = pygwidgets.TextButton(ekran, (450,250), "Hearts",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Graj = pygwidgets.TextButton(ekran, (200, 190), "Play",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Opcje = pygwidgets.TextButton(ekran, (210, 320), "Options",
+                                                        fontSize = 30, width = 180, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Jezyk = pygwidgets.TextButton(ekran, (410, 320), "Language",
+                                                        fontSize = 30, width = 180, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Wyjscie = pygwidgets.TextButton(ekran, (200, 450), "Exit",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Zasady = pygwidgets.TextButton(ekran, (200, 150), "Controls",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Wroc = pygwidgets.TextButton(ekran, (200, 300), "Return",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 450), "Authors",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 80), "Dark mode", value = False, fontSize = 60, size = 50, fontName = moja_czcionka)
+            
+                            Przycisk_Wroc_Do_Menu_Z_Grami = pygwidgets.TextButton(ekran, (50, 450), "Return to game menu",
+                                                                        fontSize = 20, width = 300, height = 100, 
+                                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Zagraj_Ponownie = pygwidgets.TextButton(ekran, (450, 450), "Play again",
+                                                                        fontSize = 20, width = 300, height = 100, 
+                                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Wroc_Z_Autorow = pygwidgets.TextButton(ekran, (200, 450), "Return",
+                                                                        fontSize = 30, width = 400, height = 100, 
+                                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Zasady_Wroc = pygwidgets.TextButton(ekran, (200, 450), "Return",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Zasady_Pasjans = pygwidgets.TextButton(ekran, (50, 100), "Controls - Solitaire", fontSize = 30, 
+                                                        width = 300, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Zasady_Oczko = pygwidgets.TextButton(ekran, (450, 100), "Controls - Twenty-One", fontSize = 30, 
+                                                            width = 300, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Zasady_Makao = pygwidgets.TextButton(ekran, (50, 250), "Controls - Macau", fontSize = 30, 
+                                                            width = 300, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Zasady_Serca = pygwidgets.TextButton(ekran, (450, 250), "Controls - Heart", fontSize = 30, 
+                                                            width = 300, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Jezyk_Polski = pygwidgets.TextButton(ekran, (100, 100), "Polish", fontSize = 30,
+                                                            width = 250, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Jezyk_Angielski = pygwidgets.TextButton(ekran, (450, 100), "English", fontSize = 30,
+                                                                width = 250, height = 100, 
+                                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+                        else:
+                            pygame.display.set_caption("GRY KARCIANE")
+                            Przycisk_Wroc_Z_Menu_Gier = pygwidgets.TextButton(ekran, (200 ,450), "Wróć do menu głównego",
+                                                      fontSize = 20, width = 400, height = 100, 
+                                                      upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Pasjans = pygwidgets.TextButton(ekran, (100,100), "Pasjans",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Oczko = pygwidgets.TextButton(ekran, (450,100), "Oczko",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Makao = pygwidgets.TextButton(ekran, (100,250), "Makao",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Serca = pygwidgets.TextButton(ekran, (450,250), "Serca",
+                                                        fontSize = 30, width = 250, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Graj = pygwidgets.TextButton(ekran, (200, 190), "Graj",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Opcje = pygwidgets.TextButton(ekran, (210, 320), "Opcje",
+                                                        fontSize = 30, width = 180, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Jezyk = pygwidgets.TextButton(ekran, (410, 320), "Język",
+                                                        fontSize = 30, width = 180, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Wyjscie = pygwidgets.TextButton(ekran, (200, 450), "Wyjście",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Zasady = pygwidgets.TextButton(ekran, (200, 150), "Kontrolki",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Wroc = pygwidgets.TextButton(ekran, (200, 300), "Wróć",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 450), "Autorzy",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 80), "Tryb ciemny", value = False, fontSize = 60, size = 50, fontName = moja_czcionka)
+            
+                            Przycisk_Wroc_Do_Menu_Z_Grami = pygwidgets.TextButton(ekran, (50, 450), "Wróć do menu z grami",
+                                                                        fontSize = 20, width = 300, height = 100, 
+                                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Zagraj_Ponownie = pygwidgets.TextButton(ekran, (450, 450), "Zagraj ponownie",
+                                                                        fontSize = 20, width = 300, height = 100, 
+                                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Wroc_Z_Autorow = pygwidgets.TextButton(ekran, (200, 450), "Wróć",
+                                                                        fontSize = 30, width = 400, height = 100, 
+                                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Zasady_Wroc = pygwidgets.TextButton(ekran, (200, 450), "Wróć",
+                                                        fontSize = 30, width = 400, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Zasady_Pasjans = pygwidgets.TextButton(ekran, (50, 100), "Kontrolki pasjansa", fontSize = 30, 
+                                                        width = 300, height = 100, 
+                                                        upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Zasady_Oczko = pygwidgets.TextButton(ekran, (450, 100), "Kontrolki oczka", fontSize = 30, 
+                                                            width = 300, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Zasady_Makao = pygwidgets.TextButton(ekran, (50, 250), "Kontrolki makao", fontSize = 30, 
+                                                            width = 300, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Zasady_Serca = pygwidgets.TextButton(ekran, (450, 250), "Kontrolki serca", fontSize = 30, 
+                                                            width = 300, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Jezyk_Polski = pygwidgets.TextButton(ekran, (100, 100), "Polski", fontSize = 30,
+                                                            width = 250, height = 100, 
+                                                            upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+            
+                            Przycisk_Jezyk_Angielski = pygwidgets.TextButton(ekran, (450, 100), "Angielski", fontSize = 30,
+                                                                width = 250, height = 100, 
+                                                                upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
+                        przyciski_autorzy = [Przycisk_Wroc_Z_Autorow]
+                        przyciski_koniec_ponownie = [Przycisk_Zagraj_Ponownie, Przycisk_Wroc_Do_Menu_Z_Grami]
+                        przyciski_gry = [Przycisk_Wroc_Z_Menu_Gier, Przycisk_Pasjans, Przycisk_Oczko, Przycisk_Makao, Przycisk_Serca]
+                        przyciski_menu = [Przycisk_Graj, Przycisk_Opcje, Przycisk_Wyjscie, Przycisk_Jezyk]
+                        przyciski_opcje = [Przycisk_Zasady, Przycisk_Wroc, Przycisk_Autorzy]
+                        przyciski_zasady = [Przycisk_Zasady_Wroc, Przycisk_Zasady_Pasjans, Przycisk_Zasady_Oczko, Przycisk_Zasady_Makao, Przycisk_Zasady_Serca]
+                        przyciski_jezyk = [Przycisk_Jezyk_Polski, Przycisk_Jezyk_Angielski, Przycisk_Wroc_Z_Autorow]
+
+                        if jezyk == "PL":
+                            Tekst_Tytul = pygwidgets.DisplayText(ekran, (200, 50), "Gry Karciane", 
+                            fontSize = 65, width = 400, height = 100, fontName = moja_czcionka)
+                        else:
+                            Tekst_Tytul = pygwidgets.DisplayText(ekran, (200, 50), "Card Games", 
+                            fontSize = 65, width = 400, height = 100, fontName = moja_czcionka)
         ekran.fill(TLO)
         if stan == "menu":
             for przycisk in przyciski_menu:
                 przycisk.show()
                 przycisk.draw()
+            if jezyk == "PL":
+                Tekst_Tytul = utworz_wycentrowany_naglowek("Gry karciane", 65, 80)
+            else:
+                Tekst_Tytul = utworz_wycentrowany_naglowek("Card Games", 65, 80)
             Tekst_Tytul.show()
             Tekst_Tytul.draw()
         else:
@@ -1841,6 +2259,7 @@ def widzet():
             for przycisk in przyciski_opcje:
                 przycisk.hide()
             Kwadracik_Tryb_Ciemny.hide()
+
         if not(stan == "kiery_1" or stan == "kiery_2" or stan == "kiery_3" or stan == "kiery_4" or stan == "zagrajznowuwpasjans" or stan == "wygranaoczko" or stan == "przegranaoczko" or stan == "remisoczko" or stan == "wygranamakao" or stan == "przegranamakao"):
             for przycisk in przyciski_koniec_ponownie:
                 przycisk.hide()
@@ -1850,13 +2269,26 @@ def widzet():
                 przycisk.show()
                 przycisk.draw()
             if stan == "kiery_1":
-                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 1 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
+                if jezyk == "PL":
+                    tekst_wyniku = "Zdobyłeś 1 miejsce! Czy chcesz grać dalej?"
+                else:
+                    tekst_wyniku = "You got 1st place! Do you want to play again?"
             elif stan == "kiery_2":
-                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 2 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
+                if jezyk == "PL":
+                    tekst_wyniku = "Zdobyłeś 2 miejsce! Czy chcesz grać dalej?"
+                else:
+                    tekst_wyniku = "You got 2nd place! Do you want to play again?"
             elif stan == "kiery_3":
-                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 3 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
+                if jezyk == "PL":
+                    tekst_wyniku = "Zdobyłeś 3 miejsce! Czy chcesz grać dalej?"
+                else:
+                    tekst_wyniku = "You got 3rd place! Do you want to play again?"  
             else:
-                Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś 4 miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
+                if jezyk == "PL":
+                    tekst_wyniku = "Zdobyłeś 4 miejsce! Czy chcesz grać dalej?"
+                else:
+                    tekst_wyniku = "You got 4th place! Do you want to play again?"
+            Tekst_Kiery_Ponownie = utworz_wycentrowany_naglowek(tekst_wyniku, 30, 80)
             Tekst_Kiery_Ponownie.show()
             Tekst_Kiery_Ponownie.draw()
         else:
@@ -1866,6 +2298,11 @@ def widzet():
             for przycisk in przyciski_koniec_ponownie:
                 przycisk.show()
                 przycisk.draw()
+            if jezyk == "PL":
+                tekst_wyniku = "Gratulacje wygranej! Czy chcesz grać dalej?"
+            else:
+                tekst_wyniku = "Congratulations on your win! Do you want to play again?"
+            Tekst_Pasjans_Ponownie = utworz_wycentrowany_naglowek(tekst_wyniku, 60, 80)
             Tekst_Pasjans_Ponownie.show()
             Tekst_Pasjans_Ponownie.draw()
         else:
@@ -1876,12 +2313,21 @@ def widzet():
                 przycisk.show()
                 przycisk.draw()
             if stan == "wygranaoczko":
-                tekst_wyniku = "Gratulacje wygranej!"
+                if jezyk == "PL":
+                    tekst_wyniku = "Gratulacje wygranej!"
+                else:
+                    tekst_wyniku = "Congratulations on your win!"
             elif stan == "przegranaoczko":
-                tekst_wyniku = "Przegrałeś!"
+                if jezyk == "PL":
+                    tekst_wyniku = "Przegrałeś!"
+                else:
+                    tekst_wyniku = "You lost!"
             else:
-                tekst_wyniku = "Zremisowałeś"
-            Tekst_Oczko_Ponownie = utworz_wycentrowany_naglowek(tekst_wyniku)
+                if jezyk == "PL":
+                    tekst_wyniku = "Zremisowałeś"
+                else:
+                    tekst_wyniku = "It's a tie!"
+            Tekst_Oczko_Ponownie = utworz_wycentrowany_naglowek(tekst_wyniku, 60)
             Tekst_Oczko_Ponownie.show()
             Tekst_Oczko_Ponownie.draw()
         else:
@@ -1892,10 +2338,16 @@ def widzet():
                 przycisk.show()
                 przycisk.draw()
             if stan == "wygranamakao":
-                tekst_wyniku = "Gratulacje wygranej!"
+                if jezyk == "PL":
+                    tekst_wyniku = "Gratulacje wygranej!"
+                else:
+                    tekst_wyniku = "Congratulations on your win!"
             else:
-                tekst_wyniku = "Przegrałeś!"
-            Tekst_Makao_Ponownie = utworz_wycentrowany_naglowek(tekst_wyniku)
+                if jezyk == "PL":
+                    tekst_wyniku = "Przegrałeś!"
+                else:
+                    tekst_wyniku = "You lost!"
+            Tekst_Makao_Ponownie = utworz_wycentrowany_naglowek(tekst_wyniku, 60, 80)
             Tekst_Makao_Ponownie.show()
             Tekst_Makao_Ponownie.draw()
         else:
@@ -1913,6 +2365,23 @@ def widzet():
         if stan == "zasadypasjans":
             Przycisk_Zasady_Wroc.show()
             Przycisk_Zasady_Wroc.draw()
+            if jezyk == "PL":
+                tekst_zasady1 = "Aby przenieść kartę na drugi stos naciśnij ją prawym przyciskiem"
+                tekst_zasady2 = "myszy, po czym tym samym przyciskiem naciśnij stos na który"
+                tekst_zasady3 = "chcesz go przełożyć. Jezeli chcesz tą kartę przełożyć na stosy"
+                tekst_zasady4 = "znaków naciśnij ją lewym przyciskiem myszy. Aby przełozyć kartę"
+                tekst_zasady5 = "ze stosu kart niewykorzystanych, naciśnij klawisz spacja."
+            else:
+                tekst_zasady1 = "To move a card to the other pile, click it with the"
+                tekst_zasady2 = "right mouse button then click the pile you want to"
+                tekst_zasady3 = "move it to. If you want to move this card to the suit"
+                tekst_zasady4 = "piles click it with the left mouse button. To move a"
+                tekst_zasady5 = "card from the unused card pile, press the spacebar."
+            Tekst_ZasadyPasjans1 = utworz_wycentrowany_naglowek(tekst_zasady1, 25, 80)
+            Tekst_ZasadyPasjans2 = utworz_wycentrowany_naglowek(tekst_zasady2, 25, 110)
+            Tekst_ZasadyPasjans3 = utworz_wycentrowany_naglowek(tekst_zasady3, 25, 140)
+            Tekst_ZasadyPasjans4 = utworz_wycentrowany_naglowek(tekst_zasady4, 25, 170)
+            Tekst_ZasadyPasjans5 = utworz_wycentrowany_naglowek(tekst_zasady5, 25, 200)
             Tekst_ZasadyPasjans1.show()
             Tekst_ZasadyPasjans1.draw()
             Tekst_ZasadyPasjans2.show()
@@ -1921,47 +2390,120 @@ def widzet():
             Tekst_ZasadyPasjans3.draw()
             Tekst_ZasadyPasjans4.show()
             Tekst_ZasadyPasjans4.draw()
+            Tekst_ZasadyPasjans5.show()
+            Tekst_ZasadyPasjans5.draw()
         else:
             Tekst_ZasadyPasjans1.hide()
             Tekst_ZasadyPasjans2.hide()
             Tekst_ZasadyPasjans3.hide()
             Tekst_ZasadyPasjans4.hide()
+            Tekst_ZasadyPasjans5.hide()
 
         if stan == "zasadyoczko":
             Przycisk_Zasady_Wroc.show()
             Przycisk_Zasady_Wroc.draw()
+            if jezyk == "PL":
+                tekst_zasady1 = "Aby pobrać kartę, naciśnij lewy przycisk myszy, a żeby zakończyć"
+                tekst_zasady2 = "turę naciśnij prawy przycisk myszy. Twoja tura kończy się"
+                tekst_zasady3 = "automatycznie jezeli przebijesz 21 punktów."
+                tekst_zasady4 = "Aby zakończyć turę, naciśnij przycisk Zakończ Turę."
+            else:
+                tekst_zasady1 = "To draw a card, click the left mouse button, and to end"
+                tekst_zasady2 = "your turn click the right mouse button. Your turn ends"
+                tekst_zasady3 = "automatically if you exceed 21 points."
+                tekst_zasady4 = "To end your turn, click the End Turn button."
+            Tekst_ZasadyOczko1 = utworz_wycentrowany_naglowek(tekst_zasady1, 25, 80)
+            Tekst_ZasadyOczko2 = utworz_wycentrowany_naglowek(tekst_zasady2, 25, 110)
+            Tekst_ZasadyOczko3 = utworz_wycentrowany_naglowek(tekst_zasady3, 25, 140)
+            Tekst_ZasadyOczko4 = utworz_wycentrowany_naglowek(tekst_zasady4, 25, 170)
             Tekst_ZasadyOczko1.show()
             Tekst_ZasadyOczko1.draw()
             Tekst_ZasadyOczko2.show()
             Tekst_ZasadyOczko2.draw()
             Tekst_ZasadyOczko3.show()
             Tekst_ZasadyOczko3.draw()
+            Tekst_ZasadyOczko4.show()
+            Tekst_ZasadyOczko4.draw()
         else:
             Tekst_ZasadyOczko1.hide()
             Tekst_ZasadyOczko2.hide()
             Tekst_ZasadyOczko3.hide()
+            Tekst_ZasadyOczko4.hide()
 
         if stan == "zasadymakao":
             Przycisk_Zasady_Wroc.show()
             Przycisk_Zasady_Wroc.draw()
+            if jezyk == "PL":
+                tekst_zasady1 = "Aby pobrać kartę ze stosu, naciśnij na sos kart"
+                tekst_zasady2 = "odwróconych lewym przyciskiem myszy, a by położyć kartę"
+                tekst_zasady3 = "na stos naciśnij ją tym samym pzryciskiem myszy."
+                tekst_zasady4 = "By zakończyć turę, naciśnij przycisk Zakończ Turę."
+            else:
+                tekst_zasady1 = "To draw a card from the pile, click it with the"
+                tekst_zasady2 = "left mouse button, and to place a card on the"
+                tekst_zasady3 = "pile click it with the same button."
+                tekst_zasady4 = "To end your turn, click the End Turn button."
+            Tekst_ZasadyMakao1 = utworz_wycentrowany_naglowek(tekst_zasady1, 25, 80)
+            Tekst_ZasadyMakao2 = utworz_wycentrowany_naglowek(tekst_zasady2, 25, 110)
+            Tekst_ZasadyMakao3 = utworz_wycentrowany_naglowek(tekst_zasady3, 25, 140)
+            Tekst_ZasadyMakao4 = utworz_wycentrowany_naglowek(tekst_zasady4, 25, 170)
             Tekst_ZasadyMakao1.show()
             Tekst_ZasadyMakao1.draw()
             Tekst_ZasadyMakao2.show()
             Tekst_ZasadyMakao2.draw()
             Tekst_ZasadyMakao3.show()
             Tekst_ZasadyMakao3.draw()
+            Tekst_ZasadyMakao4.show()
+            Tekst_ZasadyMakao4.draw()
         else:
             Tekst_ZasadyMakao1.hide()
             Tekst_ZasadyMakao2.hide()
             Tekst_ZasadyMakao3.hide()
+            Tekst_ZasadyMakao4.hide()
+
+        if stan == "zasadyserca":
+            Przycisk_Zasady_Wroc.show()
+            Przycisk_Zasady_Wroc.draw()
+            if jezyk == "PL":
+                tekst_zasady1 = "Aby zamienić kartę, naciśnij ją lewym przyciskiem myszy. Ten"
+                tekst_zasady2 = "sam przycisk służy również do położenia karty na stos. Przycisk"
+                tekst_zasady3 = "Spróbuj Ponownie resetuje całą rozgrywkę, nie tylko jedną rundę"
+            else:
+                tekst_zasady1 = "To swap a card, click it with the left mouse button. The same"
+                tekst_zasady2 = "button is also used to place a card on the pile. The Try Again"
+                tekst_zasady3 = "button resets the entire game, not just one round."
+            Tekst_ZasadySerca1 = utworz_wycentrowany_naglowek(tekst_zasady1, 25, 80)
+            Tekst_ZasadySerca2 = utworz_wycentrowany_naglowek(tekst_zasady2, 25, 110)
+            Tekst_ZasadySerca3 = utworz_wycentrowany_naglowek(tekst_zasady3, 25, 140)
+            Tekst_ZasadySerca1.show()
+            Tekst_ZasadySerca1.draw()
+            Tekst_ZasadySerca2.show()
+            Tekst_ZasadySerca2.draw()
+            Tekst_ZasadySerca3.show()
+            Tekst_ZasadySerca3.draw()
+        else:
+            Tekst_ZasadySerca1.hide()
+            Tekst_ZasadySerca2.hide()
+            Tekst_ZasadySerca3.hide()
             
-        if stan != "zasady" and stan != "zasadypasjans" and stan != "zasadyoczko" and stan != "zasadymakao":
+        if stan != "zasady" and stan != "zasadypasjans" and stan != "zasadyoczko" and stan != "zasadymakao" and stan != "zasadyserca":
             Przycisk_Zasady_Wroc.hide()
 
         if stan == "autorzy":
             for przycisk in przyciski_autorzy:
                 przycisk.show()
                 przycisk.draw()
+            if jezyk == "PL":
+                Tekst_Autorzy1 = utworz_wycentrowany_naglowek("Gra i grafika elementów - Bartosz Kujawa", 25, 80)
+                Tekst_Autorzy2 = utworz_wycentrowany_naglowek("Efekty Muzyczne - pakiet 400 Sounds Pack", 25, 110)
+                Tekst_Autorzy3 = utworz_wycentrowany_naglowek("Muzyka - pakiet Cozy Tunes", 25, 140)
+                Tekst_Autorzy4 = utworz_wycentrowany_naglowek("Grafika kart - pakiet Pixel Poker Cards", 25, 170)
+            else:
+                Tekst_Autorzy1 = utworz_wycentrowany_naglowek("Game and graphics elements - Bartosz Kujawa", 25, 80)
+                Tekst_Autorzy2 = utworz_wycentrowany_naglowek("Sound Effects - 400 Sounds Pack", 25, 110)
+                Tekst_Autorzy3 = utworz_wycentrowany_naglowek("Music - Cozy Tunes Pack", 25, 140)
+                Tekst_Autorzy4 = utworz_wycentrowany_naglowek("Card Graphics - Pixel Poker Cards Pack", 25, 170)
+
             Tekst_Autorzy1.show()
             Tekst_Autorzy1.draw()
             Tekst_Autorzy2.show()
@@ -1971,12 +2513,23 @@ def widzet():
             Tekst_Autorzy4.show()
             Tekst_Autorzy4.draw()
         else:
-            for przycisk in przyciski_autorzy:
-                przycisk.hide()
             Tekst_Autorzy1.hide()
             Tekst_Autorzy2.hide()
             Tekst_Autorzy3.hide()
             Tekst_Autorzy4.hide()
+
+        if stan == "jezyk":
+            for przycisk in przyciski_jezyk:
+                przycisk.show()
+                przycisk.draw()
+        else:
+            for przycisk in przyciski_jezyk:
+                przycisk.hide()
+
+        if stan != "jezyk" and stan != "autorzy":
+            for przycisk in przyciski_autorzy:
+                przycisk.hide()
+
         pygame.display.update()
         clock.tick(KLATKI_NA_SEKUNDE)
 widzet()
