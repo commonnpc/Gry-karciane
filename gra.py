@@ -25,6 +25,12 @@ kartydzwiek = pygame.mixer.Sound("card_draw_3.wav")
 kartydzwiek.set_volume(0.5)
 wygranadzwiek = pygame.mixer.Sound("match_xylophone_6.wav")
 wygranadzwiek.set_volume(0.7)
+
+KOLO = pygame.image.load(f'KOLO_SUWAKA.png')
+SUWAK = pygame.image.load(f'SUWAK.png')
+xSuwaka = 550
+KOLO_Prostokat = KOLO.get_rect()
+
 BLOKADA = pygame.transform.smoothscale(pygame.image.load(f'BLOK.png'), (76, 76))
 STRZALA = pygame.transform.smoothscale(pygame.image.load(f'STRZALA.png'), (56, 52))
 WYBRANA = pygame.transform.smoothscale(pygame.image.load(f'WYBRANA.png'), (40, 60))
@@ -1699,7 +1705,7 @@ def utworz_wycentrowany_naglowek(tekst, rozmiar_czcionki, y):
     )
 
 def widzet():
-    global program, restart_makao, stan, TLO, Tekst_Oczko_Ponownie, Tekst_Makao_Ponownie, jezyk
+    global program, restart_makao, stan, TLO, Tekst_Oczko_Ponownie, Tekst_Makao_Ponownie, jezyk, xSuwaka
     Tekst_Kiery_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Zdobyłeś # miejsce! Czy chcesz grać dalej?", fontSize = 30, width = 500, height = 100, fontName = moja_czcionka)
     Tekst_Pasjans_Ponownie = pygwidgets.DisplayText(ekran, (200, 80), "Gratulacje wygranej!", 
                                             fontSize = 60, width = 400, height = 100, fontName = moja_czcionka)
@@ -1727,6 +1733,7 @@ def widzet():
     Tekst_Autorzy2 = pygwidgets.DisplayText(ekran, (25, 110), "Efekty Muzyczne - pakiet 400 Sounds Pack", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
     Tekst_Autorzy3 = pygwidgets.DisplayText(ekran, (25, 140), "Muzyka - pakiet Cozy Tunes", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
     Tekst_Autorzy4 = pygwidgets.DisplayText(ekran, (25, 170), "Grafika - pakiet Pixel Poker Cards", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
+    Tekst_Suwak = pygwidgets.DisplayText(ekran, (0, 80), "Głośność dżwięków: #", fontSize = 25, width = 750, height = 400, fontName = moja_czcionka)
     if jezyk == "EN":
         pygame.display.set_caption("CARD GAMES")
         Przycisk_Wroc_Z_Menu_Gier = pygwidgets.TextButton(ekran, (200 ,450), "Return to main menu",
@@ -1765,19 +1772,19 @@ def widzet():
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-        Przycisk_Zasady = pygwidgets.TextButton(ekran, (200, 150), "Controls",
+        Przycisk_Zasady = pygwidgets.TextButton(ekran, (200, 225), "Controls",
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-        Przycisk_Wroc = pygwidgets.TextButton(ekran, (200, 300), "Return",
+        Przycisk_Wroc = pygwidgets.TextButton(ekran, (200, 350), "Return",
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-        Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 450), "Authors",
+        Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 475), "Authors",
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-        Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 80), "Dark mode", value = False, fontSize = 60, size = 50, fontName = moja_czcionka)
+        Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 150), "Dark mode", value = False, fontSize = 60, size = 50, fontName = moja_czcionka)
             
         Przycisk_Wroc_Do_Menu_Z_Grami = pygwidgets.TextButton(ekran, (50, 450), "Return to game menu",
                                                                         fontSize = 20, width = 300, height = 100, 
@@ -1856,19 +1863,19 @@ def widzet():
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-        Przycisk_Zasady = pygwidgets.TextButton(ekran, (200, 150), "Kontrolki",
+        Przycisk_Zasady = pygwidgets.TextButton(ekran, (200, 225), "Kontrolki",
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-        Przycisk_Wroc = pygwidgets.TextButton(ekran, (200, 300), "Wróć",
+        Przycisk_Wroc = pygwidgets.TextButton(ekran, (200, 350), "Wróć",
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-        Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 450), "Autorzy",
+        Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 475), "Autorzy",
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-        Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 80), "Tryb ciemny", value = False, fontSize = 60, size = 50, fontName = moja_czcionka)
+        Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 150), "Tryb ciemny", value = False, fontSize = 60, size = 50, fontName = moja_czcionka)
             
         Przycisk_Wroc_Do_Menu_Z_Grami = pygwidgets.TextButton(ekran, (50, 450), "Wróć do menu z grami",
                                                                         fontSize = 20, width = 300, height = 100, 
@@ -1927,6 +1934,8 @@ def widzet():
     else:
         Tekst_Tytul = pygwidgets.DisplayText(ekran, (200, 50), "Card Games", 
         fontSize = 65, width = 400, height = 100, fontName = moja_czcionka)
+    przeciaganie_suwaka = False
+    ostatnie_x_suwaka = 0
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1959,6 +1968,18 @@ def widzet():
                         elif przycisk == przyciski_gry[4]:
                             serca(0, 0, 0, 0)
             elif stan == "opcje":
+                if KOLO_Prostokat.collidepoint(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    przeciaganie_suwaka = True
+                    ostatnie_x_suwaka = pygame.mouse.get_pos()[0]
+                elif event.type == pygame.MOUSEMOTION and przeciaganie_suwaka:
+                    xSuwaka += event.pos[0] - ostatnie_x_suwaka
+                    xSuwaka = max(250, min(550, xSuwaka))
+                    ostatnie_x_suwaka = event.pos[0]
+                    pygame.mixer.music.set_volume((xSuwaka - 250) / 300)
+                    kartydzwiek.set_volume(0.5 * (xSuwaka - 250) / 300)
+                    wygranadzwiek.set_volume(0.7 * (xSuwaka - 250) / 300)
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    przeciaganie_suwaka = False
                 for przycisk in przyciski_opcje:
                     if przycisk.handleEvent(event):
                         if przycisk == przyciski_opcje[0]:
@@ -2070,19 +2091,19 @@ def widzet():
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-                            Przycisk_Zasady = pygwidgets.TextButton(ekran, (200, 150), "Controls",
+                            Przycisk_Zasady = pygwidgets.TextButton(ekran, (200, 225), "Controls",
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-                            Przycisk_Wroc = pygwidgets.TextButton(ekran, (200, 300), "Return",
+                            Przycisk_Wroc = pygwidgets.TextButton(ekran, (200, 350), "Return",
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-                            Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 450), "Authors",
+                            Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 475), "Authors",
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-                            Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 80), "Dark mode", value = False, fontSize = 60, size = 50, fontName = moja_czcionka)
+                            Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 150), "Dark mode", value = False, fontSize = 60, size = 50, fontName = moja_czcionka)
             
                             Przycisk_Wroc_Do_Menu_Z_Grami = pygwidgets.TextButton(ekran, (50, 450), "Return to game menu",
                                                                         fontSize = 20, width = 300, height = 100, 
@@ -2161,19 +2182,19 @@ def widzet():
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-                            Przycisk_Zasady = pygwidgets.TextButton(ekran, (200, 150), "Kontrolki",
+                            Przycisk_Zasady = pygwidgets.TextButton(ekran, (200, 225), "Kontrolki",
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-                            Przycisk_Wroc = pygwidgets.TextButton(ekran, (200, 300), "Wróć",
+                            Przycisk_Wroc = pygwidgets.TextButton(ekran, (200, 350), "Wróć",
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-                            Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 450), "Autorzy",
+                            Przycisk_Autorzy = pygwidgets.TextButton(ekran, (200, 475), "Autorzy",
                                                         fontSize = 30, width = 400, height = 100, 
                                                         upColor = (38, 132, 232), overColor = (42, 187, 223), downColor = (42, 223, 187), fontName = moja_czcionka)
             
-                            Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 80), "Tryb ciemny", value = False, fontSize = 60, size = 50, fontName = moja_czcionka)
+                            Kwadracik_Tryb_Ciemny = pygwidgets.TextCheckBox(ekran, (200, 150), "Tryb ciemny", value = False, fontSize = 60, size = 50, fontName = moja_czcionka)
             
                             Przycisk_Wroc_Do_Menu_Z_Grami = pygwidgets.TextButton(ekran, (50, 450), "Wróć do menu z grami",
                                                                         fontSize = 20, width = 300, height = 100, 
@@ -2258,10 +2279,22 @@ def widzet():
                 przycisk.draw()
             Kwadracik_Tryb_Ciemny.show()
             Kwadracik_Tryb_Ciemny.draw()
+            if jezyk == "EN":
+                Tekst_Suwak = utworz_wycentrowany_naglowek("Sound volume: " + str(round((xSuwaka - 250) / 3)) + "%", 30, 25)
+            else:
+                Tekst_Suwak = utworz_wycentrowany_naglowek("Głośność dźwięku: " + str(round((xSuwaka - 250) / 3)) + "%", 30, 25)
+            ekran.blit(SUWAK, (250, 95))
+            obrocone_kolo = pygame.transform.rotate(KOLO, (550 - xSuwaka) * 6 / 5)
+            srodek_kola = (xSuwaka, 60 + KOLO.get_height() // 2)
+            ekran.blit(obrocone_kolo, obrocone_kolo.get_rect(center=srodek_kola))
+            KOLO_Prostokat.center = srodek_kola
+            Tekst_Suwak.show()
+            Tekst_Suwak.draw()
         else:
             for przycisk in przyciski_opcje:
                 przycisk.hide()
             Kwadracik_Tryb_Ciemny.hide()
+            Tekst_Suwak.hide()
 
         if not(stan == "kiery_1" or stan == "kiery_2" or stan == "kiery_3" or stan == "kiery_4" or stan == "zagrajznowuwpasjans" or stan == "wygranaoczko" or stan == "przegranaoczko" or stan == "remisoczko" or stan == "wygranamakao" or stan == "przegranamakao"):
             for przycisk in przyciski_koniec_ponownie:
