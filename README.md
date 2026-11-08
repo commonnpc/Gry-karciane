@@ -99,6 +99,9 @@ Sources of information about games:
 https://radarmiasta.pl/zasady-gier/makao-zasady/
 https://www.pasjans.pl/pasjans-zasady-gry
 
+Have Fun Playing :)
+<img width="795" height="630" alt="Zrzut ekranu 2026-11-03 230914" src="https://github.com/user-attachments/assets/b3ec39e7-d0b7-4cf6-8ddc-5a82bd92810c" />
+
 JĘZYK POLSKI:
 
 Aby uruchomić grę (po raz pierwszy), należy:
